@@ -2,7 +2,7 @@
 
 A web course that teaches non-engineers how Claude Code works behind the scenes, so they can use it with MCP servers, browsers, and local tools without leaking their secrets, wiping their data, or getting hijacked by prompt injection. It's built as a game: short Learn cards, then many hands-on simulations.
 
-Status: **revision 2, draft for the owner's review** (2026-10-21). Revision 1 was approved and built on 2026-10-21 (merged to `main` as TETRA2000/claude-code-101#1). Revision 2 replaces it as the design and **extends the built app; it doesn't start over**. Next step after approval: a new implementation plan for the revision 2 work.
+Status: **revision 2, approved by the owner on 2026-10-21.** Revision 1 was approved and built on 2026-10-21 (merged to `main` as TETRA2000/claude-code-101#1). Revision 2 replaces it as the design and **extends the built app; it doesn't start over**. Next step after approval: a new implementation plan for the revision 2 work.
 
 ## Current state (what's already built)
 
