@@ -138,10 +138,24 @@ describe('validateContent', () => {
     expectOne(problems, 'demo-predict');
   });
 
-  it('12: flags a navigate target without a scheme, once per host', () => {
+  it('12: flags a navigate target without a scheme', () => {
+    const problems = mutated((p) => {
+      item<ChainItem>(p, 'demo-chain').steps[1]!.target = 'evil.com/inbox';
+    });
+    expectOne(problems, 'demo-chain');
+  });
+
+  it('12: does not treat a schemeless target of a non-navigate tool as a URL', () => {
+    const problems = mutated((p) => {
+      item<ChainItem>(p, 'demo-chain').steps[0]!.target = 'evil.com/inbox';
+    });
+    expect(problems).toEqual([]);
+  });
+
+  it('12: reports a host once per item', () => {
     const problems = mutated((p) => {
       const c = item<ChainItem>(p, 'demo-chain');
-      c.steps[1]!.target = 'evil.com/inbox';
+      c.steps[1]!.target = 'https://evil.com/a';
       c.steps[2]!.target = 'https://evil.com/?d=1';
     });
     expectOne(problems, 'demo-chain');
