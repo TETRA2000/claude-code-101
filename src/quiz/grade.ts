@@ -1,0 +1,56 @@
+import { APPROVE_CHOICES, type Item } from '../content/types';
+import type { AnswerState } from './types';
+
+export const isAutoGraded = (item: Item): boolean => item.type === 'pairs' || item.type === 'decode';
+
+export function freshAnswer(item: Item | undefined): AnswerState {
+  return {
+    sel: null,
+    picked: [],
+    order: item?.type === 'order' ? [...item.start] : [],
+    left: null,
+    right: null,
+    matched: {},
+    miss: null,
+    misses: 0,
+    hintUsed: false,
+    checked: false,
+    ok: false,
+  };
+}
+
+/** Whether the Check button is enabled. Pairs and decode have no Check: they complete themselves. */
+export function canCheck(item: Item, a: AnswerState): boolean {
+  if (a.checked || isAutoGraded(item)) return false;
+  switch (item.type) {
+    case 'hidden':
+      return a.picked.length > 0;
+    case 'order':
+      return a.order.length > 0;
+    default:
+      return a.sel !== null;
+  }
+}
+
+export function isCorrect(item: Item, a: AnswerState): boolean {
+  switch (item.type) {
+    case 'approve':
+      const choice = a.sel === null ? undefined : APPROVE_CHOICES[a.sel];
+      return choice !== undefined && item.accept.includes(choice);
+    case 'predict':
+    case 'chain':
+      return a.sel === item.answer;
+    case 'setup':
+    case 'combo':
+      return a.sel !== null && item.accept.includes(a.sel);
+    case 'hidden': {
+      const picked = new Set(a.picked);
+      return picked.size === item.answer.length && item.answer.every((i) => picked.has(i));
+    }
+    case 'order':
+      return a.order.length === item.steps.length && a.order.every((id, i) => id === item.steps[i]?.id);
+    case 'pairs':
+    case 'decode':
+      return false;
+  }
+}

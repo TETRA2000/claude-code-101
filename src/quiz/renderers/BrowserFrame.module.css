@@ -1,0 +1,12 @@
+.frame { background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius-hero); overflow: hidden; min-width: 0; }
+.tabs { display: flex; align-items: flex-end; gap: 4px; flex-wrap: wrap; padding: 8px 10px 0; background: #e9e7ef; }
+.tab, .tabActive { font-size: 13px; padding: 8px 12px; border-radius: 10px 10px 0 0; color: #3f3c4c; overflow-wrap: anywhere; }
+.tabActive { font-weight: 700; background: var(--surface); color: var(--ink); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.url { flex: 1 1 200px; min-width: 0; font-family: var(--font-code); font-size: 13px; background: var(--surface-muted); padding: 6px 10px; border-radius: var(--radius-chip); color: #3f3c4c; overflow-wrap: anywhere; }
+.profile { font-size: 12px; font-weight: 700; color: var(--wrong-edge); background: var(--wrong-bg); padding: 4px 8px; border-radius: var(--radius-pill); overflow-wrap: anywhere; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.page { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.title { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 22px; overflow-wrap: anywhere; }
+.body { margin: 0; font-size: 14px; line-height: 1.5; color: #3f3c4c; overflow-wrap: anywhere; }
+.hidden { border: 2px dashed var(--wrong); background: var(--wrong-bg); border-radius: var(--radius-chip); padding: 10px 12px; font-size: 14px; line-height: 1.5; color: var(--wrong-edge); overflow-wrap: anywhere; }

@@ -1,0 +1,703 @@
+{
+  "cards": [
+    {
+      "id": "computer-card-terminal",
+      "title": {
+        "en": "The terminal: typing instead of clicking",
+        "ja": "ターミナル：クリックの代わりに文字で操作する"
+      },
+      "body": [
+        {
+          "en": "A terminal is a window where you type commands instead of clicking icons. A command is a short instruction, like `ls` (\"list what's in this folder\"). When Claude Code does something on your computer, it is usually typing commands like these.",
+          "ja": "ターミナルは、アイコンをクリックする代わりにコマンドを入力して操作するウィンドウです。コマンドとは `ls`（「このフォルダの中身を一覧表示して」）のような短い命令のこと。Claude Code があなたのパソコンで何かをするときも、たいていはこうしたコマンドを入力しています。"
+        },
+        {
+          "en": "Every file has a path: its address, folder by folder, separated by `/`. `/Users/you/portfolio/index.html` means \"start at the top, go into Users, then you, then portfolio, and there is index.html\". The terminal always stands in one folder, and `pwd` tells you which.",
+          "ja": "どのファイルにもパスがあります。パスとはファイルの住所のことで、フォルダを `/` で区切って順にたどったものです。`/Users/you/portfolio/index.html` は「いちばん上から Users、you、portfolio と入っていった先に index.html がある」という意味です。ターミナルは常にどこか1つのフォルダに「立って」いて、`pwd` でそれがどこかを確認できます。"
+        },
+        {
+          "en": "Many commands take a flag: a dash and a letter that change what they do. `ls -a` means \"list all\", hidden things included. `cat .env` prints a file's contents onto the screen. Try them in the practice terminal.",
+          "ja": "多くのコマンドにはフラグを付けられます。フラグとは、ダッシュと文字の組み合わせで、コマンドの動きを変えるものです。`ls -a` は「すべて表示」で、隠れているものも含めて一覧にします。`cat .env` はファイルの中身を画面に表示します。練習用のターミナルで試してみましょう。"
+        }
+      ],
+      "key": {
+        "en": "A command does exactly what it says, to exactly the path it names. Reading both is most of the skill.",
+        "ja": "コマンドは、書かれたとおりのことを、書かれたとおりのパスに対して行います。その両方を読めるようになることが、いちばん大切なスキルです。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
+            "cmd": "pwd",
+            "output": [
+              {
+                "text": "/Users/you/portfolio",
+                "note": {
+                  "en": "Where you are right now",
+                  "ja": "今いる場所"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "ls",
+            "output": [
+              {
+                "text": "index.html  package.json  src"
+              }
+            ]
+          },
+          {
+            "cmd": "ls -a",
+            "output": [
+              {
+                "text": ".  ..  .env  .git  index.html  package.json  src",
+                "note": {
+                  "en": "Hidden items appeared",
+                  "ja": "隠れていた項目が現れた"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "cat .env",
+            "output": [
+              {
+                "text": "NOTION_TOKEN=ntn_FAKE_8f3c1d...",
+                "note": {
+                  "en": "Your Notion key",
+                  "ja": "あなたの Notion のキー"
+                },
+                "secret": true
+              },
+              {
+                "text": "STRIPE_KEY=sk_live_FAKE_41a9...",
+                "note": {
+                  "en": "Your payment key",
+                  "ja": "あなたの決済サービスのキー"
+                },
+                "secret": true
+              }
+            ]
+          },
+          {
+            "cmd": "ls -a ~",
+            "output": [
+              {
+                "text": ".  ..  .Trash  .aws  .config  .npmrc  .ssh  .zshrc  Desktop  Documents  Downloads  Library  portfolio",
+                "note": {
+                  "en": "~ is your home folder. Its hidden folders hold your keys and logins",
+                  "ja": "~ はホームフォルダ。隠しフォルダに鍵やログイン情報がある"
+                },
+                "secret": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "computer-card-home",
+      "title": {
+        "en": "Your home folder, ~",
+        "ja": "ホームフォルダ ~"
+      },
+      "body": [
+        {
+          "en": "On a Mac, everything that is yours lives under one folder: `/Users/you` (with your own account name instead of `you`). That is your home folder. Documents, Desktop, Downloads, and the hidden settings of every app you use are all inside it.",
+          "ja": "Mac では、あなたのものはすべて1つのフォルダの下にあります。`/Users/you`（`you` の部分は実際のアカウント名）です。これをホームフォルダと呼びます。書類、デスクトップ、ダウンロード、そして使っているすべてのアプリの隠れた設定が、この中に入っています。"
+        },
+        {
+          "en": "It is typed so often that it has a nickname: `~` (a tilde). `~/Documents` is the same place as `/Users/you/Documents`.",
+          "ja": "よく使うので、ホームフォルダには `~`（チルダ）という略し方があります。`~/Documents` は `/Users/you/Documents` と同じ場所です。"
+        },
+        {
+          "en": "Your project is one small folder inside home, like `~/portfolio`. A command that stays inside the project touches only that project. A command that names `~`, or `/` (the very top of the disk), reaches far beyond it.",
+          "ja": "プロジェクトは、ホームの中の小さなフォルダの1つです（たとえば `~/portfolio`）。プロジェクトの中だけで動くコマンドは、そのプロジェクトにしか触れません。一方、`~` や `/`（ディスクのいちばん上）を指すコマンドは、プロジェクトのはるか外まで届きます。"
+        }
+      ],
+      "key": {
+        "en": "When a path starts with `~` or `/`, look twice: it may point outside your project, into everything you own.",
+        "ja": "パスが `~` や `/` で始まっていたら、もう一度よく見ましょう。プロジェクトの外、つまりあなたの持ち物すべてを指しているかもしれません。"
+      }
+    },
+    {
+      "id": "computer-card-secrets",
+      "title": {
+        "en": "Hidden files hold the keys",
+        "ja": "隠しファイルに鍵がある"
+      },
+      "body": [
+        {
+          "en": "A name that starts with a dot, like `.env` or `.ssh`, is hidden: plain `ls` and Finder leave it out. Apps use these dot-files for settings and, very often, for secrets. Hidden does not mean protected. Anything you can open, a command running as you can open too, including the commands Claude runs.",
+          "ja": "`.env` や `.ssh` のようにドットで始まる名前は隠れていて、ふつうの `ls` や Finder には表示されません。アプリはこうしたドットファイルを設定の保存に使い、秘密情報の置き場所にもよく使います。ただし、隠れていることは守られていることではありません。あなたが開けるものは、あなたとして動くコマンドにも開けます。Claude が実行するコマンドも同じです。"
+        },
+        {
+          "en": "A secret is anything that lets someone act as you: a password, an API key (a long code that lets a program use a service on your account), or a login token (proof that you already signed in).",
+          "ja": "ここでいう秘密情報とは、他人があなたになりすませてしまうもの全般のことです。パスワード、APIキー（プログラムがあなたのアカウントでサービスを使うための長い文字列）、ログイントークン（すでにログイン済みであることの証明）などがあります。"
+        },
+        {
+          "en": "Keys and logins: `.env` in a project (API keys). `~/.ssh` (SSH keys, which unlock your servers and GitHub; SSH is the secure way to log in to other computers). `~/.aws` (cloud logins that can spend money).",
+          "ja": "鍵とログイン情報：プロジェクトの `.env`（APIキー）。`~/.ssh`（SSH の鍵。サーバーや GitHub に入るためのもの。SSH は、ほかのコンピューターに安全にログインするための仕組みです）。`~/.aws`（お金を使えてしまうクラウドのログイン情報）。"
+        },
+        {
+          "en": "Settings that hide tokens: `~/.zshrc` (terminal settings, where people often paste tokens). `~/.npmrc` and `~/.config` (saved logins for developer tools). `~/Library/Application Support/Google/Chrome` (your browser's cookies and logged-in sessions).",
+          "ja": "トークンが紛れている設定：`~/.zshrc`（ターミナルの設定。トークンが貼り付けられていることがよくある）。`~/.npmrc` や `~/.config`（開発ツールの保存済みログイン）。`~/Library/Application Support/Google/Chrome`（ブラウザの Cookie やログイン中のセッション）。"
+        }
+      ],
+      "key": {
+        "en": "Hidden is not safe. Once a command reads a secret, one more command could send it anywhere.",
+        "ja": "隠れていても安全ではありません。秘密情報が一度コマンドに読まれたら、あと1つのコマンドでどこへでも送れてしまいます。"
+      }
+    },
+    {
+      "id": "computer-card-no-trash",
+      "title": {
+        "en": "The terminal has no Trash",
+        "ja": "ターミナルにゴミ箱はない"
+      },
+      "body": [
+        {
+          "en": "When you delete in Finder, the file goes to the Trash and you can drag it back. The terminal skips the Trash. `rm notes.txt` (remove) deletes the file at once, for good. Finder's Trash is just a hidden folder, `~/.Trash`, and `rm` never uses it.",
+          "ja": "Finder で削除したファイルはゴミ箱に入り、あとから戻せます。ターミナルはゴミ箱を通りません。`rm notes.txt`（remove＝削除）は、ファイルをその場で完全に消します。Finder のゴミ箱も実は `~/.Trash` という隠しフォルダにすぎず、`rm` はそこを使いません。"
+        },
+        {
+          "en": "`-r` (recursive) lets `rm` delete a folder and everything inside it, folder after folder. `-f` (force) means don't ask and don't complain. So `rm -rf ~/projects/old` deletes that folder and all its contents, silently, with no undo.",
+          "ja": "`-r`（recursive＝再帰的）を付けると、`rm` はフォルダとその中身を、奥のフォルダまですべて削除します。`-f`（force＝強制）は「確認しない、文句も言わない」という意味です。つまり `rm -rf ~/projects/old` は、そのフォルダと中身をすべて、黙って、元に戻せない形で消します。"
+        },
+        {
+          "en": "`>` is even quieter. `echo hi > notes.txt` writes \"hi\" into notes.txt and replaces whatever was there, with no warning. `>>` adds to the end instead.",
+          "ja": "`>` はさらに目立ちません。`echo hi > notes.txt` は notes.txt に「hi」と書き込み、もともとあった中身を警告なしで置き換えます。末尾に追加したいときは `>>` を使います。"
+        }
+      ],
+      "key": {
+        "en": "In the terminal, deleted or overwritten means gone. Before you approve `rm` or `>`, check exactly which path it names, and keep backups (Time Machine, Git) so one mistake isn't the end.",
+        "ja": "ターミナルでは、消したもの・上書きしたものは戻りません。`rm` や `>` を承認する前に、どのパスが書かれているかを正確に確認しましょう。そして、1回のミスで終わりにならないよう、バックアップ（Time Machine や Git）を取っておきましょう。"
+      }
+    },
+    {
+      "id": "computer-card-env",
+      "title": {
+        "en": "Environment variables",
+        "ja": "環境変数"
+      },
+      "body": [
+        {
+          "en": "Every terminal carries a short list of named settings called environment variables, like `HOME=/Users/you`. Every program started from that terminal can read the whole list, including every command Claude Code runs. In a command, `$HOME` means \"the value of HOME\".",
+          "ja": "ターミナルはどれも、環境変数と呼ばれる名前付きの設定の一覧を持っています（たとえば `HOME=/Users/you`）。そのターミナルから起動したプログラムは、この一覧をすべて読めます。Claude Code が実行するコマンドも例外ではありません。コマンドの中の `$HOME` は「HOME の値」という意味です。"
+        },
+        {
+          "en": "Many tools tell you to keep API keys here, often by adding a line like `export GITHUB_TOKEN=...` to `~/.zshrc`. After that, the key is in every terminal you open. The `|` (pipe) hands one command's output to the next, and `grep TOKEN` keeps only the lines that contain TOKEN.",
+          "ja": "多くのツールが、APIキーをここに置くよう案内しています。よくあるのは、`~/.zshrc` に `export GITHUB_TOKEN=...` のような1行を追加するやり方です。そうすると、開くすべてのターミナルにそのキーが入った状態になります。`|`（パイプ）は、あるコマンドの出力を次のコマンドに渡します。`grep TOKEN` は TOKEN を含む行だけを残します。"
+        }
+      ],
+      "key": {
+        "en": "`env`, `printenv`, and `echo $SOME_TOKEN` print secrets to the screen, and whatever a command prints, Claude reads too.",
+        "ja": "`env`、`printenv`、`echo $SOME_TOKEN` は秘密情報を画面に表示します。そして、コマンドが表示したものは Claude も読みます。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
+            "cmd": "echo $HOME",
+            "output": [
+              {
+                "text": "/Users/you",
+                "note": {
+                  "en": "The value of HOME",
+                  "ja": "HOME の値"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "echo $SHELL",
+            "output": [
+              {
+                "text": "/bin/zsh",
+                "note": {
+                  "en": "Your shell: the program that reads the commands you type",
+                  "ja": "シェル：入力したコマンドを読み取って実行するプログラム"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "env | grep TOKEN",
+            "output": [
+              {
+                "text": "GITHUB_TOKEN=ghp_FAKE_7d2e90...",
+                "note": {
+                  "en": "Your GitHub key, from ~/.zshrc",
+                  "ja": "~/.zshrc で設定した GitHub のキー"
+                },
+                "secret": true
+              },
+              {
+                "text": "NPM_TOKEN=npm_FAKE_5b71ac...",
+                "note": {
+                  "en": "Your npm key, also exported in ~/.zshrc",
+                  "ja": "これも ~/.zshrc で設定した npm のキー"
+                },
+                "secret": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "computer-predict-1",
+      "type": "predict",
+      "prompt": {
+        "en": "What does `ls -a` print?",
+        "ja": "`ls -a` を実行すると何が表示されますか？"
+      },
+      "situation": {
+        "en": "In `~/portfolio`, plain `ls` printed `index.html  package.json  src`. Now you add the `-a` flag.",
+        "ja": "`~/portfolio` で、ふつうの `ls` は `index.html  package.json  src` と表示しました。今度は `-a` フラグを付けます。"
+      },
+      "code": ["ls -a"],
+      "opts": [
+        {
+          "text": {
+            "en": "index.html  package.json  src",
+            "ja": "index.html  package.json  src"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "That's what plain `ls` shows. `-a` means \"all\", so names starting with a dot appear too.",
+            "ja": "それはふつうの `ls` の表示です。`-a` は「すべて」という意味なので、ドットで始まる名前も表示されます。"
+          }
+        },
+        {
+          "text": {
+            "en": ".  ..  .env  .git  index.html  package.json  src",
+            "ja": ".  ..  .env  .git  index.html  package.json  src"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "Right. `.env` (secrets) and `.git` (the project's history) were there all along. `.` means \"this folder\" and `..` means \"the folder above\".",
+            "ja": "正解です。`.env`（秘密情報）と `.git`（プロジェクトの履歴）は最初からそこにありました。`.` は「このフォルダ」、`..` は「1つ上のフォルダ」を表します。"
+          }
+        },
+        {
+          "text": {
+            "en": ".env  .git",
+            "ja": ".env  .git"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "`-a` adds the hidden names. It doesn't remove the visible ones.",
+            "ja": "`-a` は隠れた名前を追加で表示するだけです。見えていたものが消えるわけではありません。"
+          }
+        },
+        {
+          "text": {
+            "en": "An error, because hidden files are locked",
+            "ja": "エラーになる（隠しファイルはロックされているから）"
+          },
+          "feedback": {
+            "en": "Hidden files aren't locked. They are only left out of the plain listing, and you can list your own folder freely.",
+            "ja": "隠しファイルはロックされていません。ふつうの一覧に出てこないだけで、自分のフォルダは自由に一覧表示できます。"
+          }
+        }
+      ],
+      "answer": 1,
+      "explain": {
+        "en": "`ls` skips names that start with a dot; `ls -a` shows them. \"Hidden\" only means \"not listed by default\".",
+        "ja": "`ls` はドットで始まる名前を飛ばし、`ls -a` はそれも表示します。「隠しファイル」とは「標準では一覧に出ない」という意味にすぎません。"
+      }
+    },
+    {
+      "id": "computer-pairs-1",
+      "type": "pairs",
+      "prompt": {
+        "en": "Match each term to what it means.",
+        "ja": "用語とその意味を組み合わせましょう。"
+      },
+      "items": [
+        {
+          "id": "path",
+          "left": {
+            "en": "Path",
+            "ja": "パス"
+          },
+          "right": {
+            "en": "A file's address, folder by folder",
+            "ja": "フォルダを順にたどったファイルの住所"
+          }
+        },
+        {
+          "id": "flag",
+          "left": {
+            "en": "Flag",
+            "ja": "フラグ"
+          },
+          "right": {
+            "en": "A dash and a letter that change what a command does",
+            "ja": "コマンドの動きを変える、ダッシュと文字の組み合わせ"
+          }
+        },
+        {
+          "id": "dotfile",
+          "left": {
+            "en": "Dot-file",
+            "ja": "ドットファイル"
+          },
+          "right": {
+            "en": "A file whose name starts with a dot, left out of plain listings",
+            "ja": "名前がドットで始まり、ふつうの一覧には出てこないファイル"
+          }
+        },
+        {
+          "id": "envvar",
+          "left": {
+            "en": "Environment variable",
+            "ja": "環境変数"
+          },
+          "right": {
+            "en": "A named setting every command can read, sometimes holding a key",
+            "ja": "どのコマンドからも読める名前付きの設定。キーが入っていることもある"
+          }
+        }
+      ],
+      "order": ["dotfile", "envvar", "path", "flag"],
+      "explain": {
+        "en": "These four words come up every time you read a command. With them, `cat ~/.zshrc` reads as \"print the hidden settings file in my home folder\".",
+        "ja": "この4つの言葉は、コマンドを読むたびに出てきます。これがわかれば、`cat ~/.zshrc` は「ホームフォルダにある隠れた設定ファイルを表示する」と読めます。"
+      }
+    },
+    {
+      "id": "computer-predict-2",
+      "type": "predict",
+      "prompt": {
+        "en": "What appears on the screen?",
+        "ja": "画面に何が表示されますか？"
+      },
+      "situation": {
+        "en": "You're in `~/portfolio`. Its hidden `.env` file holds your Notion key and your payment key.",
+        "ja": "`~/portfolio` にいます。隠しファイルの `.env` には、Notion のキーと決済サービスのキーが入っています。"
+      },
+      "code": ["cat .env"],
+      "opts": [
+        {
+          "text": {
+            "en": "Every line of the file, keys included, in plain text",
+            "ja": "ファイルの全行が、キーも含めてそのまま表示される"
+          },
+          "feedback": {
+            "en": "Yes. `cat` prints the file exactly as it is. Nothing is masked.",
+            "ja": "そのとおり。`cat` はファイルの中身をそのまま表示します。伏せ字にはなりません。"
+          }
+        },
+        {
+          "text": {
+            "en": "The keys shown as dots (••••), like a password field",
+            "ja": "パスワード欄のように、キーが「••••」で伏せられる"
+          },
+          "feedback": {
+            "en": "The terminal never masks anything. `cat` prints exactly what's in the file.",
+            "ja": "ターミナルは何も伏せ字にしません。`cat` はファイルの中身をそのまま表示します。"
+          }
+        },
+        {
+          "text": {
+            "en": "Nothing, because .env is hidden",
+            "ja": ".env は隠れているので、何も表示されない"
+          },
+          "feedback": {
+            "en": "Hidden only affects listing. When a command names the file, it opens like any other.",
+            "ja": "「隠れている」のは一覧表示のときだけです。ファイル名を指定すれば、ほかのファイルと同じように開けます。"
+          }
+        },
+        {
+          "text": {
+            "en": "A request for your Mac password first",
+            "ja": "まず Mac のパスワードを求められる"
+          },
+          "feedback": {
+            "en": "Your own files open without a password. Anything running as you can read them, including the commands Claude runs.",
+            "ja": "自分のファイルはパスワードなしで開けます。あなたとして動くものなら何でも読めます。Claude が実行するコマンドも同じです。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "`cat` prints a whole file to the screen. Once a secret is printed, it sits in the output that Claude reads, one step away from being sent somewhere.",
+        "ja": "`cat` はファイル全体を画面に表示します。秘密情報が一度表示されると、それは Claude が読む出力の中に残り、どこかへ送られるまであと一歩の状態になります。"
+      }
+    },
+    {
+      "id": "computer-decode-1",
+      "type": "decode",
+      "prompt": {
+        "en": "Match each piece of the command to what it does.",
+        "ja": "コマンドの各部分と、その働きを組み合わせましょう。"
+      },
+      "command": "rm -rf ~/projects/old",
+      "parts": [
+        {
+          "id": "rm",
+          "code": "rm",
+          "means": {
+            "en": "Delete for good, skipping the Trash",
+            "ja": "ゴミ箱を通さずに完全に削除する"
+          }
+        },
+        {
+          "id": "rf",
+          "code": "-rf",
+          "means": {
+            "en": "Everything inside, too, without asking",
+            "ja": "中身もすべて、確認なしで"
+          }
+        },
+        {
+          "id": "path",
+          "code": "~/projects/old",
+          "means": {
+            "en": "The folder old, inside projects, in your home folder",
+            "ja": "ホームフォルダの projects の中にある old フォルダ"
+          }
+        }
+      ],
+      "order": ["path", "rm", "rf"],
+      "explain": {
+        "en": "It deletes `~/projects/old` and everything in it, with no question and no undo. Read the path character by character: `rm -rf ~/projects old`, with a space where the slash was, would delete all of `~/projects`, plus any folder called old in the folder you are standing in.",
+        "ja": "`~/projects/old` とその中身をすべて、確認も取り消しもなしで削除します。パスは1文字ずつ読みましょう。スラッシュが空白に変わっただけの `rm -rf ~/projects old` は、`~/projects` 全体に加えて、今いるフォルダにある old というフォルダまで消してしまいます。"
+      }
+    },
+    {
+      "id": "computer-pairs-2",
+      "type": "pairs",
+      "prompt": {
+        "en": "Match each path to what's inside.",
+        "ja": "パスと、その中身を組み合わせましょう。"
+      },
+      "items": [
+        {
+          "id": "ssh",
+          "left": {
+            "en": "~/.ssh",
+            "ja": "~/.ssh"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Keys that unlock your servers and GitHub",
+            "ja": "サーバーや GitHub に入るための鍵"
+          }
+        },
+        {
+          "id": "aws",
+          "left": {
+            "en": "~/.aws/credentials",
+            "ja": "~/.aws/credentials"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Cloud account logins that can spend money",
+            "ja": "お金を使えてしまうクラウドアカウントのログイン情報"
+          }
+        },
+        {
+          "id": "zshrc",
+          "left": {
+            "en": "~/.zshrc",
+            "ja": "~/.zshrc"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Terminal settings, often with exported tokens",
+            "ja": "ターミナルの設定。トークンが書かれていることも多い"
+          }
+        },
+        {
+          "id": "chrome",
+          "left": {
+            "en": "~/Library/Application Support/Google/Chrome",
+            "ja": "~/Library/Application Support/Google/Chrome"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Browser cookies and logged-in sessions",
+            "ja": "ブラウザの Cookie とログイン中のセッション"
+          }
+        }
+      ],
+      "order": ["zshrc", "chrome", "ssh", "aws"],
+      "explain": {
+        "en": "None of these belong to any one project, and each one can act as you. A project task rarely needs to open them, so a command that names one deserves a closer look.",
+        "ja": "どれも特定のプロジェクトのものではなく、どれもあなたになりすますのに使えます。プロジェクトの作業でこれらを開く必要はめったにないので、これらを指すコマンドはよく確認しましょう。"
+      }
+    },
+    {
+      "id": "computer-decode-2",
+      "type": "decode",
+      "prompt": {
+        "en": "Match each piece of the command to what it means.",
+        "ja": "コマンドの各部分と、その意味を組み合わせましょう。"
+      },
+      "command": "cat ~/.ssh/id_rsa",
+      "parts": [
+        {
+          "id": "cat",
+          "code": "cat",
+          "means": {
+            "en": "Print a file's contents on screen",
+            "ja": "ファイルの中身を画面に表示する"
+          }
+        },
+        {
+          "id": "home",
+          "code": "~",
+          "means": {
+            "en": "Your home folder",
+            "ja": "あなたのホームフォルダ"
+          }
+        },
+        {
+          "id": "ssh",
+          "code": ".ssh",
+          "means": {
+            "en": "The hidden folder of SSH keys",
+            "ja": "SSH の鍵が入った隠しフォルダ"
+          }
+        },
+        {
+          "id": "key",
+          "code": "id_rsa",
+          "means": {
+            "en": "Your private key, which proves to servers that you are you",
+            "ja": "サーバーにあなた本人だと証明する秘密鍵"
+          }
+        }
+      ],
+      "order": ["key", "cat", "ssh", "home"],
+      "explain": {
+        "en": "It prints your private SSH key. Its partner `id_rsa.pub` (public) is meant to be shared; `id_rsa` never is. A project task almost never needs this file, so if a command reads it, stop and ask why.",
+        "ja": "SSH の秘密鍵を表示するコマンドです。対になる `id_rsa.pub`（公開鍵）は人に渡してよいものですが、`id_rsa` は決して渡してはいけません。プロジェクトの作業でこのファイルが必要になることはまずないので、これを読むコマンドが出てきたら、手を止めて理由を確認しましょう。"
+      }
+    },
+    {
+      "id": "computer-predict-3",
+      "type": "predict",
+      "prompt": {
+        "en": "What's in `todo.txt` now?",
+        "ja": "今、`todo.txt` には何が入っていますか？"
+      },
+      "situation": {
+        "en": "`todo.txt` holds 40 lines of your notes. Then this runs:",
+        "ja": "`todo.txt` には、あなたのメモが40行入っています。そこで次のコマンドが実行されます。"
+      },
+      "code": ["echo \"buy milk\" > todo.txt"],
+      "opts": [
+        {
+          "text": {
+            "en": "Your 40 lines, plus \"buy milk\" at the end",
+            "ja": "40行のメモの末尾に「buy milk」が追加されている"
+          },
+          "feedback": {
+            "en": "That's what `>>` does. A single `>` replaces the whole file.",
+            "ja": "それは `>>` の動きです。`>` が1つだと、ファイル全体が置き換わります。"
+          }
+        },
+        {
+          "text": {
+            "en": "Only \"buy milk\". The 40 lines are gone",
+            "ja": "「buy milk」だけ。40行のメモは消えている"
+          },
+          "feedback": {
+            "en": "Right. `>` empties the file first, then writes the new text.",
+            "ja": "正解です。`>` はまずファイルを空にしてから、新しい文字を書き込みます。"
+          }
+        },
+        {
+          "text": {
+            "en": "Nothing yet: a warning asks you to confirm",
+            "ja": "まだ何も変わらない（確認の警告が出る）"
+          },
+          "feedback": {
+            "en": "There's no warning. `>` overwrites silently.",
+            "ja": "警告は出ません。`>` は黙って上書きします。"
+          }
+        },
+        {
+          "text": {
+            "en": "Only \"buy milk\", but the old version is in the Trash",
+            "ja": "「buy milk」だけだが、古い中身はゴミ箱に残っている"
+          },
+          "feedback": {
+            "en": "The terminal has no Trash. The old contents aren't saved anywhere.",
+            "ja": "ターミナルにゴミ箱はありません。古い中身はどこにも残っていません。"
+          }
+        }
+      ],
+      "answer": 1,
+      "explain": {
+        "en": "`>` replaces a file's contents; `>>` adds to the end. Neither asks first, so one `>` aimed at the wrong file wipes it.",
+        "ja": "`>` はファイルの中身を置き換え、`>>` は末尾に追加します。どちらも事前に確認しないので、`>` の向け先を間違えると、そのファイルは消えてしまいます。"
+      }
+    },
+    {
+      "id": "computer-decode-3",
+      "type": "decode",
+      "prompt": {
+        "en": "Match each piece of the command to what it does.",
+        "ja": "コマンドの各部分と、その働きを組み合わせましょう。"
+      },
+      "command": "ls -a ~ | grep env",
+      "parts": [
+        {
+          "id": "ls",
+          "code": "ls",
+          "means": {
+            "en": "List the names in a folder",
+            "ja": "フォルダの中の名前を一覧にする"
+          }
+        },
+        {
+          "id": "a",
+          "code": "-a",
+          "means": {
+            "en": "Include hidden dot-names",
+            "ja": "ドットで始まる隠れた名前も含める"
+          }
+        },
+        {
+          "id": "home",
+          "code": "~",
+          "means": {
+            "en": "Look in your home folder",
+            "ja": "ホームフォルダの中を見る"
+          }
+        },
+        {
+          "id": "pipe",
+          "code": "|",
+          "means": {
+            "en": "Hand the output to the next command",
+            "ja": "出力を次のコマンドに渡す"
+          }
+        },
+        {
+          "id": "grep",
+          "code": "grep env",
+          "means": {
+            "en": "Keep only the lines that contain env",
+            "ja": "env を含む行だけを残す"
+          }
+        }
+      ],
+      "order": ["pipe", "grep", "home", "ls", "a"],
+      "explain": {
+        "en": "It lists everything in your home folder, hidden names included, and keeps the ones containing \"env\", like a stray `.env`. It changes nothing, but it is exactly how you'd go looking for secrets, so ask what it's for.",
+        "ja": "ホームフォルダの中身を隠れた名前も含めて一覧にし、「env」を含むもの（置き忘れの `.env` など）だけを残します。何も変更しませんが、秘密情報を探すときのやり方そのものなので、何のために実行するのかを確認しましょう。"
+      }
+    }
+  ]
+}

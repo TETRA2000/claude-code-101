@@ -1,0 +1,152 @@
+[
+  {
+    "key": "computer",
+    "status": "ready",
+    "title": { "en": "Your computer, from the inside", "ja": "パソコンの中身を知ろう" },
+    "blurb": {
+      "en": "The terminal, files and paths, hidden dot-files, where secrets live, and what rm really does.",
+      "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、そして rm が本当にすること。"
+    },
+    "chips": ["predict", "decode", "pairs"],
+    "lastChecked": "2026-10-22",
+    "sources": ["https://code.claude.com/docs"]
+  },
+  {
+    "key": "agent",
+    "status": "ready",
+    "title": { "en": "How Claude Code works", "ja": "Claude Code の仕組み" },
+    "blurb": {
+      "en": "The agent loop, tools, the context window, CLAUDE.md and memory, and MCP as more tools.",
+      "ja": "エージェントループ、ツール、コンテキストウィンドウ、CLAUDE.md とメモリ、そして「ツールを増やす」MCP。"
+    },
+    "chips": ["order", "pairs", "predict"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/how-claude-code-works",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/mcp",
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/sandboxing"
+    ]
+  },
+  {
+    "key": "permissions",
+    "status": "ready",
+    "title": { "en": "Permission prompts", "ja": "許可プロンプト" },
+    "blurb": {
+      "en": "Read the prompt before you say yes: the three answers, permission modes, red flags, and permission fatigue.",
+      "ja": "「はい」の前にプロンプトを読む。3つの答え方、許可モード、危険のサイン、そして確認疲れ。"
+    },
+    "chips": ["approve", "decode", "setup"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/interactive-mode",
+      "https://code.claude.com/docs/en/settings",
+      "https://code.claude.com/docs/en/security",
+      "https://code.claude.com/docs/en/desktop",
+      "https://code.claude.com/docs/en/desktop-quickstart"
+    ]
+  },
+  {
+    "key": "injection",
+    "status": "ready",
+    "title": { "en": "Prompt injection", "ja": "プロンプトインジェクション" },
+    "blurb": {
+      "en": "Where injections hide, invisible text, warning signs, persistence via CLAUDE.md, and what to do.",
+      "ja": "インジェクションの隠れ場所、見えない文字、警告のサイン、CLAUDE.md に居座る手口、そして取るべき行動。"
+    },
+    "chips": ["hidden", "chain", "approve"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/security",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/how-claude-code-works",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/mcp"
+    ]
+  },
+  {
+    "key": "browser",
+    "status": "ready",
+    "title": { "en": "Browser automation", "ja": "ブラウザ自動操作" },
+    "blurb": {
+      "en": "Your logged-in browser, the deadly combo, how data leaves through a browser, and safe setups.",
+      "ja": "ログイン中のブラウザ、危険な組み合わせ、ブラウザ経由でデータが漏れる仕組み、そして安全な環境づくり。"
+    },
+    "chips": ["chain", "combo", "setup", "hidden", "approve", "predict"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/chrome",
+      "https://code.claude.com/docs/en/desktop",
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/mcp"
+    ]
+  },
+  {
+    "key": "powers",
+    "status": "soon",
+    "title": { "en": "Who can do what", "ja": "誰が何をできるのか" },
+    "blurb": {
+      "en": "Users, file permissions, sudo, and environment variables. Claude runs with your powers.",
+      "ja": "ユーザー、ファイルの権限、sudo、環境変数。Claude はあなたと同じ力で動きます。"
+    },
+    "chips": ["decode", "predict"]
+  },
+  {
+    "key": "mcp",
+    "status": "soon",
+    "title": { "en": "MCP servers", "ja": "MCPサーバー" },
+    "blurb": {
+      "en": "What a connector can see and do, login scopes, poisoned tool descriptions, and servers that change after approval.",
+      "ja": "コネクタに見えるもの・できること、ログインの権限範囲、毒入りのツール説明、承認後に変わるサーバー。"
+    },
+    "chips": ["scopes", "poisoned"]
+  },
+  {
+    "key": "installing",
+    "status": "soon",
+    "title": { "en": "Installing code safely", "ja": "安全なインストール" },
+    "blurb": {
+      "en": "Lookalike and made-up packages, install scripts, curl | sh, npx -y, and booby-trapped projects.",
+      "ja": "なりすましや存在しないパッケージ、インストールスクリプト、curl | sh、npx -y、罠付きのプロジェクト。"
+    },
+    "chips": ["package", "settings", "approve"]
+  },
+  {
+    "key": "sandboxes",
+    "status": "soon",
+    "title": { "en": "Sandboxes", "ja": "サンドボックス" },
+    "blurb": {
+      "en": "What a sandbox is, the options you can use, and network restrictions: which exits stay open.",
+      "ja": "サンドボックスとは何か、使える選択肢、そしてネットワーク制限。どの出口が開いたままなのか。"
+    },
+    "chips": ["inside", "allowlist"]
+  },
+  {
+    "key": "lockdown",
+    "status": "soon",
+    "title": { "en": "Locking it down", "ja": "守りを固める" },
+    "blurb": {
+      "en": "Allow and deny rules, settings files, hooks, and separate browser profiles. Build your own safe setup.",
+      "ja": "許可・拒否ルール、設定ファイル、フック、専用のブラウザプロファイル。自分だけの安全な環境を組み立てます。"
+    },
+    "chips": ["rule", "settings"]
+  },
+  {
+    "key": "boss",
+    "status": "soon",
+    "title": { "en": "Boss: Continue? Y/N", "ja": "ボス戦：Continue? Y/N" },
+    "blurb": {
+      "en": "60 seconds, about 20 prompts, most of them harmless. Can you keep reading?",
+      "ja": "60秒で約20個のプロンプト。ほとんどは無害。最後まで読み続けられる？"
+    },
+    "chips": ["boss"]
+  }
+]
