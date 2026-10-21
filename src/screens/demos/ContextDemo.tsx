@@ -21,7 +21,7 @@ export function ContextDemo({ demo }: Props) {
         {demo.chunks.map((c, i) => (
           <div key={i} className={`${styles.chunk} ${colored ? styles[`who_${c.who}`] : ''}`} data-who={colored ? c.who : undefined}>
             <div className={styles.chunkHead}>
-              <span className={styles.chunkLabel}>{t(c.label)}</span>
+              <span>{t(c.label)}</span>
               {colored && <span className={styles.author}>{t(c.author)}</span>}
             </div>
             <div className={styles.chunkText}>{t(c.text)}</div>
