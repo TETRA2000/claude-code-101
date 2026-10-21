@@ -73,13 +73,21 @@
   },
   {
     "key": "browser",
-    "status": "soon",
+    "status": "ready",
     "title": { "en": "Browser automation", "ja": "ブラウザ自動操作" },
     "blurb": {
       "en": "Your logged-in browser, the deadly combo, how data leaves through a browser, and safe setups.",
       "ja": "ログイン中のブラウザ、危険な組み合わせ、ブラウザ経由でデータが漏れる仕組み、そして安全な環境づくり。"
     },
-    "chips": ["chain", "combo", "setup", "hidden", "approve"]
+    "chips": ["chain", "combo", "setup", "hidden", "approve", "predict"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/chrome",
+      "https://code.claude.com/docs/en/desktop",
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/mcp"
+    ]
   },
   {
     "key": "powers",

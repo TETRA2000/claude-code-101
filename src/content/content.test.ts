@@ -78,3 +78,32 @@ describe('unit 4: injection', () => {
     expect(items.filter((it) => it.type === 'approve').length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe('unit 5: browser', () => {
+  const SCENARIOS: Record<string, string[]> = {
+    takeover: ['browser-chain-1'],
+    cookieDump: ['browser-approve-1'],
+    uploadTrap: ['browser-approve-2'],
+    networkLog: ['browser-approve-3'],
+    clickingYes: ['browser-chain-2'],
+    screenshotSpill: ['browser-predict-1'],
+    hiddenText: ['browser-hidden-1'],
+    markdownImage: ['browser-hidden-2'],
+  };
+
+  it('is ready, has browser chains, combos and setups, and covers every scenario', () => {
+    expect(content.unitByKey('browser')?.status).toBe('ready');
+    const items = content.bodyOf('browser')?.items ?? [];
+    const chains = items.filter((it): it is ChainItem => it.type === 'chain');
+    expect(chains.filter((it) => it.scene.kind === 'browser').length).toBeGreaterThanOrEqual(2);
+    expect(items.filter((it) => it.type === 'combo').length).toBeGreaterThanOrEqual(2);
+    expect(items.filter((it) => it.type === 'setup').length).toBeGreaterThanOrEqual(1);
+    const ids = new Set(items.map((it) => it.id));
+    for (const [scenario, list] of Object.entries(SCENARIOS)) {
+      expect(list.length, scenario).toBeGreaterThan(0);
+      for (const id of list) expect(ids.has(id), `${scenario}: ${id}`).toBe(true);
+    }
+    const hiddenText = items.find((it) => it.id === 'browser-hidden-1') as HiddenItem | undefined;
+    expect(hiddenText?.source).toBe('web');
+  });
+});
