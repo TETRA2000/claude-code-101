@@ -74,6 +74,30 @@ describe('Approve', () => {
     expect(screen.queryByRole('button', { name: /copy/i })).toBeNull();
   });
 
+  it('Bash shows auto-mode, description before command; other tools do not', () => {
+    const { unmount } = render(
+      <LangProvider lang="en">
+        <Approve item={base} answer={freshAnswer(base)} act={vi.fn()} />
+      </LangProvider>,
+    );
+    expect(screen.getByText(/auto mode/)).toBeInTheDocument();
+    const desc = screen.getByText('Build the site');
+    const cmd = screen.getByText('npm run build', { selector: 'span' });
+    expect(desc.compareDocumentPosition(cmd) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    unmount();
+    for (const tool of ['WebFetch', 'mcp__notes__fetch']) {
+      const { unmount: u } = render(
+        <LangProvider lang="en">
+          <Approve item={{ ...base, tool }} answer={freshAnswer(base)} act={vi.fn()} />
+        </LangProvider>,
+      );
+      expect(screen.queryByText(/auto mode/)).toBeNull();
+      expect(screen.queryByText(/requires approval/)).toBeNull();
+      expect(screen.getByText(tool)).toBeInTheDocument();
+      u();
+    }
+  });
+
   it('desktop uses neutral course labels, not terminal wording', () => {
     draw({ ...base, surface: 'desktop' });
     expect(screen.queryByText('Do you want to proceed?')).toBeNull();

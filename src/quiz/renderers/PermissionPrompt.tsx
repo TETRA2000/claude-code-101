@@ -41,15 +41,19 @@ export function PermissionPrompt({ surface, tool, target, reason, alwaysLabel }:
       </div>
     );
   }
-  const options = ['Yes', alwaysLabel, 'Yes, and switch to auto mode', 'No'];
+  // F1: the full layout and option 3 are documented for Bash only. Web fetch, file
+  // and MCP tool layouts are partly UNVERIFIED in F1, so other tools get only the
+  // neutral parts: tool name, target, reason, and Yes / alwaysLabel / No.
+  const isBash = tool === 'Bash';
+  const options = isBash ? ['Yes', alwaysLabel, 'Yes, and switch to auto mode', 'No'] : ['Yes', alwaysLabel, 'No'];
   return (
     <div className={styles.term} data-surface="terminal">
-      <span className={styles.termTitle}>{tool === 'Bash' ? 'Bash command' : tool}</span>
+      <span className={styles.termTitle}>{isBash ? 'Bash command' : tool}</span>
       <div className={styles.termBody}>
-        <span className={styles.termTarget}>{target}</span>
         <span className={styles.termReason}>{reason}</span>
+        <span className={styles.termTarget}>{target}</span>
       </div>
-      <span className={styles.termReason}>This command requires approval</span>
+      {isBash && <span className={styles.termReason}>This command requires approval</span>}
       <span>Do you want to proceed?</span>
       <ol className={styles.termOpts}>
         {options.map((label, i) => (
@@ -59,7 +63,7 @@ export function PermissionPrompt({ surface, tool, target, reason, alwaysLabel }:
           </li>
         ))}
       </ol>
-      <span className={styles.termReason}>Esc to cancel · Tab to amend</span>
+      <span className={styles.termReason}>Esc to cancel{isBash ? ' · Tab to amend' : ''}</span>
     </div>
   );
 }
