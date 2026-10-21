@@ -104,19 +104,19 @@ function QuizQuestion({ session, dispatch, onExit, onLang, guardMs, content }: Q
       </main>
 
       <div className={styles.footer}>
-        {!a.checked && !isAutoGraded(item) && (
-          <div className={styles.bar}>
-            <Button
-              className={styles.check}
-              disabled={!canCheck(item, a)}
-              aria-disabled={checkArmed ? undefined : true}
-              onClick={() => checkArmed && dispatch({ type: 'check' })}
-            >
-              {ui.check}
-            </Button>
-          </div>
-        )}
         <div aria-live="polite">
+          {!a.checked && !isAutoGraded(item) && (
+            <div className={styles.bar}>
+              <Button
+                className={styles.check}
+                disabled={!canCheck(item, a)}
+                aria-disabled={checkArmed ? undefined : true}
+                onClick={() => checkArmed && dispatch({ type: 'check' })}
+              >
+                {ui.check}
+              </Button>
+            </div>
+          )}
           {a.checked && (
             <FeedbackSheet
               key={session.idx}
