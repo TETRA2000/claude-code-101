@@ -34,6 +34,13 @@ export interface UiStrings {
   hideHidden: string;
   firstStepToDeny: string;
   yourTask: string;
+  viewLabel: string;
+  hiddenOrderMark: string;
+  notAnOrderMark: string;
+  stepsTitle: string;
+  denyHereMark: string;
+  notThisStepMark: string;
+  profileBadge: string;
   approveYes: string;
   /** Generic fallback label; real items supply their own `alwaysLabel`. */
   approveAlways: string;
@@ -92,6 +99,13 @@ const en: UiStrings = {
   hideHidden: 'Hide hidden text',
   firstStepToDeny: 'First step: deny the request',
   yourTask: 'Your task',
+  viewLabel: 'View',
+  hiddenOrderMark: 'Hidden order',
+  notAnOrderMark: 'Not an order',
+  stepsTitle: 'Claude’s steps · tap the first one to deny',
+  denyHereMark: 'Deny here',
+  notThisStepMark: 'Not this step',
+  profileBadge: 'Profile',
   approveYes: 'Yes',
   approveAlways: 'Yes, always',
   approveNo: 'No',
@@ -146,6 +160,13 @@ const ja: UiStrings = {
   hideHidden: '隠れたテキストを隠す',
   firstStepToDeny: 'まずは要求を拒否しよう',
   yourTask: 'あなたの課題',
+  viewLabel: '表示',
+  hiddenOrderMark: '隠れた命令',
+  notAnOrderMark: '命令ではない',
+  stepsTitle: 'Claude の手順 · 最初に拒否すべきものをタップ',
+  denyHereMark: 'ここで拒否',
+  notThisStepMark: 'この手順ではない',
+  profileBadge: 'プロファイル',
   approveYes: 'はい',
   approveAlways: '常に許可',
   approveNo: 'いいえ',
