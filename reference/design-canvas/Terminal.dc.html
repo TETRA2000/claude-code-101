@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Terminal playground</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF8F2;color:#1D1B26;font-family:'DM Sans','Noto Sans JP',system-ui,sans-serif}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #4338CA;outline-offset:2px}
+a{color:#4338CA}a:hover{color:#2E2690}
+.k{font-family:'JetBrains Mono',monospace;font-size:13px;background:rgba(29,27,38,.08);padding:1px 5px;border-radius:5px}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 900px; background: #FBF8F2">
+<div style="max-width: 1180px; margin: 0 auto; padding: 16px 24px 48px; display: flex; flex-direction: column; gap: 24px">
+
+<header style="display: flex; align-items: center; gap: 12px">
+<a href="Main.dc.html" aria-label="Back to course map" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #5B5868"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+<div role="progressbar" aria-label="Learn progress" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="flex-grow: 1; height: 14px; background: #E4DFD4; border-radius: 999px; overflow: hidden"><div style="width: 60%; height: 100%; background: #E3A008; border-radius: 999px"></div></div>
+<span style="font-size: 14px; font-weight: 700; color: #8A5A00">3 / 5</span>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<span style="align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A5A00; background: #FFF7DB; border: 1px solid #F2D675; padding: 6px 10px; border-radius: 999px">Unit 1 · Learn</span>
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 34px; line-height: 1.12">Hidden files hold the keys</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.6">A terminal is a window where you type commands instead of clicking. Claude Code uses the same commands, just faster.</p>
+<p style="margin: 0; font-size: 16px; line-height: 1.6">Click the commands on the right. Watch what <span class="k">ls</span> shows, and what it hides.</p>
+<div style="background: #FFF7DB; border: 2px solid #F2D675; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A5A00">Key idea</span>
+<span style="font-size: 15px; line-height: 1.55">A name starting with a dot, like <span class="k">.env</span> or <span class="k">.ssh</span>, is hidden. Hidden files often hold passwords and keys. You can't see them at a glance, but Claude can read them.</span>
+</div>
+<a href="Permission.dc.html" style="align-self: flex-start; display: flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; background: #4338CA; color: #FFFFFF; border: 2px solid #2E2690; border-bottom-width: 5px; border-radius: 16px; font-weight: 700; font-size: 16px; text-decoration: none">Next</a>
+</div>
+
+<div style="flex: 1.3 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="background: #1D1B26; border-radius: 20px; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #34313F">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #5B5868"></span>
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #5B5868"></span>
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #5B5868"></span>
+<span style="margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #9C98B3">Terminal · practice mode, nothing here is real</span>
+</div>
+<div style="padding: 16px; min-height: 360px; display: flex; flex-direction: column; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6">
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ true }}">
+<span style="color: #9C98B3">Click a command below to run it.</span>
+</sc-if>
+<sc-for list="{{history}}" as="h" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div><span style="color: #86EFAC">you@laptop</span> <span style="color: #7DD3FC">~/portfolio</span> <span style="color: #D6D3E0">$ {{h.cmd}}</span></div>
+<sc-for list="{{h.lines}}" as="l" hint-placeholder-count="2">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px">
+<span style="color: {{l.ink}}; white-space: pre-wrap">{{l.text}}</span>
+<sc-if value="{{l.hasNote}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #1D1B26; background: #FCD34D; padding: 2px 8px; border-radius: 999px">{{l.note}}</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{commands}}" as="c" hint-placeholder-count="5">
+<button type="button" onClick="{{c.run}}" style="min-height: 48px; padding: 0 16px; background: #FFFFFF; color: #1D1B26; border: 2px solid #E4DFD4; border-bottom-width: 4px; border-radius: 14px; font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 14px">{{c.cmd}}</button>
+</sc-for>
+<button type="button" onClick="{{clear}}" style="min-height: 48px; padding: 0 16px; background: transparent; color: #5B5868; border: 0; font-weight: 700; font-size: 14px">Clear</button>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { history: [] };
+  }
+  renderVals() {
+    const out = {
+      "pwd": [["/Users/you/portfolio", "Where you are right now"]],
+      "ls": [["index.html   package.json   src", ""]],
+      "ls -a": [[".   ..   .env   .git   index.html   package.json   src", "Three hidden items appeared"]],
+      "cat .env": [["NOTION_TOKEN=ntn_FAKE_8f3c1d...", "Your Notion key"], ["STRIPE_KEY=sk_live_FAKE_41a9...", "Your payment key"]],
+      "ls -a ~": [[".aws   .ssh   .zshrc   .npmrc   Desktop   Documents   portfolio", "~ means your home folder"], [".ssh holds the keys to your servers and GitHub", "Never needed for a web page"]]
+    };
+    const ink = { plain: "#D6D3E0", secret: "#FCA5A5" };
+    const add = (cmd) => {
+      const lines = out[cmd].map((p) => ({
+        text: p[0], note: p[1], hasNote: p[1] !== "",
+        ink: cmd === "cat .env" || cmd === "ls -a ~" ? ink.secret : ink.plain
+      }));
+      this.setState({ history: this.state.history.concat([{ cmd, lines }]).slice(-4) });
+    };
+    return {
+      history: this.state.history,
+      isEmpty: this.state.history.length === 0,
+      clear: () => this.setState({ history: [] }),
+      commands: Object.keys(out).map((cmd) => ({ cmd, run: () => add(cmd) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

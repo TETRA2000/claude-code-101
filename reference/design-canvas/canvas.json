@@ -1,0 +1,21 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-21T10:00:00Z"},
+  "title": "Claude Code 101 mockups",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1280, "h": 900, "title": "Course map", "expand": "fill", "is_interactive": true},
+    "UnderTheHood.dc.html": {"x": 1360, "y": 0, "w": 1280, "h": 900, "title": "Learn: what Claude actually sees", "expand": "fill", "is_interactive": true},
+    "Terminal.dc.html": {"x": 2720, "y": 0, "w": 1280, "h": 900, "title": "Learn: terminal playground", "expand": "fill", "is_interactive": true},
+    "Permission.dc.html": {"x": 0, "y": 1320, "w": 1280, "h": 900, "title": "Practice: approve or deny", "expand": "fill", "is_interactive": true},
+    "Injection.dc.html": {"x": 1360, "y": 1320, "w": 1280, "h": 900, "title": "Practice: find the hidden order", "expand": "fill", "is_interactive": true},
+    "Browser.dc.html": {"x": 2720, "y": 1320, "w": 1280, "h": 900, "title": "Practice: stop the chain", "expand": "fill", "is_interactive": true}
+  },
+  "order": ["Main.dc.html", "UnderTheHood.dc.html", "Terminal.dc.html", "Permission.dc.html", "Injection.dc.html", "Browser.dc.html"],
+  "notes": {
+    "row1": {"x": 0, "y": -300, "text": "Course map and Learn cards", "kind": "title1", "maxW": 4000},
+    "row2": {"x": 0, "y": 1020, "text": "Practice simulations", "kind": "title1", "maxW": 4000}
+  },
+  "designSystems": []
+}

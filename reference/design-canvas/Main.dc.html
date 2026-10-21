@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Course map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF8F2;color:#1D1B26;font-family:'DM Sans','Noto Sans JP',system-ui,sans-serif}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #4338CA;outline-offset:2px}
+a{color:#4338CA}a:hover{color:#2E2690}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 900px; background: #FBF8F2">
+<div style="max-width: 1180px; margin: 0 auto; padding: 24px 24px 56px; display: flex; flex-direction: column; gap: 28px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 12px; background: #1D1B26; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l5 5-5 5"></path><path d="M13 17h6"></path></svg>
+</div>
+<div style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">Claude Code 101</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #8A5A00; background: #FFF7DB; border: 1px solid #F2D675; padding: 8px 12px; border-radius: 999px; font-size: 14px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg>
+{{xpLabel}}
+</span>
+<div role="group" aria-label="Language" style="display: flex; background: #F3F0E8; border: 1px solid #E4DFD4; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="{{enPressed}}" onClick="{{setEn}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; font-weight: 700; font-size: 14px; background: {{enBg}}; color: {{enInk}}">EN</button>
+<button type="button" aria-pressed="{{jaPressed}}" onClick="{{setJa}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; font-weight: 700; font-size: 14px; background: {{jaBg}}; color: {{jaInk}}">日本語</button>
+</div>
+</div>
+</header>
+
+<section style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px; justify-content: center">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', 'Noto Sans JP', sans-serif; font-weight: 800; font-size: 44px; line-height: 1.08">{{heroTitle}}</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.55; color: #5B5868; max-width: 620px">{{heroBody}}</p>
+</div>
+<div style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 2px solid #E4DFD4; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4338CA; background: #EEF0FF; padding: 6px 10px; border-radius: 999px">{{upNextLabel}}</span>
+<div style="font-family: 'Bricolage Grotesque', 'Noto Sans JP', sans-serif; font-weight: 800; font-size: 22px">{{upNextTitle}}</div>
+<div role="progressbar" aria-label="Unit progress" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background: #E4DFD4; border-radius: 999px; overflow: hidden"><div style="width: 40%; height: 100%; background: #4338CA; border-radius: 999px"></div></div>
+<a href="Permission.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 52px; background: #4338CA; color: #FFFFFF; border: 2px solid #2E2690; border-bottom-width: 5px; border-radius: 16px; font-weight: 700; font-size: 16px; text-decoration: none">{{continueLabel}}</a>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B5868">{{unitsLabel}}</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px">
+<sc-for list="{{units}}" as="u" hint-placeholder-count="10">
+<div style="background: {{u.bg}}; border: 2px solid {{u.border}}; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 150px; box-sizing: border-box">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{u.numInk}}">{{u.num}}</span>
+<sc-if value="{{u.isDone}}" hint-placeholder-val="{{ false }}">
+<span style="display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: #15803D"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{doneLabel}}</span>
+</sc-if>
+<sc-if value="{{u.isCurrent}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; font-weight: 700; color: #4338CA">{{nowLabel}}</span>
+</sc-if>
+<sc-if value="{{u.isLocked}}" hint-placeholder-val="{{ true }}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B5868" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Locked"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+</sc-if>
+</div>
+<div style="font-family: 'Bricolage Grotesque', 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 19px; line-height: 1.2; color: #1D1B26">{{u.title}}</div>
+<div style="font-size: 14px; line-height: 1.45; color: #5B5868">{{u.blurb}}</div>
+<div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{u.sims}}" as="s" hint-placeholder-count="2">
+<span style="font-size: 12px; font-weight: 500; color: #1D1B26; background: #F3F0E8; border: 1px solid #E4DFD4; padding: 3px 8px; border-radius: 999px">{{s}}</span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { lang: "en" };
+  }
+  renderVals() {
+    const ja = this.state.lang === "ja";
+    const units = [
+      { en: ["Your computer, from the inside", "Files, folders, your home folder, and the hidden dot-files where secrets live."], ja: ["パソコンの中身を知ろう", "ファイル、フォルダ、ホームフォルダ、そして秘密が眠る隠しファイル。"], sims: ["Terminal playground", "Match pairs"], status: "done" },
+      { en: ["Who can do what", "Users, permissions, sudo, and environment variables. What an agent inherits from you."], ja: ["誰が何をできるのか", "ユーザー、権限、sudo、環境変数。エージェントはあなたの力をそのまま受け継ぎます。"], sims: ["Decode the command", "Predict"], status: "done" },
+      { en: ["How Claude Code works", "The agent loop, tools, and the context window: everything is just text in one window."], ja: ["Claude Code の仕組み", "エージェントループ、ツール、コンテキストウィンドウ。すべては一つの窓の中のテキストです。"], sims: ["Color the context", "Order the loop"], status: "done" },
+      { en: ["Permission prompts", "Read the command before you say yes. Yes, Always, No, and what each one really means."], ja: ["許可プロンプト", "「はい」の前にコマンドを読む。はい・常に許可・いいえ、それぞれの本当の意味。"], sims: ["Approve or deny", "Decode the command"], status: "current" },
+      { en: ["Prompt injection", "When a web page, doc or file starts giving the agent orders."], ja: ["プロンプトインジェクション", "Webページやドキュメントがエージェントに命令し始めたら。"], sims: ["Find the hidden order", "As Claude sees it"], status: "locked" },
+      { en: ["Browser automation", "Your logged-in browser is your whole online life. Deadly combos and how to break them."], ja: ["ブラウザ自動操作", "ログイン中のブラウザはあなたのオンライン生活そのもの。危険な組み合わせと断ち切り方。"], sims: ["Stop the chain", "Pick the profile"], status: "locked" },
+      { en: ["MCP servers", "What a connector can see and do, and how it can turn against you."], ja: ["MCPサーバー", "コネクタに何が見えて何ができるのか。そして裏切られる仕組み。"], sims: ["Read the scopes", "Spot the poisoned tool"], status: "locked" },
+      { en: ["Installing code safely", "Lookalike packages, install scripts, curl | sh, and booby-trapped projects."], ja: ["安全なインストール", "なりすましパッケージ、インストールスクリプト、curl | sh、罠付きプロジェクト。"], sims: ["Real or fake?", "Approve or deny"], status: "locked" },
+      { en: ["Locking it down", "Sandboxes, deny rules, hooks, and separate browser profiles. Build your safe setup."], ja: ["守りを固める", "サンドボックス、拒否ルール、フック、専用ブラウザ。安全な環境を組み立てる。"], sims: ["Build the rule", "Fix the settings"], status: "locked" },
+      { en: ["Boss: Continue? Y/N", "60 seconds, 20 prompts, most of them harmless. Can you keep reading?"], ja: ["ボス戦：Continue? Y/N", "60秒で20個のプロンプト。ほとんどは無害。最後まで読み続けられる？"], sims: ["Timed challenge"], status: "locked" }
+    ];
+    const look = {
+      done: { bg: "#FFFFFF", border: "#E4DFD4", numInk: "#5B5868" },
+      current: { bg: "#FFFFFF", border: "#4338CA", numInk: "#4338CA" },
+      locked: { bg: "#F3F0E8", border: "#E4DFD4", numInk: "#5B5868" }
+    };
+    const on = { bg: "#1D1B26", ink: "#FFFFFF" };
+    const off = { bg: "transparent", ink: "#5B5868" };
+    return {
+      setEn: () => this.setState({ lang: "en" }),
+      setJa: () => this.setState({ lang: "ja" }),
+      enPressed: !ja, jaPressed: ja,
+      enBg: ja ? off.bg : on.bg, enInk: ja ? off.ink : on.ink,
+      jaBg: ja ? on.bg : off.bg, jaInk: ja ? on.ink : off.ink,
+      xpLabel: ja ? "320 XP" : "320 XP",
+      heroTitle: ja ? "AIエージェントを、安全に使いこなす。" : "Work with an AI agent, without getting burned.",
+      heroBody: ja
+        ? "Claude Code はあなたのパソコンでコマンドを実行し、ファイルを読み、ブラウザやNotion、Figmaを操作します。裏側で何が起きているかを知り、危険な「はい」を見抜けるようになりましょう。"
+        : "Claude Code runs commands on your computer, reads your files, and drives your browser, Notion and Figma. Learn what happens behind the scenes, so you can spot the dangerous \"yes\" before you press it.",
+      upNextLabel: ja ? "次はここから" : "Up next",
+      upNextTitle: ja ? "ユニット4・許可プロンプト" : "Unit 4 · Permission prompts",
+      continueLabel: ja ? "つづける" : "Continue",
+      unitsLabel: ja ? "コース" : "The course",
+      doneLabel: ja ? "完了" : "Done",
+      nowLabel: ja ? "学習中" : "In progress",
+      units: units.map((u, i) => {
+        const t = ja ? u.ja : u.en;
+        const l = look[u.status];
+        return {
+          num: i === 9 ? (ja ? "ボス" : "Boss") : (ja ? "ユニット " : "Unit ") + (i + 1),
+          title: t[0], blurb: t[1], sims: u.sims,
+          isDone: u.status === "done", isCurrent: u.status === "current", isLocked: u.status === "locked",
+          bg: l.bg, border: l.border, numInk: l.numInk
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
