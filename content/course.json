@@ -32,13 +32,24 @@
   },
   {
     "key": "permissions",
-    "status": "soon",
+    "status": "ready",
     "title": { "en": "Permission prompts", "ja": "許可プロンプト" },
     "blurb": {
       "en": "Read the prompt before you say yes: the three answers, permission modes, red flags, and permission fatigue.",
       "ja": "「はい」の前にプロンプトを読む。3つの答え方、許可モード、危険のサイン、そして確認疲れ。"
     },
-    "chips": ["approve", "decode", "setup"]
+    "chips": ["approve", "decode", "setup"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/interactive-mode",
+      "https://code.claude.com/docs/en/settings",
+      "https://code.claude.com/docs/en/security",
+      "https://code.claude.com/docs/en/desktop",
+      "https://code.claude.com/docs/en/desktop-quickstart"
+    ]
   },
   {
     "key": "injection",
