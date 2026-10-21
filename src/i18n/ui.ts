@@ -25,6 +25,9 @@ export interface UiStrings {
   breaking: string;
   decodeHint(cost: number): string;
   piecesTitle: string;
+  ingredientPrivate: string;
+  ingredientUntrusted: string;
+  ingredientExit: string;
   asYouSee: string;
   asClaudeSees: string;
   showHidden: string;
@@ -78,6 +81,9 @@ const en: UiStrings = {
   breaking: 'Breaking it down',
   decodeHint: (cost) => `Decode it (-${cost} XP)`,
   piecesTitle: 'The pieces',
+  ingredientPrivate: 'Private data',
+  ingredientUntrusted: 'Untrusted content',
+  ingredientExit: 'A way out',
   asYouSee: 'As you see it',
   asClaudeSees: 'As Claude sees it',
   showHidden: 'Show hidden text',
@@ -127,6 +133,9 @@ const ja: UiStrings = {
   breaking: '分解して見てみよう',
   decodeHint: (cost) => `読み解く（-${cost} XP）`,
   piecesTitle: '各パーツの意味',
+  ingredientPrivate: '個人データ',
+  ingredientUntrusted: '信頼できない内容',
+  ingredientExit: '外への出口',
   asYouSee: 'あなたに見える姿',
   asClaudeSees: 'Claude に見える姿',
   showHidden: '隠れたテキストを表示',

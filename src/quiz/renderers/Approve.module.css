@@ -1,0 +1,15 @@
+.root { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.task { margin: 0; font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+.scene { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.narration { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-muted); overflow-wrap: anywhere; }
+.answers { display: flex; flex-direction: column; gap: 12px; }
+.answer { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 16px; text-align: left; font: inherit; font-weight: 700; font-size: 16px; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-bottom-width: 5px; border-radius: var(--radius-tile); cursor: pointer; overflow-wrap: anywhere; }
+.answer[aria-pressed='true'] { background: var(--primary-soft); border-color: var(--primary); }
+.answer:disabled { cursor: default; }
+.num { font-family: var(--font-code); color: var(--ink-muted); }
+.label { min-width: 0; overflow-wrap: anywhere; }
+.hint { align-self: flex-start; text-transform: none; letter-spacing: 0; font-size: 14px; min-height: var(--touch); }
+.pieces { background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius-tile); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.piecesTitle { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.piece { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; font-size: 14px; line-height: 1.45; }
+.pieceCode { font-family: var(--font-code); font-size: 13px; background: rgb(29 27 38 / 0.08); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
