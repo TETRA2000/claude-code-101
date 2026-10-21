@@ -13,13 +13,22 @@
   },
   {
     "key": "agent",
-    "status": "soon",
+    "status": "ready",
     "title": { "en": "How Claude Code works", "ja": "Claude Code の仕組み" },
     "blurb": {
       "en": "The agent loop, tools, the context window, CLAUDE.md and memory, and MCP as more tools.",
       "ja": "エージェントループ、ツール、コンテキストウィンドウ、CLAUDE.md とメモリ、そして「ツールを増やす」MCP。"
     },
-    "chips": ["order", "pairs", "predict"]
+    "chips": ["order", "pairs", "predict"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/how-claude-code-works",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/mcp",
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/sandboxing"
+    ]
   },
   {
     "key": "permissions",

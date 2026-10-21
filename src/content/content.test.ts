@@ -34,3 +34,13 @@ describe('unit 1: computer', () => {
     expect(body?.cards.some((c) => c.demo?.kind === 'terminal')).toBe(true);
   });
 });
+
+describe('unit 2: agent', () => {
+  it('is ready, demos the context window, and has an order item', () => {
+    expect(content.unitByKey('agent')?.status).toBe('ready');
+    const body = content.bodyOf('agent');
+    expect(body).toBeDefined();
+    expect(body?.cards.some((c) => c.demo?.kind === 'context')).toBe(true);
+    expect(body?.items.some((it) => it.type === 'order')).toBe(true);
+  });
+});
