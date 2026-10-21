@@ -41,6 +41,7 @@ export interface UiStrings {
   denyHereMark: string;
   notThisStepMark: string;
   profileBadge: string;
+  blankLine: (n: number) => string;
   approveYes: string;
   /** Generic fallback label; real items supply their own `alwaysLabel`. */
   approveAlways: string;
@@ -106,6 +107,7 @@ const en: UiStrings = {
   denyHereMark: 'Deny here',
   notThisStepMark: 'Not this step',
   profileBadge: 'Profile',
+  blankLine: (n) => `Line ${n} (looks blank)`,
   approveYes: 'Yes',
   approveAlways: 'Yes, always',
   approveNo: 'No',
@@ -167,6 +169,7 @@ const ja: UiStrings = {
   denyHereMark: 'ここで拒否',
   notThisStepMark: 'この手順ではない',
   profileBadge: 'プロファイル',
+  blankLine: (n) => `${n}行目（空白に見える）`,
   approveYes: 'はい',
   approveAlways: '常に許可',
   approveNo: 'いいえ',

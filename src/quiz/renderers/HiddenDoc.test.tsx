@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { HiddenItem } from '../../content/types';
@@ -20,9 +21,36 @@ const draw = (item: HiddenItem, answer: Partial<AnswerState> = {}, lang: Lang = 
   const r = render(ui(answer));
   return { act, rerender: (a: Partial<AnswerState>) => r.rerender(ui(a)) };
 };
-const hiddenLine = () => screen.getByRole('button', { name: /collect\.example/ });
+const hiddenLine = () => screen.getByRole('button', { name: /collect\.example|Line 3/ });
 
 describe('HiddenDoc', () => {
+  it('conceals a white/tiny line for real and for screen readers before Check', () => {
+    draw(base);
+    expect(screen.queryByRole('button', { name: /collect\.example/ })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Line 3 (looks blank)' })).toHaveAttribute('data-concealed', 'true');
+    const css = readFileSync('src/quiz/renderers/HiddenDoc.module.css', 'utf8');
+    expect(css).toMatch(/\.white\s*\{[^}]*color:\s*#fff/);
+    expect(css).toMatch(/\.tiny\s*\{[^}]*font-size:\s*2px[^}]*color:\s*#fff|\.tiny\s*\{[^}]*color:\s*#fff[^}]*font-size:\s*2px/);
+  });
+
+  it('reveals the real name in the Claude view and after Check', () => {
+    const { rerender } = draw(base);
+    fireEvent.click(screen.getByRole('button', { name: 'As Claude sees it' }));
+    expect(screen.getByRole('button', { name: /collect\.example/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'As you see it' }));
+    rerender({ checked: true, picked: [2] });
+    expect(screen.getByRole('button', { name: /collect\.example/ })).toBeInTheDocument();
+  });
+
+  it('never emits an "undefined" class (notes frame)', () => {
+    const { container } = render(
+      <LangProvider lang="en">
+        <HiddenDoc item={{ ...base, source: 'notes' }} answer={freshAnswer(base)} act={vi.fn()} />
+      </LangProvider>,
+    );
+    expect(container.innerHTML).not.toContain('undefined');
+  });
+
   it('You view: a white line is concealed; Claude view shows the raw markup', () => {
     draw(base);
     expect(hiddenLine()).toHaveAttribute('data-concealed', 'true');

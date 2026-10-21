@@ -22,7 +22,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
           {ui.asClaudeSees}
         </button>
       </div>
-      <div className={`${styles.frame} ${styles[item.source]}`} data-source={item.source}>
+      <div className={[styles.frame, styles[item.source]].filter(Boolean).join(' ')} data-source={item.source}>
         <div className={styles.chrome}>
           <span className={styles.glyph} aria-hidden="true">{GLYPH[item.source]}</span>
           <span className={styles.chromeTitle}>{t(item.title)}</span>
@@ -45,7 +45,9 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
               concealed ? styles[l.hidden as 'white' | 'tiny'] : '',
               right ? styles.right : '',
               wrong ? styles.wrong : '',
-            ].join(' ');
+            ]
+              .filter(Boolean)
+              .join(' ');
             return (
               <button
                 key={i}
@@ -53,10 +55,11 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
                 className={cls}
                 aria-pressed={picked}
                 disabled={answer.checked}
+                aria-label={concealed ? ui.blankLine(i + 1) : undefined}
                 data-concealed={concealed ? 'true' : undefined}
                 onClick={() => act({ type: 'togglePick', line: i })}
               >
-                <span className={styles.text}>{text}</span>
+                <span className={styles.text} aria-hidden={concealed ? 'true' : undefined}>{text}</span>
                 {right && (
                   <span className={styles.mark}>
                     <CheckIcon size={16} /> {ui.hiddenOrderMark}
