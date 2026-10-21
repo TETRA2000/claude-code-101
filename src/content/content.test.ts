@@ -88,7 +88,7 @@ describe('unit 5: browser', () => {
     clickingYes: ['browser-chain-2'],
     screenshotSpill: ['browser-predict-1'],
     hiddenText: ['browser-hidden-1'],
-    markdownImage: ['browser-hidden-2'],
+    markdownImage: ['browser-hidden-1'],
   };
 
   it('is ready, has browser chains, combos and setups, and covers every scenario', () => {
