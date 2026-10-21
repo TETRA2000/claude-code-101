@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import { useEffect, useRef, type Dispatch } from 'react';
 import { Button } from '../components/Button';
 import { CloseIcon } from '../components/icons';
 import { LangSwitch } from '../components/LangSwitch';
@@ -32,6 +32,13 @@ function DemoView({ demo }: { demo: Demo }) {
 
 export function Learn({ unit, cards, card, dispatch }: Props) {
   const { ui, t, lang } = useLang();
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  // New card: start at the top and announce its title (as Quiz does per item).
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+    titleRef.current?.focus({ preventScroll: true });
+  }, [card]);
   const n = cards.length;
   const c = cards[card];
   if (!c) return null;
@@ -45,9 +52,9 @@ export function Learn({ unit, cards, card, dispatch }: Props) {
         <ProgressBar tone="learn" label={`${ui.learn}: ${t(unit.title)} ${card + 1} / ${n}`} value={((card + 1) / n) * 100} />
         <LangSwitch lang={lang} onChange={(l) => dispatch({ type: 'setLang', lang: l })} />
       </header>
-      <main className={styles.main}>
+      <main ref={mainRef} className={styles.main}>
         <section className={styles.text}>
-          <h1 className={styles.title}>{t(c.title)}</h1>
+          <h1 ref={titleRef} tabIndex={-1} className={styles.title}>{t(c.title)}</h1>
           {c.body.map((p, i) => (
             <p key={i} className={styles.para}>
               <RichText text={t(p)} />

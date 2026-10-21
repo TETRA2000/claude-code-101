@@ -18,13 +18,16 @@ export interface RendererProps<I extends Item> {
 export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
   const { ui, t } = useLang();
   const labels = [ui.approveYes, t(item.alwaysLabel), ui.approveNo];
+  const terminal = item.surface === 'terminal';
+  // Claude Code's own option text stays in English in the terminal (product output);
+  // the desktop card and the answer buttons use the course's localized label.
   const prompt = (
     <PermissionPrompt
       surface={item.surface}
       tool={item.tool}
       target={item.target}
       reason={t(item.reason)}
-      alwaysLabel={t(item.alwaysLabel)}
+      alwaysLabel={terminal ? item.alwaysLabel.en : t(item.alwaysLabel)}
     />
   );
   return (
@@ -36,7 +39,10 @@ export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
         <p className={styles.narration}>
           <RichText text={t(item.narration)} />
         </p>
-        {item.surface === 'terminal' ? <TerminalFrame title="claude">{prompt}</TerminalFrame> : prompt}
+        <figure className={styles.surface}>
+          <figcaption className={styles.caption}>{terminal ? ui.inTerminal : ui.inDesktop}</figcaption>
+          {terminal ? <TerminalFrame title="claude">{prompt}</TerminalFrame> : prompt}
+        </figure>
       </div>
       <div className={styles.answers}>
         {APPROVE_CHOICES.map((c, i) => (

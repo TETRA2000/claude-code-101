@@ -104,6 +104,36 @@ describe('Approve', () => {
     expect(screen.queryByText(/auto mode/)).toBeNull();
   });
 
+  it('JA: terminal prompt keeps Claude Code\'s English option text; answer buttons are localized', () => {
+    draw(base, {}, 'ja');
+    const prompt = document.querySelector('[data-surface="terminal"]')!;
+    expect(prompt).toHaveTextContent("2. Yes, and don't ask again for npm run build");
+    expect(prompt).not.toHaveTextContent('はい、今後 npm run build は確認しない');
+    expect(screen.getByRole('button', { name: /はい、今後 npm run build は確認しない/ })).toBeInTheDocument();
+  });
+
+  it('JA: desktop card uses the localized label', () => {
+    draw({ ...base, surface: 'desktop' }, {}, 'ja');
+    const card = document.querySelector('[data-surface="desktop"]')!;
+    expect(card).toHaveTextContent('はい、今後 npm run build は確認しない');
+  });
+
+  it.each([
+    ['terminal', 'en', 'In the terminal'],
+    ['desktop', 'en', 'In the desktop app'],
+    ['terminal', 'ja', 'ターミナルの場合'],
+    ['desktop', 'ja', 'デスクトップアプリの場合'],
+  ] as const)('captions the %s prompt with the app it shows (%s)', (surface, lang, caption) => {
+    draw({ ...base, surface }, {}, lang);
+    expect(screen.getByText(caption)).toBeInTheDocument();
+  });
+
+  it('non-Bash terminal prompts omit the Bash-only question and footer', () => {
+    draw({ ...base, tool: 'WebFetch' });
+    expect(screen.queryByText('Do you want to proceed?')).toBeNull();
+    expect(screen.queryByText(/Esc to cancel/)).toBeNull();
+  });
+
   it('localizes to Japanese', () => {
     draw(base, {}, 'ja');
     expect(screen.getByText('あなたの課題')).toBeInTheDocument();

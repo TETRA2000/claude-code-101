@@ -16,7 +16,7 @@ interface Props {
  *
  * Terminal: follows docs/claude-code-facts.md F1 (Bash layout). The CLI's own
  * strings are product output and stay in English; only `reason` and `alwaysLabel`
- * come from the item.
+ * come from the item (callers pass the English `alwaysLabel` for the terminal).
  *
  * Desktop: F2 marks the desktop shell/web/MCP prompt layout and labels as
  * UNVERIFIED, so this renders documented parts only (tool, target, reason) as a
@@ -43,7 +43,8 @@ export function PermissionPrompt({ surface, tool, target, reason, alwaysLabel }:
   }
   // F1: the full layout and option 3 are documented for Bash only. Web fetch, file
   // and MCP tool layouts are partly UNVERIFIED in F1, so other tools get only the
-  // neutral parts: tool name, target, reason, and Yes / alwaysLabel / No.
+  // neutral parts: tool name, target, reason, and Yes / alwaysLabel / No (no
+  // question line or Esc footer, which F1 documents for Bash only).
   const isBash = tool === 'Bash';
   const options = isBash ? ['Yes', alwaysLabel, 'Yes, and switch to auto mode', 'No'] : ['Yes', alwaysLabel, 'No'];
   return (
@@ -54,7 +55,7 @@ export function PermissionPrompt({ surface, tool, target, reason, alwaysLabel }:
         <span className={styles.termTarget}>{target}</span>
       </div>
       {isBash && <span className={styles.termReason}>This command requires approval</span>}
-      <span>Do you want to proceed?</span>
+      {isBash && <span>Do you want to proceed?</span>}
       <ol className={styles.termOpts}>
         {options.map((label, i) => (
           <li key={i} className={styles.termOpt}>
@@ -63,7 +64,7 @@ export function PermissionPrompt({ surface, tool, target, reason, alwaysLabel }:
           </li>
         ))}
       </ol>
-      <span className={styles.termReason}>Esc to cancel{isBash ? ' · Tab to amend' : ''}</span>
+      {isBash && <span className={styles.termReason}>Esc to cancel · Tab to amend</span>}
     </div>
   );
 }

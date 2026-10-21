@@ -47,4 +47,24 @@ describe('Learn', () => {
     await userEvent.click(screen.getByRole('button', { name: '日本語' }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'setLang', lang: 'ja' });
   });
+  it('on card change, scrolls the content back to the top and focuses the title', () => {
+    const props = { unit, cards, dispatch: vi.fn() };
+    const { rerender } = render(
+      <LangProvider lang="en">
+        <Learn {...props} card={0} />
+      </LangProvider>,
+    );
+    const main = screen.getByRole('main');
+    main.scrollTop = 400;
+    screen.getByRole('button', { name: 'Next' }).focus();
+    rerender(
+      <LangProvider lang="en">
+        <Learn {...props} card={1} />
+      </LangProvider>,
+    );
+    expect(screen.getByRole('main').scrollTop).toBe(0);
+    const h1 = screen.getByRole('heading', { level: 1 });
+    expect(h1).toHaveTextContent(cards[1]!.title.en);
+    expect(h1).toHaveFocus();
+  });
 });

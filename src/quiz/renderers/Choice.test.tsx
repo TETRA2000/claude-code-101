@@ -54,4 +54,23 @@ describe('Choice', () => {
     draw(setup, { sel: 0, checked: true });
     screen.getAllByRole('button').forEach((b) => expect(b).toBeDisabled());
   });
+  it('captions setup/combo items that have a surface with the app they show', () => {
+    draw(setup);
+    expect(screen.getByText('In the desktop app')).toBeInTheDocument();
+  });
+
+  it('shows no app caption without a surface', () => {
+    draw(combo);
+    expect(screen.queryByText('In the desktop app')).toBeNull();
+    expect(screen.queryByText('In the terminal')).toBeNull();
+  });
+
+  it('captions in Japanese', () => {
+    render(
+      <LangProvider lang="ja">
+        <Choice item={{ ...setup, surface: 'terminal' }} answer={freshAnswer(setup)} act={vi.fn()} />
+      </LangProvider>,
+    );
+    expect(screen.getByText('ターミナルの場合')).toBeInTheDocument();
+  });
 });

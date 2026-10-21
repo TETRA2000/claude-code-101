@@ -19,6 +19,9 @@ export function Choice({ item, answer, act }: RendererProps<PredictItem | Choice
     : [];
   return (
     <div className={styles.root}>
+      {item.type !== 'predict' && item.surface && (
+        <p className={styles.caption}>{item.surface === 'terminal' ? ui.inTerminal : ui.inDesktop}</p>
+      )}
       {intro && (
         <p className={styles.intro}>
           <RichText text={t(intro)} />

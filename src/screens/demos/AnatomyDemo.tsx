@@ -9,19 +9,19 @@ type Props = { demo: Extract<Demo, { kind: 'anatomy' }> };
 export function AnatomyDemo({ demo }: Props) {
   const { ui, t } = useLang();
   const partNames = { tool: ui.partTool, target: ui.partTarget, reason: ui.partReason, options: ui.partOptions };
-  const shared = { tool: demo.tool, target: demo.target, reason: t(demo.reason), alwaysLabel: t(demo.alwaysLabel) };
+  const shared = { tool: demo.tool, target: demo.target, reason: t(demo.reason) };
   return (
     <div className={styles.demo}>
       <div className={styles.surfaces}>
         <figure className={styles.surface}>
           <figcaption className={styles.caption}>{ui.inTerminal}</figcaption>
           <TerminalFrame title="claude">
-            <PermissionPrompt surface="terminal" {...shared} />
+            <PermissionPrompt surface="terminal" {...shared} alwaysLabel={demo.alwaysLabel.en} />
           </TerminalFrame>
         </figure>
         <figure className={styles.surface}>
           <figcaption className={styles.caption}>{ui.inDesktop}</figcaption>
-          <PermissionPrompt surface="desktop" {...shared} />
+          <PermissionPrompt surface="desktop" {...shared} alwaysLabel={t(demo.alwaysLabel)} />
         </figure>
       </div>
       <h3 className={styles.notesTitle}>{ui.notesTitle}</h3>
