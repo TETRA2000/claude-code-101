@@ -107,8 +107,8 @@
           "ja": "仕込まれた一文そのものが目に入るとは限りません。目に入るのは、Claude が次にすること。あなたの依頼と関係のない許可プロンプトや、説明のひとことです。そのズレが合図です。"
         },
         {
-          "en": "Auto mode's background checks try to block actions that seem driven by hostile content Claude read, but the docs are clear that auto mode doesn't guarantee safety. While you're learning, Manual mode puts you in front of each step that asks.",
-          "ja": "自動モードの裏側のチェックは、Claude が読んだ悪意ある内容に動かされたように見える操作を止めようとします。ただし公式ドキュメントにも、自動モードは安全を保証しないとはっきり書かれています。慣れるまでは Manual モードにしておけば、確認が必要な一歩ごとにあなたが立ち会えます。"
+          "en": "Auto mode's background checks try to block actions that seem driven by hostile content Claude read, but the docs are clear that auto mode doesn't guarantee safety. File edits inside your project, including CLAUDE.md, skip those checks entirely, so a planted line that only edits files won't be caught. While you're learning, Manual mode puts you in front of each step that asks.",
+          "ja": "自動モードの裏側のチェックは、Claude が読んだ悪意ある内容に動かされたように見える操作を止めようとします。ただし公式ドキュメントにも、自動モードは安全を保証しないとはっきり書かれています。しかもプロジェクト内のファイル編集は、CLAUDE.md も含めてこのチェックをまったく通りません。ファイルを書き換えるだけの仕込まれた一文は、止められないということです。慣れるまでは Manual モードにしておけば、確認が必要な一歩ごとにあなたが立ち会えます。"
         }
       ],
       "key": {
@@ -352,8 +352,8 @@
         "ja": "Claude はこのバグ報告を要約しています。AIに向けた部分はどれでしょう？"
       },
       "explain": {
-        "en": "The order hid in the alt text, the description attached to the screenshot. You see a picture; Claude gets the words. Adding a stranger as a maintainer has nothing to do with a summary, and \"pre-approved\" is a claim, not a fact.",
-        "ja": "命令はスクリーンショットに付けられた説明文、つまり代替テキストに隠れていました。あなたには画像が見え、Claude には文字が渡ります。見知らぬ人をメンテナーに加えることは要約と何の関係もありませんし、「承認済み」はただの主張で、事実ではありません。"
+        "en": "The order hid in the alt text, the description attached to the screenshot. You'd only see the screenshot; Claude gets the words. Adding a stranger as a maintainer has nothing to do with a summary, and \"pre-approved\" is a claim, not a fact.",
+        "ja": "命令はスクリーンショットに付けられた説明文、つまり代替テキストに隠れていました。あなたに見えるのはスクリーンショットだけですが、Claude には文字が渡ります。見知らぬ人をメンテナーに加えることは要約と何の関係もありませんし、「承認済み」はただの主張で、事実ではありません。"
       },
       "title": { "en": "Issue #48: Sign-up button does nothing on mobile", "ja": "Issue #48：スマホでは登録ボタンが反応しない" },
       "location": "code.example/studio/site/issues/48",
@@ -427,8 +427,8 @@
         },
         "no": {
           "feedback": {
-            "en": "Good call. Anyone can comment on an issue, so \"pre-approved\" there proves nothing. Tell Claude: \"Leave the fix on a branch. I'll open a pull request for review.\"",
-            "ja": "良い判断です。issue には誰でもコメントできるので、そこに「承認済み」とあっても何の証明にもなりません。Claude にはこう伝えましょう。「修正はブランチに置いておいて。レビュー用のプルリクエストは自分で作るから。」"
+            "en": "Good call. Anyone can comment on an issue, so \"pre-approved\" there proves nothing. Tell Claude: \"Leave the fix on a branch. I'll open a pull request for review.\" (A pull request asks teammates to review a change before it joins main.)",
+            "ja": "良い判断です。issue には誰でもコメントできるので、そこに「承認済み」とあっても何の証明にもなりません。Claude にはこう伝えましょう。「修正はブランチに置いておいて。レビュー用のプルリクエストは自分で作るから。」（プルリクエストとは、変更を main に入れる前にチームメイトにレビューを頼む仕組みです。）"
           }
         }
       }
@@ -437,8 +437,8 @@
       "id": "injection-chain-1",
       "type": "chain",
       "prompt": {
-        "en": "Here is what Claude did. Tap the first step you should have denied.",
-        "ja": "Claude がしたことの一覧です。最初に拒否すべきだった手順をタップしましょう。"
+        "en": "Here is what Claude did (`gh` is GitHub's command-line tool for reading and managing issues). Tap the first step you should have denied.",
+        "ja": "Claude がしたことの一覧です（`gh` は issue の閲覧や管理をする GitHub のコマンドラインツールです）。最初に拒否すべきだった手順をタップしましょう。"
       },
       "explain": {
         "en": "Your task was a summary, which only needs reading. The comment in the tool output spoke to the AI and claimed approval; the first step that acted on it was editing `package.json`, a file the summary never needed to touch.",
@@ -548,8 +548,8 @@
       ],
       "answer": 3,
       "early": {
-        "en": "That was one of the README's real setup steps, exactly what you asked for. The planted comment was in Claude's context, but it hadn't acted on it yet.",
-        "ja": "それは README の本来のセットアップ手順で、まさにあなたが頼んだことです。仕込まれたコメントは Claude のコンテキストに入っていましたが、まだそれに従ってはいませんでした。"
+        "en": "Reading the README and running its setup steps was exactly what you asked for. The planted comment was in Claude's context, but it hadn't acted on it yet.",
+        "ja": "README を読むことも、そのセットアップ手順を実行することも、まさにあなたが頼んだことです。仕込まれたコメントは Claude のコンテキストに入っていましたが、まだそれに従ってはいませんでした。"
       },
       "late": {
         "en": "The CLAUDE.md edit was the step to stop: it's the one that would make the planted rule outlast this session.",
