@@ -1,0 +1,14 @@
+.term { border: 1px solid var(--ink-muted); border-radius: var(--radius-chip); padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; overflow-wrap: anywhere; }
+.termTitle { color: var(--code-lifetime); font-weight: 600; }
+.termBody { padding-left: 12px; display: flex; flex-direction: column; gap: 2px; }
+.termTarget { color: #fff; font-weight: 600; }
+.termReason { color: var(--code-html); }
+.termOpts { list-style: none; margin: 0; padding: 0 0 0 4px; display: flex; flex-direction: column; gap: 2px; white-space: pre-wrap; }
+.termOpt { overflow-wrap: anywhere; }
+
+.card { background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: var(--radius-hero); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; font-family: var(--font-body); }
+.cardTool { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); background: var(--primary-soft); padding: 4px 10px; border-radius: var(--radius-pill); }
+.cardTarget { font-family: var(--font-code); font-size: 14px; background: var(--surface-muted); padding: 8px 10px; border-radius: 8px; overflow-wrap: anywhere; }
+.cardReason { font-size: 15px; line-height: 1.5; }
+.cardOpts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cardOpt { font-size: 13px; font-weight: 700; color: var(--ink-muted); border: 1px solid var(--line-strong); border-radius: var(--radius-chip); padding: 6px 10px; overflow-wrap: anywhere; }

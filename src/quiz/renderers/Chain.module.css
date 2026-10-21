@@ -1,0 +1,18 @@
+.root { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.task { margin: 0; font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+.cols { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.scene { flex: 1.1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.steps { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.stepsTitle { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.toggle { align-self: flex-start; min-height: var(--touch); padding: 0 14px; font: inherit; font-weight: 700; font-size: 14px; color: var(--primary); background: transparent; border: 2px dashed var(--code-property); border-radius: var(--radius-chip); cursor: pointer; }
+.toggle[aria-pressed='true'] { background: var(--primary-soft); }
+.step { display: flex; flex-direction: column; gap: 2px; min-height: 56px; padding: 10px 14px; text-align: left; font: inherit; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 14px; cursor: pointer; }
+.step[aria-pressed='true'] { background: var(--primary-soft); border-color: var(--primary); }
+.step:disabled { cursor: default; }
+.right, .right[aria-pressed='true'] { background: var(--correct-bg); border-color: var(--correct); }
+.wrong, .wrong[aria-pressed='true'] { background: var(--wrong-bg); border-color: var(--wrong); }
+.mono { font-family: var(--font-code); font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.why { font-size: 13px; color: var(--ink-muted); overflow-wrap: anywhere; }
+.mark { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; }
+.right .mark { color: var(--correct-edge); }
+.wrong .mark { color: var(--wrong-edge); }

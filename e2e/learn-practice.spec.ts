@@ -1,0 +1,49 @@
+import { expect, test } from '@playwright/test';
+import { STORAGE_KEY } from '../src/storage/progress';
+import { UI } from '../src/i18n/ui';
+import { answerItem, bodyOf, card, openUnit, READY } from './helpers';
+
+const unit = READY[0]!; // unit 1: computer
+const ui = UI.en;
+
+test('learn unit 1, practice it with one miss, finish, and keep the XP', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate((k) => localStorage.removeItem(k), STORAGE_KEY);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+
+  await openUnit(page, unit, 'en', 'learn');
+  const { cards, items } = bodyOf(unit.key);
+  for (let i = 0; i < cards.length - 1; i++) {
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(cards[i]!.title.en);
+    await page.getByRole('button', { name: ui.next, exact: true }).click();
+  }
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(cards[cards.length - 1]!.title.en);
+  await page.getByRole('button', { name: ui.practiceThis, exact: true }).click();
+
+  await expect(page.getByText(ui.heartsLeft(5))).toBeAttached();
+  // Item 1 (predict): right first try.
+  await answerItem(page, items[0]!, 'en');
+  // Item 2 (pairs) completes itself, no hearts at stake.
+  await answerItem(page, items[1]!, 'en');
+  await expect(page.getByText(ui.heartsLeft(5))).toBeAttached();
+  // Item 3 (predict): wrong answer costs a heart and is re-queued.
+  await answerItem(page, items[2]!, 'en', false);
+  await expect(page.getByText(ui.heartsLeft(4))).toBeAttached();
+
+  // Everything else right, then the re-queued item 3.
+  for (const it of items.slice(3)) await answerItem(page, it, 'en');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(items[2]!.prompt.en);
+  await answerItem(page, items[2]!, 'en');
+
+  await expect(page.getByRole('heading', { name: ui.doneTitle })).toBeVisible();
+  await page.getByRole('button', { name: ui.continue, exact: true }).click();
+
+  await expect(card(page, unit, 'en').getByText(ui.done, { exact: true })).toBeVisible();
+  const xp = await page.locator('header').getByText(/ XP$/).first().innerText();
+  expect(xp).not.toBe('0 XP');
+
+  await page.reload();
+  await expect(page.locator('header').getByText(xp, { exact: true }).first()).toBeVisible();
+  await expect(card(page, unit, 'en').getByText(ui.done, { exact: true })).toBeVisible();
+});
