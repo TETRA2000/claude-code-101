@@ -23,3 +23,14 @@ describe('content', () => {
     ]);
   });
 });
+
+describe('unit 1: computer', () => {
+  it('is ready, practices predict/decode/pairs only, and demos the terminal', () => {
+    expect(content.unitByKey('computer')?.status).toBe('ready');
+    const body = content.bodyOf('computer');
+    expect(body).toBeDefined();
+    const types = new Set(body?.items.map((it) => it.type));
+    expect([...types].every((ty) => ['predict', 'decode', 'pairs'].includes(ty))).toBe(true);
+    expect(body?.cards.some((c) => c.demo?.kind === 'terminal')).toBe(true);
+  });
+});

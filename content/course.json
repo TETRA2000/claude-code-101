@@ -1,13 +1,15 @@
 [
   {
     "key": "computer",
-    "status": "soon",
+    "status": "ready",
     "title": { "en": "Your computer, from the inside", "ja": "パソコンの中身を知ろう" },
     "blurb": {
       "en": "The terminal, files and paths, hidden dot-files, where secrets live, and what rm really does.",
       "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、そして rm が本当にすること。"
     },
-    "chips": ["predict", "decode", "pairs"]
+    "chips": ["predict", "decode", "pairs"],
+    "lastChecked": "2026-10-22",
+    "sources": ["https://code.claude.com/docs"]
   },
   {
     "key": "agent",
