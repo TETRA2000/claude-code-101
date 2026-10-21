@@ -85,7 +85,7 @@
             "cmd": "ls -a ~",
             "output": [
               {
-                "text": ".  ..  .Trash  .aws  .config  .npmrc  .ssh  .zshrc  Desktop  Documents  Downloads  portfolio",
+                "text": ".  ..  .Trash  .aws  .config  .npmrc  .ssh  .zshrc  Desktop  Documents  Downloads  Library  portfolio",
                 "note": {
                   "en": "~ is your home folder. Its hidden folders hold your keys and logins",
                   "ja": "~ はホームフォルダ。隠しフォルダに鍵やログイン情報がある"
@@ -138,8 +138,8 @@
           "ja": "ここでいう秘密情報とは、他人があなたになりすませてしまうもの全般のことです。パスワード、APIキー（プログラムがあなたのアカウントでサービスを使うための長い文字列）、ログイントークン（すでにログイン済みであることの証明）などがあります。"
         },
         {
-          "en": "Keys and logins: `.env` in a project (API keys). `~/.ssh` (keys to your servers and GitHub). `~/.aws` (cloud logins that can spend money).",
-          "ja": "鍵とログイン情報：プロジェクトの `.env`（APIキー）。`~/.ssh`（サーバーや GitHub に入るための鍵）。`~/.aws`（お金を使えてしまうクラウドのログイン情報）。"
+          "en": "Keys and logins: `.env` in a project (API keys). `~/.ssh` (SSH keys, which unlock your servers and GitHub; SSH is the secure way to log in to other computers). `~/.aws` (cloud logins that can spend money).",
+          "ja": "鍵とログイン情報：プロジェクトの `.env`（APIキー）。`~/.ssh`（SSH の鍵。サーバーや GitHub に入るためのもの。SSH は、ほかのコンピューターに安全にログインするための仕組みです）。`~/.aws`（お金を使えてしまうクラウドのログイン情報）。"
         },
         {
           "en": "Settings that hide tokens: `~/.zshrc` (terminal settings, where people often paste tokens). `~/.npmrc` and `~/.config` (saved logins for developer tools). `~/Library/Application Support/Google/Chrome` (your browser's cookies and logged-in sessions).",
@@ -218,8 +218,8 @@
               {
                 "text": "/bin/zsh",
                 "note": {
-                  "en": "The shell your terminal runs",
-                  "ja": "ターミナルで動いているシェル"
+                  "en": "Your shell: the program that reads the commands you type",
+                  "ja": "シェル：入力したコマンドを読み取って実行するプログラム"
                 }
               }
             ]
@@ -236,10 +236,10 @@
                 "secret": true
               },
               {
-                "text": "NOTION_TOKEN=ntn_FAKE_8f3c1d...",
+                "text": "NPM_TOKEN=npm_FAKE_5b71ac...",
                 "note": {
-                  "en": "Your Notion key",
-                  "ja": "あなたの Notion のキー"
+                  "en": "Your npm key, also exported in ~/.zshrc",
+                  "ja": "これも ~/.zshrc で設定した npm のキー"
                 },
                 "secret": true
               }
@@ -468,8 +468,8 @@
       ],
       "order": ["path", "rm", "rf"],
       "explain": {
-        "en": "It deletes `~/projects/old` and everything in it, with no question and no undo. Read the path character by character: `rm -rf ~/projects old`, with one extra space, would delete all of `~/projects` plus a folder called old.",
-        "ja": "`~/projects/old` とその中身をすべて、確認も取り消しもなしで削除します。パスは1文字ずつ読みましょう。空白が1つ入っただけの `rm -rf ~/projects old` は、`~/projects` 全体と old という別のフォルダを消してしまいます。"
+        "en": "It deletes `~/projects/old` and everything in it, with no question and no undo. Read the path character by character: `rm -rf ~/projects old`, with a space where the slash was, would delete all of `~/projects`, plus any folder called old in the folder you are standing in.",
+        "ja": "`~/projects/old` とその中身をすべて、確認も取り消しもなしで削除します。パスは1文字ずつ読みましょう。スラッシュが空白に変わっただけの `rm -rf ~/projects old` は、`~/projects` 全体に加えて、今いるフォルダにある old というフォルダまで消してしまいます。"
       }
     },
     {
@@ -599,7 +599,7 @@
         {
           "text": {
             "en": "Your 40 lines, plus \"buy milk\" at the end",
-            "ja": "40行のメモの末尾に 「buy milk」 が追加されている"
+            "ja": "40行のメモの末尾に「buy milk」が追加されている"
           },
           "feedback": {
             "en": "That's what `>>` does. A single `>` replaces the whole file.",
@@ -609,7 +609,7 @@
         {
           "text": {
             "en": "Only \"buy milk\". The 40 lines are gone",
-            "ja": "「buy milk」 だけ。40行のメモは消えている"
+            "ja": "「buy milk」だけ。40行のメモは消えている"
           },
           "feedback": {
             "en": "Right. `>` empties the file first, then writes the new text.",
@@ -629,7 +629,7 @@
         {
           "text": {
             "en": "Only \"buy milk\", but the old version is in the Trash",
-            "ja": "「buy milk」 だけだが、古い中身はゴミ箱に残っている"
+            "ja": "「buy milk」だけだが、古い中身はゴミ箱に残っている"
           },
           "feedback": {
             "en": "The terminal has no Trash. The old contents aren't saved anywhere.",
