@@ -46,6 +46,8 @@ export interface UiStrings {
   language: string;
   moveUp: string;
   moveDown: string;
+  pairMatched: string;
+  pairNoMatch: string;
   feedback: string;
   perfectRun: string;
   retriedNote: string;
@@ -101,6 +103,8 @@ const en: UiStrings = {
   language: 'Language',
   moveUp: 'Move up',
   moveDown: 'Move down',
+  pairMatched: 'matched',
+  pairNoMatch: 'not a match',
   feedback: 'Feedback',
   perfectRun: 'Perfect run: every answer right on the first try.',
   retriedNote: 'Missed questions came back until you got them. That is the point.',
@@ -153,6 +157,8 @@ const ja: UiStrings = {
   language: '言語',
   moveUp: '上へ移動',
   moveDown: '下へ移動',
+  pairMatched: '一致',
+  pairNoMatch: '一致しません',
   feedback: 'フィードバック',
   perfectRun: 'パーフェクト！すべて一回で正解しました。',
   retriedNote: '間違えた問題は、正解するまで戻ってきます。それが狙いです。',
