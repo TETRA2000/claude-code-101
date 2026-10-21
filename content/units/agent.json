@@ -37,12 +37,12 @@
           "ja": "Claude があなたのパソコンで何かをするときは、必ずツールを通します。ツールにはそれぞれ名前があり、Claude Code の画面に表示されます。そしてツールごとに、できることの種類が違います。"
         },
         {
-          "en": "Files: `Read` opens a file, `Edit` changes part of one, `Write` creates a file or replaces a whole one. Commands: `Bash` runs a shell command (the shell is the program that reads typed commands). Web: `WebFetch` gets a web page (a separate model call summarizes it for Claude), and `WebSearch` searches the web.",
-          "ja": "ファイル：`Read` はファイルを開き、`Edit` はファイルの一部を書き換え、`Write` はファイルを新しく作るか丸ごと置き換えます。コマンド：`Bash` はシェルのコマンドを実行します（シェルとは、入力されたコマンドを読み取って動かすプログラムです）。Web：`WebFetch` は Web ページを取ってきます（別のモデル呼び出しがページを要約して Claude に渡します）。`WebSearch` は Web を検索します。"
+          "en": "Files: `Read` opens a file, `Edit` changes part of one, `Write` creates a file or replaces a whole one. Commands: `Bash` runs a shell command (the shell is the program that reads typed commands). Web: `WebFetch` gets a web page (a second AI pass summarizes it for Claude), and `WebSearch` searches the web.",
+          "ja": "ファイル：`Read` はファイルを開き、`Edit` はファイルの一部を書き換え、`Write` はファイルを新しく作るか丸ごと置き換えます。コマンド：`Bash` はシェルのコマンドを実行します（シェルとは、入力されたコマンドを読み取って動かすプログラムです）。Web：`WebFetch` は Web ページを取ってきます（もう一度 AI が別に動いてページを要約し、Claude に渡します）。`WebSearch` は Web を検索します。"
         },
         {
-          "en": "There are helpers too, like `Agent`, which starts a helper agent for part of the job. And MCP servers can plug in more tools, with names like `mcp__notion__notion-fetch`.",
-          "ja": "補助的なツールもあります。たとえば `Agent` は、仕事の一部を任せる補助のエージェントを起動します。さらに MCP サーバーをつなぐと、`mcp__notion__notion-fetch` のような名前のツールが追加されます。"
+          "en": "There are helpers too, like `Agent`, which starts a helper agent for part of the job. And MCP servers (add-ons that connect outside services like Notion or Figma; more on them soon) can plug in more tools, with names like `mcp__notion__notion-fetch`.",
+          "ja": "補助的なツールもあります。たとえば `Agent` は、仕事の一部を任せる補助のエージェントを起動します。さらに MCP サーバー（Notion や Figma などの外部サービスをつなぐ追加機能。詳しくはこのあとすぐ）をつなぐと、`mcp__notion__notion-fetch` のような名前のツールが追加されます。"
         }
       ],
       "key": {
@@ -83,8 +83,8 @@
       },
       "body": [
         {
-          "en": "Claude doesn't watch your screen. It works from one long stack of text called the context window: its setup, your messages, its own notes, and the result of every tool it runs.",
-          "ja": "Claude はあなたの画面を見ているわけではありません。Claude が手がかりにしているのは、コンテキストウィンドウと呼ばれる1つの長いテキストの山です。そこには、Claude の初期設定、あなたのメッセージ、Claude 自身のメモ、そして実行したすべてのツールの結果が入っています。"
+          "en": "Claude doesn't watch your screen. It works from one long stack of text called the context window: its setup, your messages, its own replies, and the result of every tool it runs.",
+          "ja": "Claude はあなたの画面を見ているわけではありません。Claude が手がかりにしているのは、コンテキストウィンドウと呼ばれる1つの長いテキストの山です。そこには、Claude の初期設定、あなたのメッセージ、Claude 自身の返答、そして実行したすべてのツールの結果が入っています。"
         },
         {
           "en": "When Claude reads a notes page or a web page, that text lands in the same stack as your words. Nothing stops a stranger's sentence from reading like an instruction.",
@@ -219,7 +219,7 @@
       "steps": [
         { "id": "ask", "text": { "en": "You ask for something", "ja": "あなたが頼みごとをする" } },
         { "id": "pick", "text": { "en": "Claude picks a tool for the next step", "ja": "Claude が次の一歩に使うツールを選ぶ" } },
-        { "id": "run", "text": { "en": "The tool runs on your computer", "ja": "ツールがあなたのパソコンで動く" } },
+        { "id": "run", "text": { "en": "Claude Code runs the tool", "ja": "Claude Code がそのツールを実行する" } },
         { "id": "result", "text": { "en": "The result is added to Claude's context", "ja": "結果が Claude のコンテキストに追加される" } },
         { "id": "decide", "text": { "en": "Claude reads it and decides: another step, or done", "ja": "Claude がそれを読み、次の一歩に進むか、終えるかを決める" } }
       ],
@@ -283,8 +283,8 @@
       "opts": [
         {
           "text": {
-            "en": "Its setup text, CLAUDE.md, your message, and what Read returned for src/about.html",
-            "ja": "初期設定の文章、CLAUDE.md、あなたのメッセージ、そして Read が返した src/about.html の中身"
+            "en": "Its setup text, any CLAUDE.md, your message, and what Read returned for src/about.html",
+            "ja": "初期設定の文章、CLAUDE.md（あれば）、あなたのメッセージ、そして Read が返した src/about.html の中身"
           },
           "feedback": {
             "en": "Right. Claude sees only what is in its context: what was loaded at the start, what you said, and what its tools returned.",
@@ -383,8 +383,8 @@
       ],
       "start": ["edit", "summary", "ask", "check", "fetch"],
       "explain": {
-        "en": "Claude can only use the hours once the page's summary is in its context, so the fetch comes before the edit. The page's words now shape the edit, which is why a web page is outside text, not just data. And the last step is yours: check the file, not only Claude's message.",
-        "ja": "ページの要約がコンテキストに入って初めて Claude は営業時間を使えるので、取得は編集より先です。ページの言葉が編集の中身を左右するので、Web ページは単なるデータではなく「外部の文章」なのです。そして最後の一歩はあなたの番です。Claude のメッセージだけでなく、ファイルを確かめましょう。"
+        "en": "Claude can only use the hours once the page's summary is in its context, so the fetch comes before the edit. The page's words now shape the edit: a web page reaches Claude as text someone else wrote, not as neutral data. And the last step is yours: check the file, not only Claude's message.",
+        "ja": "ページの要約がコンテキストに入って初めて Claude は営業時間を使えるので、取得は編集より先です。ページの言葉がそのまま編集の中身を左右します。Web ページは、ただのデータではなく、誰かが書いた外部の文章として Claude に届くのです。そして最後の一歩はあなたの番です。Claude のメッセージだけでなく、ファイルを確かめましょう。"
       }
     },
     {
@@ -416,8 +416,8 @@
             "ja": "その要約が、あなたのメッセージと同じコンテキストウィンドウに入る"
           },
           "feedback": {
-            "en": "Right. `WebFetch` has a separate model call summarize the page, and that summary joins your messages in one stack of text. A stranger's words now sit next to yours.",
-            "ja": "正解です。`WebFetch` では別のモデル呼び出しがページを要約し、その要約があなたのメッセージと同じテキストの山に加わります。見知らぬ人の言葉が、あなたの言葉のすぐ隣に並ぶのです。"
+            "en": "Right. With `WebFetch`, a second AI pass summarizes the page, and that summary joins your messages in one stack of text. A stranger's words now sit next to yours.",
+            "ja": "正解です。`WebFetch` では、もう一度 AI が別に動いてページを要約し、その要約があなたのメッセージと同じテキストの山に加わります。見知らぬ人の言葉が、あなたの言葉のすぐ隣に並ぶのです。"
           }
         },
         {
@@ -476,8 +476,8 @@
             "ja": "昨日の会話の全文"
           },
           "feedback": {
-            "en": "A brand-new session doesn't carry the old chat. What carries over is what was written down: CLAUDE.md and auto memory.",
-            "ja": "まったく新しいセッションには、以前の会話は引き継がれません。引き継がれるのは書き残されたもの、つまり CLAUDE.md と自動メモリです。"
+            "en": "Don't count on the old chat being there. What is loaded at the start of every conversation is what was written down: CLAUDE.md and auto memory.",
+            "ja": "以前の会話が残っていると期待しないでください。会話を始めるたびに読み込まれるのは、書き残されたもの、つまり CLAUDE.md と自動メモリです。"
           }
         },
         {
@@ -492,12 +492,12 @@
         },
         {
           "text": {
-            "en": "Today's message plus CLAUDE.md, \"Use npm, not yarn\" included",
-            "ja": "今日のメッセージと CLAUDE.md（「yarn ではなく npm を使うこと」も含む）"
+            "en": "Today's message plus CLAUDE.md (and auto memory), \"Use npm, not yarn\" included",
+            "ja": "今日のメッセージと CLAUDE.md（と自動メモリ）。「yarn ではなく npm を使うこと」も含む"
           },
           "feedback": {
-            "en": "Right. CLAUDE.md (and auto memory) loads at the start of every session, so yesterday's line is in front of Claude today.",
-            "ja": "正解です。CLAUDE.md（と自動メモリ）はセッションを始めるたびに読み込まれるので、昨日書いた1行は今日も Claude の目の前にあります。"
+            "en": "Right. CLAUDE.md (and auto memory) loads at the start of every conversation, so yesterday's line is in front of Claude today.",
+            "ja": "正解です。CLAUDE.md（と自動メモリ）は会話を始めるたびに読み込まれるので、昨日書いた1行は今日も Claude の目の前にあります。"
           }
         }
       ],
@@ -516,7 +516,7 @@
       },
       "situation": {
         "en": "Claude is working in `~/portfolio`. It runs this with `Bash`. The file holds your cloud login (a FAKE one, in this lesson).",
-        "ja": "Claude は `~/portfolio` で作業しています。そして `Bash` でこのコマンドを実行します。このファイルにはあなたのクラウドのログイン情報が入っています（このレッスンでは偽物の FAKE です）。"
+        "ja": "Claude は `~/portfolio` で作業しています。そして `Bash` でこのコマンドを実行します。このファイルにはあなたのクラウドのログイン情報が入っています（このレッスンでは偽物（FAKE）です）。"
       },
       "code": ["cat ~/.aws/credentials"],
       "opts": [
@@ -563,8 +563,8 @@
       ],
       "answer": 1,
       "explain": {
-        "en": "`~` is your home folder, outside the project. A command run as you can read your keys there, and its output lands in Claude's context. Read the path before you approve.",
-        "ja": "`~` はホームフォルダで、プロジェクトの外です。あなたとして動くコマンドはそこにあるキーを読めて、その出力は Claude のコンテキストに入ります。承認する前にパスを読みましょう。"
+        "en": "`~` is your home folder, outside the project. A command run as you can read your keys there, and its output lands in Claude's context. Read the path in any command Claude runs or asks to run.",
+        "ja": "`~` はホームフォルダで、プロジェクトの外です。あなたとして動くコマンドはそこにあるキーを読めて、その出力は Claude のコンテキストに入ります。Claude が実行するコマンドも、実行の許可を求めてくるコマンドも、パスを読みましょう。"
       }
     },
     {
