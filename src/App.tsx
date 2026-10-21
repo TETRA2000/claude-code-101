@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, type Dispatch } from 'react';
 import { content as defaultContent, type Content } from './content';
 import { LangProvider, useLang } from './i18n/LangContext';
 import type { Lang } from './i18n/lang';
 import { Quiz } from './quiz/Quiz';
 import { Home } from './screens/Home';
-import { appReducer, initState } from './state/app';
+import { Learn } from './screens/Learn';
+import { appReducer, initState, type Action } from './state/app';
 import { localProgressStore, type ProgressStore } from './storage/progress';
 
 interface Props {
@@ -44,9 +45,16 @@ export function App({ store = defaultStore, content = defaultContent, languages 
           onLang={(lang: Lang) => dispatch({ type: 'setLang', lang })}
         />
       )}
-      {/* The learn screen is added in Task 13. */}
+      {state.screen.name === 'learn' && <LearnScreen content={content} screen={state.screen} dispatch={dispatch} />}
     </LangProvider>
   );
+}
+
+function LearnScreen({ content, screen, dispatch }: { content: Content; screen: { unitKey: string; card: number }; dispatch: Dispatch<Action> }) {
+  const unit = content.unitByKey(screen.unitKey);
+  const cards = content.bodyOf(screen.unitKey)?.cards ?? [];
+  if (!unit) return null;
+  return <Learn unit={unit} cards={cards} card={screen.card} dispatch={dispatch} />;
 }
 
 function Title() {

@@ -60,10 +60,27 @@ export interface UiStrings {
   perfectRun: string;
   retriedNote: string;
   backToHome: string;
+  keyIdea: string;
+  colorByAuthor: string;
+  clear: string;
+  tryCommand: string;
+  legendTitle: string;
+  whoSetup: string;
+  whoYou: string;
+  whoClaude: string;
+  whoOutside: string;
+  onlyLastRuns: string;
+  inTerminal: string;
+  inDesktop: string;
+  partTool: string;
+  partTarget: string;
+  partReason: string;
+  partOptions: string;
+  notesTitle: string;
 }
 
 /** Keys whose Japanese value is intentionally identical to English. */
-export const SAME_IN_BOTH: ReadonlySet<string> = new Set(['appTitle', 'xp']);
+export const SAME_IN_BOTH: ReadonlySet<string> = new Set(['appTitle', 'xp', 'whoClaude']);
 
 const en: UiStrings = {
   appTitle: 'Claude Code 101',
@@ -125,6 +142,23 @@ const en: UiStrings = {
   perfectRun: 'Perfect run: every answer right on the first try.',
   retriedNote: 'Missed questions came back until you got them. That is the point.',
   backToHome: 'Back to home',
+  keyIdea: 'Key idea',
+  colorByAuthor: 'Color by who wrote it',
+  clear: 'Clear',
+  tryCommand: 'Tap a command to run it. Nothing here touches a real computer.',
+  legendTitle: 'Who wrote it',
+  whoSetup: 'Set up by the app',
+  whoYou: 'You',
+  whoClaude: 'Claude',
+  whoOutside: 'Outside content',
+  onlyLastRuns: 'Showing the last 4 runs',
+  inTerminal: 'In the terminal',
+  inDesktop: 'In the desktop app',
+  partTool: 'Tool',
+  partTarget: 'Target',
+  partReason: 'Reason',
+  partOptions: 'Options',
+  notesTitle: 'What each part tells you',
 };
 
 const ja: UiStrings = {
@@ -187,6 +221,23 @@ const ja: UiStrings = {
   perfectRun: 'パーフェクト！すべて一回で正解しました。',
   retriedNote: '間違えた問題は、正解するまで戻ってきます。それが狙いです。',
   backToHome: 'ホームへ戻る',
+  keyIdea: 'ポイント',
+  colorByAuthor: '書いた人で色分け',
+  clear: 'クリア',
+  tryCommand: 'コマンドをタップして実行してみましょう。ここでは本物のコンピューターには何も起きません。',
+  legendTitle: '誰が書いたか',
+  whoSetup: 'アプリが設定',
+  whoYou: 'あなた',
+  whoClaude: 'Claude',
+  whoOutside: '外部のコンテンツ',
+  onlyLastRuns: '直近4回の実行を表示',
+  inTerminal: 'ターミナルの場合',
+  inDesktop: 'デスクトップアプリの場合',
+  partTool: 'ツール',
+  partTarget: '対象',
+  partReason: '理由',
+  partOptions: '選択肢',
+  notesTitle: '各部分の意味',
 };
 
 export const UI: Record<Lang, UiStrings> = { en, ja };

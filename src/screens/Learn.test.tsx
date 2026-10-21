@@ -1,0 +1,50 @@
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
+import { LangProvider } from '../i18n/LangContext';
+import { fixtureParts } from '../test/fixtures';
+import { Learn } from './Learn';
+
+const unit = fixtureParts.units.find((u) => u.key === 'demo')!;
+const cards = fixtureParts.bodies.demo!.cards;
+
+function setup(card: number) {
+  const dispatch = vi.fn();
+  render(
+    <LangProvider lang="en">
+      <Learn unit={unit} cards={cards} card={card} dispatch={dispatch} />
+    </LangProvider>,
+  );
+  return dispatch;
+}
+
+describe('Learn', () => {
+  it('first card: no Back, shows key idea, Next goes to card 1', async () => {
+    const dispatch = setup(0);
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
+    expect(screen.getByText('Key idea')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33');
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 1 });
+  });
+  it('Back goes to previous card', async () => {
+    const dispatch = setup(1);
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 0 });
+  });
+  it('last card finishes with practice or done', async () => {
+    const dispatch = setup(2);
+    expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: 'Practice this' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'finishLearn', practice: true });
+    await userEvent.click(screen.getByRole('button', { name: 'Done' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'finishLearn', practice: false });
+  });
+  it('close goes home and language switch dispatches', async () => {
+    const dispatch = setup(0);
+    await userEvent.click(screen.getByRole('button', { name: 'Quit' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'goHome' });
+    await userEvent.click(screen.getByRole('button', { name: '日本語' }));
+    expect(dispatch).toHaveBeenCalledWith({ type: 'setLang', lang: 'ja' });
+  });
+});
