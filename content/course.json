@@ -53,13 +53,23 @@
   },
   {
     "key": "injection",
-    "status": "soon",
+    "status": "ready",
     "title": { "en": "Prompt injection", "ja": "プロンプトインジェクション" },
     "blurb": {
       "en": "Where injections hide, invisible text, warning signs, persistence via CLAUDE.md, and what to do.",
       "ja": "インジェクションの隠れ場所、見えない文字、警告のサイン、CLAUDE.md に居座る手口、そして取るべき行動。"
     },
-    "chips": ["hidden", "chain", "approve"]
+    "chips": ["hidden", "chain", "approve"],
+    "lastChecked": "2026-10-22",
+    "sources": [
+      "https://code.claude.com/docs/en/permissions",
+      "https://code.claude.com/docs/en/permission-modes",
+      "https://code.claude.com/docs/en/security",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/how-claude-code-works",
+      "https://code.claude.com/docs/en/tools-reference",
+      "https://code.claude.com/docs/en/mcp"
+    ]
   },
   {
     "key": "browser",
