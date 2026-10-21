@@ -16,8 +16,8 @@
           "ja": "ほとんどのプロンプトには、同じ3つが表示されます。Claude が使いたいツール、対象（何に対して動くのか。コマンド、ファイルのパス、Webアドレスなど）、そして Claude が書いた理由です。下は同じ依頼を、ターミナルとデスクトップアプリの Code タブで並べたものです。"
         },
         {
-          "en": "The terminal drawing follows Claude Code's real prompt. The desktop card is a simplified drawing, and the real app's wording may differ. Read both the same way: tool, then target, then reason.",
-          "ja": "ターミナル側は Claude Code の実際のプロンプトに沿って描いています。デスクトップ側のカードは簡略化した絵で、実際のアプリとは文言が違うことがあります。どちらも読み方は同じです。ツール、対象、理由の順に読みましょう。"
+          "en": "The terminal drawing follows Claude Code's real prompt. The desktop card is a simplified drawing: the real app's wording, and even which options it offers, may differ. Read both the same way: tool, then target, then reason.",
+          "ja": "ターミナル側は Claude Code の実際のプロンプトに沿って描いています。デスクトップ側のカードは簡略化した絵で、実際のアプリとは文言だけでなく、どの選択肢が出るかも違うことがあります。どちらも読み方は同じです。ツール、対象、理由の順に読みましょう。"
         }
       ],
       "key": {
@@ -323,8 +323,8 @@
         },
         "always": {
           "feedback": {
-            "en": "Also fine. The saved rule covers just `npm test` in this project, so test runs stop asking while everything else still does. That's the healthy way to cut down routine prompts.",
-            "ja": "これも問題ありません。保存されるルールはこのプロジェクトの `npm test` だけなので、テストの実行は確認されなくなり、それ以外は引き続き確認されます。いつもの確認を減らす、健全なやり方です。"
+            "en": "Also fine. `npm test` is narrow and routine. If you tell it not to ask again, similar test runs may stop asking while other actions still ask. Saving that only for narrow, routine actions like this is the healthy way to cut down prompts.",
+            "ja": "これも問題ありません。`npm test` は範囲が狭く、いつもの作業です。「今後は確認しない」と伝えると、同じようなテストの実行は確認されなくなるかもしれませんが、ほかの操作は引き続き確認されます。こうした範囲の狭い、いつもの操作にだけ使うのが、確認を減らす健全なやり方です。"
           }
         },
         "no": {
@@ -498,8 +498,8 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "Judge the request and the saved rule separately. The command is harmless; the rule would cover every `curl`, the same tool that can send files. Plain Yes keeps the next `curl` in front of you.",
-        "ja": "依頼そのものと、保存されるルールは、分けて判断しましょう。コマンドは無害ですが、ルールのほうはすべての `curl` を対象にします。`curl` はファイルを送ることもできるツールです。ただの「はい」なら、次の `curl` もあなたの目を通ります。"
+        "en": "Judge the request and the \"don't ask again\" choice separately. The command is harmless, but that option names every `curl` (`curl *`), the same tool that can send files. Plain Yes keeps the next `curl` in front of you.",
+        "ja": "依頼そのものと、「今後は確認しない」という選択は、分けて判断しましょう。コマンドは無害ですが、その選択肢はすべての `curl`（`curl *`）を対象にしています。`curl` はファイルを送ることもできるツールです。ただの「はい」なら、次の `curl` もあなたの目を通ります。"
       },
       "task": {
         "en": "Visitors say my portfolio site is down. Is it?",
@@ -531,8 +531,8 @@
         },
         "always": {
           "feedback": {
-            "en": "The check itself is safe, but the rule isn't narrow. `curl *` would let every future `curl` in this project run without asking, including one like `curl -d @.env` that uploads a file. Approve this one with plain Yes.",
-            "ja": "確認そのものは安全ですが、ルールの範囲が広すぎます。`curl *` を保存すると、このプロジェクトでは今後どんな `curl` も確認なしで動きます。`curl -d @.env` のようにファイルをアップロードするものも含めてです。今回はただの「はい」で許可しましょう。"
+            "en": "The check itself is safe, but the option isn't narrow. Telling it not to ask again for `curl *` could let future `curl` commands run without asking, including one like `curl -d @.env` that uploads a file. Approve this one with plain Yes.",
+            "ja": "確認そのものは安全ですが、選択肢の範囲が広すぎます。`curl *` について「今後は確認しない」と伝えると、この先の `curl` が確認なしで動いてしまうおそれがあります。`curl -d @.env` のようにファイルをアップロードするものも含めてです。今回はただの「はい」で許可しましょう。"
           }
         },
         "no": {
@@ -552,8 +552,8 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "Read the target: `~` is your home folder, outside the project, which is why Claude Code asks before reading it, and `.ssh/id_rsa` is a private key. A plausible reason (\"check it's set up\") doesn't make reading it necessary. The same goes if Claude asks to print it with a shell command like `cat ~/.ssh/id_rsa`.",
-        "ja": "対象を読みましょう。`~` はホームフォルダでプロジェクトの外です。だからこそ Claude Code は読む前に確認しています。そして `.ssh/id_rsa` は秘密鍵です。「設定を確認する」というもっともらしい理由があっても、中身を読む必要はありません。`cat ~/.ssh/id_rsa` のようなシェルのコマンドで表示しようとした場合も同じです。"
+        "en": "Read the target: `~` is your home folder, outside the project, which is why Claude Code asks before reading it, and `.ssh/id_rsa` is a private key. A plausible reason (\"check it's set up\") doesn't make reading it necessary. A shell command like `cat` can read the same file and may not ask at all, another reason to tell Claude plainly to stay away from your keys.",
+        "ja": "対象を読みましょう。`~` はホームフォルダでプロジェクトの外です。だからこそ Claude Code は読む前に確認しています。そして `.ssh/id_rsa` は秘密鍵です。「設定を確認する」というもっともらしい理由があっても、中身を読む必要はありません。`cat` のようなシェルのコマンドでも同じファイルを読めて、しかも確認が出ないこともあります。だからこそ、鍵には触れないよう Claude にはっきり伝えておきましょう。"
       },
       "task": {
         "en": "`git push` says \"Permission denied (publickey)\". Fix it so I can push to GitHub.",
@@ -593,8 +593,8 @@
             "ja": "開発者のSSH秘密鍵、AIとのチャットに丸ごと表示"
           },
           "feedback": {
-            "en": "Same problem: your private key's full text is now in Claude's context. And you saved approval for reading that folder, so the next time Claude wants to read your keys, it won't ask.",
-            "ja": "同じ問題です。秘密鍵の全文が Claude のコンテキストに入りました。しかもこのフォルダの読み取りを許可したので、次に Claude があなたの鍵を読もうとしても確認されません。"
+            "en": "Same problem: your private key's full text is now in Claude's context. And by telling it not to ask again for that folder, you may have given up the prompt that would stop the next read of your keys.",
+            "ja": "同じ問題です。秘密鍵の全文が Claude のコンテキストに入りました。しかもこのフォルダについて「今後は確認しない」と伝えたことで、次に鍵を読もうとしたときに止められるはずの確認を手放してしまったかもしれません。"
           }
         },
         "no": {
@@ -739,8 +739,8 @@
             "ja": "ビルド修正のついでに、何年分ものダウンロードが消滅"
           },
           "feedback": {
-            "en": "Same loss: your whole Downloads folder is gone, with no trash can to restore from. And the saved rule means future `rm -rf` commands in this project run without asking.",
-            "ja": "同じ損失です。ダウンロードフォルダがまるごと消え、ゴミ箱から戻すこともできません。しかも保存したルールのせいで、このプロジェクトでは今後の `rm -rf` も確認なしで実行されます。"
+            "en": "Same loss: your whole Downloads folder is gone, with no trash can to restore from. And telling it not to ask again for `rm -rf *` could let similar delete commands run without asking next time.",
+            "ja": "同じ損失です。ダウンロードフォルダがまるごと消え、ゴミ箱から戻すこともできません。しかも `rm -rf *` について「今後は確認しない」と伝えたので、次からは同じような削除コマンドが確認なしで実行されるおそれがあります。"
           }
         },
         "no": {

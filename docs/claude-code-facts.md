@@ -64,7 +64,8 @@ Checked: 2026-10-21
 | `bypassPermissions` | `⏵⏵ bypass permissions on` | **Bypass permissions** | Everything (containers/VMs only) |
 
 - The mode is named **Manual** in the CLI, `claude --help`, and the desktop app; `manual` is accepted as an alias of `default`. `claude --help` lists `--permission-mode` choices: `"acceptEdits", "auto", "bypassPermissions", "manual", "dontAsk", "plan"`.
-- Terminal: `Shift+Tab` cycles modes (from auto: Manual → accept edits → plan → …). Desktop: mode selector under the prompt box; a pick is remembered per folder (Plan applies to the current session only). Earlier desktop labels were "Ask permissions", "Auto accept edits", "Plan mode".
+- Terminal: `Shift+Tab` cycles modes (from auto: Manual → accept edits → plan → …). Desktop: mode selector under the prompt box; a pick is remembered per folder (Plan applies to the current session only).
+- UNVERIFIED: earlier desktop labels for these modes (e.g. "Ask permissions", "Auto accept edits", "Plan mode"); no current doc quotes them.
 - Built-in starting mode: auto for interactive terminal sessions (v2.1.283+); `claude -p` starts in Manual.
 - UNVERIFIED: the desktop app's built-in starting mode for a new local session (desktop docs say a picked mode is remembered per folder and `defaultMode` applies, but don't state the built-in default).
 - Auto mode, what decides: a separate classifier model (a second model, default Claude Sonnet 5; or a server-side review) checks actions before they run, instead of you. It blocks actions that escalate beyond your request, target unrecognized infrastructure, or appear driven by hostile content Claude read. Reads and file edits in the working directory skip the classifier; shell commands and network actions go to it. The classifier sees your messages, tool calls and CLAUDE.md, but tool results are stripped, so text in a file or web page can't address it directly.
@@ -107,7 +108,8 @@ Checked: 2026-10-21
 ## F7 Built-in tools, in plain words
 
 - File operations: read files (`Read`), make targeted edits (`Edit`), create or overwrite files (`Write`), edit notebooks (`NotebookEdit`).
-- Search: find files by pattern (`Glob`), search inside files (`Grep`). (On macOS/Linux these two are absent by default; Claude searches through shell commands instead.)
+- Search: find files by pattern (`Glob`), search inside files (`Grep`).
+- UNVERIFIED: that `Glob`/`Grep` are absent by default on macOS/Linux, with Claude searching through shell commands instead.
 - Execution: run shell commands as you (`Bash`; `PowerShell` on Windows), watch a command in the background (`Monitor`). "Any command you could run… Claude can too."
 - Web: fetch a page (`WebFetch`; a separate model call summarizes the page for Claude) and search the web (`WebSearch`).
 - Other: start a helper agent (`Agent`), ask you multiple-choice questions (`AskUserQuestion`), run a skill (`Skill`), task lists, plan mode, code intelligence (`LSP`).

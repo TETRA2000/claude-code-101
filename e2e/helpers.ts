@@ -1,10 +1,6 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
-import agent from '../content/units/agent.json' with { type: 'json' };
-import browser from '../content/units/browser.json' with { type: 'json' };
-import computer from '../content/units/computer.json' with { type: 'json' };
-import injection from '../content/units/injection.json' with { type: 'json' };
-import permissions from '../content/units/permissions.json' with { type: 'json' };
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
 import { UI } from '../src/i18n/ui';
 import type { Lang } from '../src/i18n/lang';
@@ -13,13 +9,13 @@ export const LANGS: readonly Lang[] = ['en', 'ja'];
 export const UNITS = course as UnitMeta[];
 export const READY = UNITS.filter((u) => u.status === 'ready');
 export const SOON = UNITS.filter((u) => u.status === 'soon');
-const BODIES: Record<string, UnitBody> = {
-  agent: agent as UnitBody,
-  browser: browser as UnitBody,
-  computer: computer as UnitBody,
-  injection: injection as UnitBody,
-  permissions: permissions as UnitBody,
-};
+// Every content/units/<key>.json, so a new unit needs no edit here.
+const UNITS_DIR = new URL('../content/units/', import.meta.url);
+const BODIES: Record<string, UnitBody> = Object.fromEntries(
+  readdirSync(UNITS_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => [f.slice(0, -'.json'.length), JSON.parse(readFileSync(new URL(f, UNITS_DIR), 'utf8')) as UnitBody]),
+);
 export const bodyOf = (key: string): UnitBody => {
   const b = BODIES[key];
   if (!b) throw new Error(`no body for ${key}`);

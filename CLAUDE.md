@@ -31,7 +31,8 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
 ## File map
 
 ```
-index.html  package.json  tsconfig.json  vite.config.ts  playwright.config.ts  .nvmrc  CLAUDE.md
+index.html  package.json  tsconfig.json  vite.config.ts  playwright.config.ts  .nvmrc  .gitignore  CLAUDE.md
+.github/workflows/ci.yml        CI: typecheck, unit tests, build, Playwright
 content/course.json             all 11 units: meta, status, chips, lastChecked, sources
 content/practice-types.json     chip/type names
 content/units/<key>.json        one per ready unit: { cards, items }
@@ -39,14 +40,15 @@ docs/claude-code-facts.md       sourced facts; every Claude Code claim in conten
 src/main.tsx  src/App.tsx       entry; screen switch, persistence, <html lang> sync
 src/styles/                     tokens.css, global.css
 src/i18n/                       lang.ts (Localized, detectLang), ui.ts (UI strings en+ja), LangContext.tsx
-src/content/                    types.ts, index.ts (loads units), validate.ts, hosts.ts (URL allowlist), tests
+src/content/                    types.ts, index.ts (loads units), validate.ts, hosts.ts (URL allowlist); tests: validate.test.ts, content.test.ts (validates the real content)
 src/state/                      rules.ts (hearts, XP, guard), app.ts (reducer)
 src/storage/progress.ts         localStorage progress, never throws
-src/quiz/                       session.ts (pure reducer), grade.ts, feedback.ts, useArmed.ts, Quiz.tsx, FeedbackSheet.tsx, QuizEnd.tsx
+src/quiz/                       types.ts (session/answer state), session.ts (pure reducer), grade.ts, feedback.ts, useArmed.ts, Quiz.tsx, FeedbackSheet.tsx, QuizEnd.tsx
 src/quiz/renderers/             one per item type: Approve, PermissionPrompt, Choice, PairBoard, OrderList, HiddenDoc, Chain, BrowserFrame, TerminalFrame, ItemBody
 src/screens/                    Home.tsx, Learn.tsx, demos/ (TerminalDemo, ContextDemo, AnatomyDemo)
 src/components/                 Button, ProgressBar, HeartCount, RichText, LangSwitch, icons
-e2e/                            Playwright specs + helpers.ts
+src/test/                       setup.ts (vitest setup), fixtures.ts (a demo unit with every card/item shape)
+e2e/                            Playwright specs + helpers.ts (reads every content/units/*.json)
 ```
 
 Each `.tsx` with styles has a sibling `.module.css`; tests sit next to their file as `*.test.ts(x)`.
@@ -57,4 +59,4 @@ Each `.tsx` with styles has a sibling `.module.css`; tests sit next to their fil
 - Every Claude Code claim (tool names, modes, prompts, settings) must match `docs/claude-code-facts.md`; add a sourced entry there first if a fact is missing.
 - Unit contents are discovered by a Vite glob at test time. After adding or renaming a unit file, clear `node_modules/.vitest-cache` (and any `.vitest-cache`) if tests do not see it.
 - Planted attack text (injection lessons: hidden instructions, fake "pre-approved" notes, poisoned CLAUDE.md lines) is inert teaching material. It may only ask for harmless, obviously fake actions on reserved hosts (`*.example`, `example.com|net|org`, `*.test`, `*.invalid`, `localhost`) with fake secrets containing `FAKE`. Never use real hosts outside the `src/content/hosts.ts` allowlist, real credentials, or text that would work as an attack against a real tool. There are no copy buttons anywhere, so nobody can copy it out.
-- No new E2E spec is needed per unit: `e2e/layout.spec.ts` walks every ready unit in both languages. Long commands and URLs must wrap (`overflow-wrap: anywhere`).
+- No E2E edit is needed per unit: `e2e/helpers.ts` reads every `content/units/*.json`, and `e2e/layout.spec.ts` walks every ready unit in both languages. Long commands and URLs must wrap (`overflow-wrap: anywhere`).

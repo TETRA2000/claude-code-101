@@ -926,7 +926,7 @@
         "ja": "アップロードの罠を止められた変更を、1つ選びましょう。"
       },
       "explain": {
-        "en": "Here the private data is a file on your computer, not a browser login, so a clean browser alone doesn't help. What works is closing the way out: no upload by Claude, or an upload you read and deny.",
+        "en": "Here the private data is a file on your computer, not a browser login, so a clean browser alone doesn't help. What works is closing the way out: no upload by Claude, or an upload request you read and deny.",
         "ja": "ここでの個人データはブラウザのログインではなく、パソコン上のファイルです。だから、まっさらなブラウザだけでは防げません。効くのは出口をふさぐこと。Claude にアップロードさせないか、アップロードの確認を読んで拒否するかです。"
       },
       "scenario": {
@@ -971,12 +971,12 @@
         },
         {
           "text": {
-            "en": "Use Manual mode and read the file path in every upload request",
-            "ja": "Manual モードにして、アップロードの確認ごとにファイルのパスを読む"
+            "en": "Never choose \"don't ask again\" for uploads, and read the file path in every upload request you see",
+            "ja": "アップロードには「今後は確認しない」を選ばず、表示されたアップロードの確認ではファイルのパスを必ず読む"
           },
           "feedback": {
-            "en": "Works. The terminal starts in auto mode, so switch to Manual first. Then the upload request showed ~/.ssh/id_rsa going to jobs.example, and reading it and pressing No closes the way out.",
-            "ja": "効きます。ターミナルは auto モードで始まるので、先に Manual に切り替えます。すると、アップロードの確認に ~/.ssh/id_rsa が jobs.example へ送られると表示されます。それを読んで「いいえ」を押せば、出口がふさがります。"
+            "en": "Works, whenever a request appears. The terminal starts in auto mode, so switch to Manual while you learn, and keep this tool's prompts on by never saving \"don't ask again\" for uploads. When an upload request names ~/.ssh/id_rsa going to jobs.example, reading it and pressing No closes the way out.",
+            "ja": "確認が表示される限り、効きます。ターミナルは auto モードで始まるので、慣れるまでは Manual に切り替えましょう。そしてアップロードには「今後は確認しない」を保存せず、このツールの確認を残しておきます。アップロードの確認に ~/.ssh/id_rsa を jobs.example へ送ると書かれていたら、それを読んで「いいえ」を押せば出口がふさがります。"
           },
           "removes": "exit"
         },
