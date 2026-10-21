@@ -1,0 +1,138 @@
+[
+  {
+    "key": "approve",
+    "name": { "en": "Approve or deny", "ja": "許可する？拒否する？" },
+    "blurb": {
+      "en": "Read a permission prompt and pick Yes, Yes and don't ask again, or No.",
+      "ja": "許可プロンプトを読んで、「はい」「はい（今後は確認しない）」「いいえ」から選びます。"
+    }
+  },
+  {
+    "key": "decode",
+    "name": { "en": "Decode the command", "ja": "コマンドを読み解く" },
+    "blurb": {
+      "en": "Match each piece of a command to what it does.",
+      "ja": "コマンドの各部分を、それが何をするのかと結びつけます。"
+    }
+  },
+  {
+    "key": "predict",
+    "name": { "en": "Predict", "ja": "結果を予想" },
+    "blurb": {
+      "en": "Read a command and the situation, then pick what happens.",
+      "ja": "コマンドと状況を読んで、何が起きるかを選びます。"
+    }
+  },
+  {
+    "key": "pairs",
+    "name": { "en": "Match pairs", "ja": "ペアを合わせる" },
+    "blurb": {
+      "en": "Match each term to its meaning.",
+      "ja": "それぞれの用語を、その意味と組み合わせます。"
+    }
+  },
+  {
+    "key": "order",
+    "name": { "en": "Order the loop", "ja": "ループを並べる" },
+    "blurb": {
+      "en": "Put the steps of an agent run in the right order.",
+      "ja": "エージェントが動く手順を、正しい順番に並べます。"
+    }
+  },
+  {
+    "key": "hidden",
+    "name": { "en": "Find the hidden order", "ja": "隠れた命令を探す" },
+    "blurb": {
+      "en": "Read a document as you see it and as Claude sees it, and tap the lines aimed at the AI.",
+      "ja": "あなたに見える姿とClaudeに見える姿でドキュメントを読み、AIに向けた行をタップします。"
+    }
+  },
+  {
+    "key": "chain",
+    "name": { "en": "Stop the chain", "ja": "連鎖を止める" },
+    "blurb": {
+      "en": "Follow Claude's steps and tap the first one that should have been denied.",
+      "ja": "Claudeの手順を追い、本来拒否すべきだった最初の一歩をタップします。"
+    }
+  },
+  {
+    "key": "combo",
+    "name": { "en": "Break the combo", "ja": "危険な組み合わせを断つ" },
+    "blurb": {
+      "en": "Pick the change that removes one ingredient of an attack.",
+      "ja": "攻撃の材料をひとつ取り除く変更を選びます。"
+    }
+  },
+  {
+    "key": "setup",
+    "name": { "en": "Pick the setup", "ja": "環境を選ぶ" },
+    "blurb": {
+      "en": "Choose the safest setup for a task: browser profile, permission answer, or mode.",
+      "ja": "タスクに合った最も安全な環境を選びます。ブラウザのプロファイル、許可の答え方、モードなど。"
+    }
+  },
+  {
+    "key": "scopes",
+    "name": { "en": "Read the scopes", "ja": "権限の範囲を読む" },
+    "blurb": {
+      "en": "Read an MCP install or login screen and work out what it can reach.",
+      "ja": "MCPのインストール画面やログイン画面を読み、何にアクセスできるのかを見極めます。"
+    }
+  },
+  {
+    "key": "poisoned",
+    "name": { "en": "Spot the poisoned tool", "ja": "毒入りツールを見抜く" },
+    "blurb": {
+      "en": "Find the tool description that hides instructions for the AI.",
+      "ja": "AIへの指示を隠し持ったツールの説明文を見つけます。"
+    }
+  },
+  {
+    "key": "package",
+    "name": { "en": "Real or fake package", "ja": "本物？偽物？パッケージ" },
+    "blurb": {
+      "en": "Tell real packages from lookalikes and made-up names.",
+      "ja": "本物のパッケージと、なりすましや存在しない名前を見分けます。"
+    }
+  },
+  {
+    "key": "rule",
+    "name": { "en": "Build the rule", "ja": "ルールを組み立てる" },
+    "blurb": {
+      "en": "Assemble allow and deny rules that let routine work through and block the rest.",
+      "ja": "いつもの作業は通し、それ以外は止める許可・拒否ルールを組み立てます。"
+    }
+  },
+  {
+    "key": "settings",
+    "name": { "en": "Fix the settings", "ja": "設定を直す" },
+    "blurb": {
+      "en": "Find the dangerous line in a project's .claude/settings.json or .mcp.json.",
+      "ja": "プロジェクトの .claude/settings.json や .mcp.json から危険な行を見つけます。"
+    }
+  },
+  {
+    "key": "inside",
+    "name": { "en": "Inside or outside?", "ja": "中？外？" },
+    "blurb": {
+      "en": "Decide what a sandboxed Claude can and can't reach.",
+      "ja": "サンドボックスの中のClaudeが、何に届いて何に届かないかを判断します。"
+    }
+  },
+  {
+    "key": "allowlist",
+    "name": { "en": "Will it get out? / Trim the list", "ja": "外に出られる？／リストを絞る" },
+    "blurb": {
+      "en": "Check whether data can leave through a network allowlist, then trim the list.",
+      "ja": "ネットワークの許可リストからデータが外に出られるかを確かめ、リストを絞り込みます。"
+    }
+  },
+  {
+    "key": "boss",
+    "name": { "en": "Timed challenge", "ja": "タイムアタック" },
+    "blurb": {
+      "en": "Approve or deny against the clock, then see the headlines in the recap.",
+      "ja": "制限時間内に許可か拒否かを選び、最後に振り返りで見出しを確認します。"
+    }
+  }
+]
