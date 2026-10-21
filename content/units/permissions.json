@@ -12,8 +12,8 @@
           "ja": "Claude Code はファイルを編集する前、コマンドを実行する前、Webサイトにアクセスする前に、いったん止まってあなたに確認することがあります。この確認が「許可プロンプト」です。操作が実行される前に中身を確かめられる、ただ一度のチャンスです。"
         },
         {
-          "en": "Every prompt shows the same three things: which tool Claude wants to use, the target (exactly what it will act on: a command, a file path, a web address), and Claude's reason. Here is the same request in the terminal and in the desktop app's Code tab.",
-          "ja": "どのプロンプトにも、同じ3つが表示されます。Claude が使いたいツール、対象（何に対して動くのか。コマンド、ファイルのパス、Webアドレスなど）、そして Claude が書いた理由です。下は同じ依頼を、ターミナルとデスクトップアプリの Code タブで並べたものです。"
+          "en": "Most prompts show the same three things: which tool Claude wants to use, the target (exactly what it will act on: a command, a file path, a web address), and Claude's reason. Here is the same request in the terminal and in the desktop app's Code tab.",
+          "ja": "ほとんどのプロンプトには、同じ3つが表示されます。Claude が使いたいツール、対象（何に対して動くのか。コマンド、ファイルのパス、Webアドレスなど）、そして Claude が書いた理由です。下は同じ依頼を、ターミナルとデスクトップアプリの Code タブで並べたものです。"
         },
         {
           "en": "The terminal drawing follows Claude Code's real prompt. The desktop card is a simplified drawing, and the real app's wording may differ. Read both the same way: tool, then target, then reason.",
@@ -84,8 +84,8 @@
           "ja": "「はい、今後は確認しない」は、許可に加えてルールを保存します。だから、その選択肢に何が書かれているかを読みましょう。コマンドの場合は、保存されるパターン（たとえば `npm test *`）が表示されます。このルールはこのプロジェクトでずっと有効です。`.claude/settings.local.json` に保存され、`/permissions` で削除するまで、次回以降のセッションでも効き続けます。ファイル編集の場合は、セッションが終わるまで有効です。"
         },
         {
-          "en": "\"No\" blocks the action and stops Claude's turn. In the terminal you can press `Tab` on an answer to add a note, like \"show me the error instead\", so Claude knows what to do differently.",
-          "ja": "「いいえ」は操作を止め、Claude の作業をそこで中断させます。ターミナルでは、答えを選んだ状態で `Tab` を押すとメモを添えられます。「代わりにエラーを見せて」のように伝えれば、Claude は別のやり方を考えられます。"
+          "en": "\"No\" blocks the action; with no note added, it also stops Claude's turn. On most terminal prompts you can press `Tab` on an answer to add a note, like \"show me the error instead\", so Claude knows what to do differently.",
+          "ja": "「いいえ」は操作を止めます。メモを添えなければ、Claude の作業もそこで中断します。ターミナルのほとんどのプロンプトでは、答えを選んだ状態で `Tab` を押すとメモを添えられます。「代わりにエラーを見せて」のように伝えれば、Claude は別のやり方を考えられます。"
         }
       ],
       "key": {
@@ -101,12 +101,12 @@
       },
       "body": [
         {
-          "en": "In Manual mode (\"ask before acting\"), Claude Code asks before it edits files, runs most commands, fetches most web pages or searches the web. Reading files inside your project doesn't ask; reading outside it does. A short list of look-only commands, like `ls`, `cat` and `git status`, runs without asking. Network commands like `curl` are not on that list.",
-          "ja": "Manual モード（「実行前に確認」）では、Claude Code はファイルの編集、ほとんどのコマンドの実行、大半のWebページの取得、Web検索の前に確認します。プロジェクトの中のファイルを読むときは確認されませんが、外のファイルを読むときは確認されます。`ls`、`cat`、`git status` のような「見るだけ」のコマンドは短いリストにまとめられていて、確認なしで動きます。`curl` のようなネットワークを使うコマンドは、このリストに入っていません。"
+          "en": "In Manual mode (\"ask before acting\"), Claude Code asks before it edits files, runs most commands, fetches most web pages or searches the web. Reading files inside your project doesn't ask; reading outside it does. A short list of look-only commands, like `ls`, `pwd` and `git status`, runs without asking. Network commands like `curl` are not on that list.",
+          "ja": "Manual モード（「実行前に確認」）では、Claude Code はファイルの編集、ほとんどのコマンドの実行、大半のWebページの取得、Web検索の前に確認します。プロジェクトの中のファイルを読むときは確認されませんが、外のファイルを読むときは確認されます。`ls`、`pwd`、`git status` のような「見るだけ」のコマンドは短いリストにまとめられていて、確認なしで動きます。`curl` のようなネットワークを使うコマンドは、このリストに入っていません。"
         },
         {
-          "en": "Other modes ask less. Accept edits also edits files and runs common file commands like `rm` and `mv` inside the project without asking. Plan only reads and proposes a plan. Auto has a second AI model check each action instead of you: it blocks some clearly risky things, but the docs warn it \"does not guarantee safety\". It still allows things like reading `.env` and sending keys to their matching service. Bypass permissions asks nothing at all and is meant only for isolated containers or virtual machines, never your own computer.",
-          "ja": "ほかのモードは、確認が少なくなります。Accept edits は、ファイルの編集に加えて、`rm` や `mv` のようなよく使うファイル操作コマンドも、プロジェクト内なら確認なしで実行します。Plan は読むだけで、計画を提案します。Auto は、あなたの代わりに別のAIモデルが一つひとつの操作をチェックします。明らかに危険なものの一部は止めてくれますが、公式ドキュメントにも「安全を保証するものではない」と書かれています。たとえば `.env` を読み、そのキーを対応するサービスへ送ることは許されてしまいます。Bypass permissions は一切確認せず、隔離されたコンテナや仮想マシン専用のモードです。自分のパソコンで使うものではありません。"
+          "en": "Other modes ask less. Accept edits also edits files and runs common file commands like `rm` and `mv` inside the project without asking. Plan only reads and proposes a plan. Auto has a second AI model check commands and network actions instead of you: it blocks some clearly risky things, but the docs warn it \"does not guarantee safety\". It still allows things like reading `.env` and sending keys to their matching service. Bypass permissions asks nothing at all and is meant only for isolated containers or virtual machines, never your own computer.",
+          "ja": "ほかのモードは、確認が少なくなります。Accept edits は、ファイルの編集に加えて、`rm` や `mv` のようなよく使うファイル操作コマンドも、プロジェクト内なら確認なしで実行します。Plan は読むだけで、計画を提案します。Auto は、あなたの代わりに別のAIモデルがコマンドやネットワークを使う操作をチェックします。明らかに危険なものの一部は止めてくれますが、公式ドキュメントにも「安全を保証するものではない」と書かれています。たとえば `.env` を読み、そのキーを対応するサービスへ送ることは許されてしまいます。Bypass permissions は一切確認せず、隔離されたコンテナや仮想マシン専用のモードです。自分のパソコンで使うものではありません。"
         },
         {
           "en": "Recent versions start terminal sessions in auto mode. While you're learning, switch to Manual. In the terminal, press `Shift+Tab` until the status line at the bottom says `⏸ manual mode on` (or start with `claude --permission-mode manual`). In the desktop app, pick Manual in the mode selector under the prompt box; the app remembers it for that folder.",
@@ -552,26 +552,26 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "Read the path: `~` is your home folder, outside the project, and `.ssh/id_rsa` is a private key. A plausible reason (\"check it's set up\") doesn't make reading it necessary.",
-        "ja": "パスを読みましょう。`~` はホームフォルダでプロジェクトの外、`.ssh/id_rsa` は秘密鍵です。「設定を確認する」というもっともらしい理由があっても、中身を読む必要はありません。"
+        "en": "Read the target: `~` is your home folder, outside the project, which is why Claude Code asks before reading it, and `.ssh/id_rsa` is a private key. A plausible reason (\"check it's set up\") doesn't make reading it necessary. The same goes if Claude asks to print it with a shell command like `cat ~/.ssh/id_rsa`.",
+        "ja": "対象を読みましょう。`~` はホームフォルダでプロジェクトの外です。だからこそ Claude Code は読む前に確認しています。そして `.ssh/id_rsa` は秘密鍵です。「設定を確認する」というもっともらしい理由があっても、中身を読む必要はありません。`cat ~/.ssh/id_rsa` のようなシェルのコマンドで表示しようとした場合も同じです。"
       },
       "task": {
         "en": "`git push` says \"Permission denied (publickey)\". Fix it so I can push to GitHub.",
         "ja": "`git push` すると「Permission denied (publickey)」と出る。GitHub に push できるように直して。"
       },
       "narration": {
-        "en": "Let me look at your SSH key to check it's set up correctly.",
-        "ja": "SSHの鍵が正しく設定されているか、中身を見て確認します。"
+        "en": "Let me read your SSH key to check it's set up correctly.",
+        "ja": "SSHの鍵が正しく設定されているか、中身を読んで確認します。"
       },
-      "tool": "Bash",
-      "target": "cat ~/.ssh/id_rsa",
+      "tool": "Read",
+      "target": "~/.ssh/id_rsa",
       "reason": {
         "en": "Check the SSH key setup",
         "ja": "SSHの鍵の設定を確認します"
       },
       "alwaysLabel": {
-        "en": "Yes, and don't ask again for cat ~/.ssh/id_rsa",
-        "ja": "はい、今後 cat ~/.ssh/id_rsa は確認しない"
+        "en": "Yes, and don't ask again for reading ~/.ssh/",
+        "ja": "はい、今後 ~/.ssh/ の読み取りは確認しない"
       },
       "accept": [
         "no"
@@ -593,14 +593,14 @@
             "ja": "開発者のSSH秘密鍵、AIとのチャットに丸ごと表示"
           },
           "feedback": {
-            "en": "Same problem: your private key's full text is now in Claude's context. And you saved a rule, so the next time Claude wants to read that key, it won't ask.",
-            "ja": "同じ問題です。秘密鍵の全文が Claude のコンテキストに入りました。しかもルールを保存したので、次に Claude がこの鍵を読もうとしても確認されません。"
+            "en": "Same problem: your private key's full text is now in Claude's context. And you saved approval for reading that folder, so the next time Claude wants to read your keys, it won't ask.",
+            "ja": "同じ問題です。秘密鍵の全文が Claude のコンテキストに入りました。しかもこのフォルダの読み取りを許可したので、次に Claude があなたの鍵を読もうとしても確認されません。"
           }
         },
         "no": {
           "feedback": {
-            "en": "Good catch. `~/.ssh/id_rsa` (no `.pub` at the end) is your private key, outside the project. Tell Claude: \"Don't print my private key. Check which key files exist with `ls ~/.ssh`, or test the connection with `ssh -T git@github.com`.\"",
-            "ja": "よく気づきました。`~/.ssh/id_rsa`（末尾に `.pub` がないもの）は秘密鍵で、プロジェクトの外にあります。Claude にはこう伝えましょう。「秘密鍵の中身は表示しないで。どの鍵ファイルがあるかは `ls ~/.ssh` で、接続は `ssh -T git@github.com` で確認して。」"
+            "en": "Good catch. `~/.ssh/id_rsa` (no `.pub` at the end) is your private key, outside the project. Tell Claude: \"Don't read my private key. Check which key files exist with `ls ~/.ssh`, or test the connection with `ssh -T git@github.com`.\"",
+            "ja": "よく気づきました。`~/.ssh/id_rsa`（末尾に `.pub` がないもの）は秘密鍵で、プロジェクトの外にあります。Claude にはこう伝えましょう。「秘密鍵の中身は読まないで。どの鍵ファイルがあるかは `ls ~/.ssh` で、接続は `ssh -T git@github.com` で確認して。」"
           }
         }
       }
@@ -614,8 +614,8 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "`~/.zshrc` is outside the project and runs every time a terminal opens, so it deserves a careful read. Here your task asked for exactly this, and the `+` line matches. A line that downloads, sends or deletes something would be a different story.",
-        "ja": "`~/.zshrc` はプロジェクトの外にあり、ターミナルを開くたびに実行されるので、じっくり読む価値があります。今回はあなたの依頼がまさにこれで、`+` の行も依頼と合っています。何かをダウンロードしたり、送ったり、消したりする行なら、話はまったく別です。"
+        "en": "`~/.zshrc` is outside the project and runs every time a terminal opens, so it deserves a careful read. Here this is the standard fix for what you asked, and the `+` line matches. A line that downloads, sends or deletes something would be a different story.",
+        "ja": "`~/.zshrc` はプロジェクトの外にあり、ターミナルを開くたびに実行されるので、じっくり読む価値があります。今回はあなたが頼んだことに対する定番の直し方で、`+` の行も依頼と合っています。何かをダウンロードしたり、送ったり、消したりする行なら、話はまったく別です。"
       },
       "task": {
         "en": "I installed a tool with `npm install -g`, but the terminal says \"command not found\". Can you fix that?",
@@ -632,8 +632,8 @@
         "ja": "~/.npm-global/bin を PATH に追加します"
       },
       "alwaysLabel": {
-        "en": "Yes, and don't ask again for edits this session",
-        "ja": "はい、このセッション中は編集を確認しない"
+        "en": "Yes, and allow edits like this for the rest of the session",
+        "ja": "はい、このセッション中は同様の編集を許可する"
       },
       "accept": [
         "yes"
@@ -647,8 +647,8 @@
         },
         "always": {
           "feedback": {
-            "en": "The edit itself is fine, but don't-ask-again would stop Claude asking before file edits for the rest of this session. `~/.zshrc` runs every time you open a terminal, and you want to see any further change to it. Approve this one with plain Yes.",
-            "ja": "編集そのものは問題ありません。でも「今後は確認しない」を選ぶと、このセッションが終わるまで、Claude はファイルを編集する前に確認しなくなります。`~/.zshrc` はターミナルを開くたびに実行されるファイルなので、この先の変更も自分の目で見ておきたいところです。今回はただの「はい」で許可しましょう。"
+            "en": "The edit itself is fine, but this option approves edits like this for the rest of the session, not just this one line. For a file that runs every time you open a terminal, approve the one change you've read, with plain Yes.",
+            "ja": "編集そのものは問題ありません。でもこの選択肢は、この1行だけでなく、セッションが終わるまで同様の編集を許可してしまいます。ターミナルを開くたびに実行されるファイルなので、読んで確かめたこの1つの変更だけを、ただの「はい」で許可しましょう。"
           }
         },
         "no": {
@@ -935,8 +935,8 @@
             "ja": "Manual"
           },
           "feedback": {
-            "en": "Right. Manual asks before each edit and command, so nothing touches your project or your keys unseen, and the app remembers the pick for this folder. If prompts pile up, give Claude smaller tasks: routine prompts take a second to read.",
-            "ja": "正解です。Manual なら編集やコマンドの前に毎回確認されるので、あなたの知らないうちにプロジェクトやキーに手が触れることはありません。アプリはこのフォルダについてこの選択を記憶します。確認が多すぎると感じたら、Claude に頼む作業を小さく区切りましょう。いつもの確認なら、読むのに一瞬しかかかりません。"
+            "en": "Right. Manual asks before Claude edits files, runs commands or contacts websites, so nothing is changed or sent without you seeing it (reading files inside the project still doesn't ask). The app remembers the pick for this folder. If prompts pile up, give Claude smaller tasks: routine prompts take a second to read.",
+            "ja": "正解です。Manual なら、Claude がファイルを編集する前、コマンドを実行する前、Webサイトにアクセスする前に確認されるので、あなたの知らないうちに何かが変更されたり送られたりすることはありません（プロジェクト内のファイルを読むときは、Manual でも確認されません）。アプリはこのフォルダについてこの選択を記憶します。確認が多すぎると感じたら、Claude に頼む作業を小さく区切りましょう。いつもの確認なら、読むのに一瞬しかかかりません。"
           }
         },
         {
@@ -955,8 +955,8 @@
             "ja": "Auto"
           },
           "feedback": {
-            "en": "Fewer prompts, but a second AI model decides instead of you, and it still allows things like reading `.env` and sending keys to their matching service. Not while you're learning.",
-            "ja": "確認は減りますが、あなたの代わりに別のAIモデルが判断します。しかも `.env` を読み、そのキーを対応するサービスへ送ることは許されてしまいます。学んでいる間は使わないでおきましょう。"
+            "en": "Fewer prompts, but a second AI model decides instead of you whether commands and network actions run, and it still allows things like sending keys from `.env` to their matching service. Not while you're learning.",
+            "ja": "確認は減りますが、コマンドやネットワークを使う操作を実行するかどうかを、あなたの代わりに別のAIモデルが判断します。しかも `.env` のキーを対応するサービスへ送ることは許されてしまいます。学んでいる間は使わないでおきましょう。"
           }
         },
         {
