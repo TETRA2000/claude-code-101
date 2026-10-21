@@ -139,3 +139,20 @@ export function ChevronDownIcon({ size = 16, ...rest }: IconProps) {
     </Svg>
   );
 }
+
+export function LockIcon({ size = 16, ...rest }: IconProps) {
+  return (
+    <Svg size={size} {...rest}>
+      <rect x="5" y="11" width="14" height="10" rx="2" {...stroke} strokeWidth={2.2} />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" {...stroke} strokeWidth={2.2} />
+    </Svg>
+  );
+}
+
+export function BoltIcon({ size = 16, ...rest }: IconProps) {
+  return (
+    <Svg size={size} {...rest}>
+      <path d="M13 2L4 14h7l-1 8 9-12h-7z" {...stroke} strokeWidth={2.5} />
+    </Svg>
+  );
+}
