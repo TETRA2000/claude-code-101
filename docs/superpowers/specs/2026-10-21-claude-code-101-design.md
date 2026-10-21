@@ -2,7 +2,20 @@
 
 A web course that teaches non-engineers how Claude Code works behind the scenes, so they can use it with MCP servers, browsers, and local tools without leaking their secrets, wiping their data, or getting hijacked by prompt injection. It's built as a game: short Learn cards, then many hands-on simulations.
 
-Status: **revision 2, draft for the owner's review** (2026-10-21). Revision 1 was approved on 2026-10-21. Revision 2 replaces it. Next step after approval: rewrite the implementation plan.
+Status: **revision 2, draft for the owner's review** (2026-10-21). Revision 1 was approved and built on 2026-10-21 (merged to `main` as TETRA2000/claude-code-101#1). Revision 2 replaces it as the design and **extends the built app; it doesn't start over**. Next step after approval: a new implementation plan for the revision 2 work.
+
+## Current state (what's already built)
+
+As of `main` at the time of writing:
+
+- **App:** Vite + React + TypeScript, with Vitest (269 tests) and Playwright e2e on desktop and phone widths, run in GitHub Actions CI. There's also a Vercel deploy. The quiz engine, progress storage, language switch, and content validator are all built.
+- **Content:** units 1–5 are ready, with 5 Learn cards each and 8–12 practice items (`content/units/{computer,agent,permissions,injection,browser}.json`). Units 6–11 from revision 1 are "Coming soon" cards in `content/course.json`.
+- **Facts sheet:** `docs/claude-code-facts.md` has sections F1–F10 (terminal and desktop prompts, what asks by default, permission modes, "don't ask again", memory, tools, browser control, MCP naming, sandbox), each with sources, a checked date, and `UNVERIFIED` notes.
+- **Unit 3 already teaches** that terminal sessions start in auto mode, to switch to Manual while learning, and that auto mode still allows things like reading `.env` and sending keys to their matching service. Revision 2 keeps this and builds unit 12 on it.
+- **Practice types built:** Approve or deny, Decode, Predict, Match pairs, Order the loop, Find the hidden order, Stop the chain, Break the combo, Pick the setup. Demos built: terminal playground, color the context, prompt anatomy.
+- **Repo rules** live in `CLAUDE.md`. Revision 2 changes four of them (see "Changes to the repo rules" below).
+
+Revision 2 is therefore mostly **new and deeper content plus a few new components**: new card kinds, new practice types, new demos, doc links, and renumbered units. The engine stays.
 
 ## What changed in revision 2
 
@@ -13,9 +26,9 @@ The owner reviewed revision 1 and said the concept is right, but the description
 3. **Links to the official docs** for further learning.
 4. **Safety stays the focus, with practical how-to added.** Learners also practice doing the safe thing themselves.
 
-I read the official docs on 2026-10-21 (pages listed under each unit). Three findings changed the design:
+I read the official docs on 2026-10-21 (pages listed under each unit). Three findings shaped the design:
 
-- **Auto mode is now where new terminal sessions start.** Since Claude Code v2.1.283, new terminal and VS Code sessions start in auto mode on every plan. In auto mode, a separate model reviews actions instead of asking you, so a new user rarely sees a permission prompt. The mode that asks every time is now called **Manual** (`default` in config). The owner decided: **tell learners to switch to Manual while they learn, and also teach them to use auto mode safely.**
+- **Auto mode is now where new terminal sessions start.** Since Claude Code v2.1.283, new terminal and VS Code sessions start in auto mode on every plan. In auto mode, a separate model reviews actions instead of asking you, so a new user rarely sees a permission prompt. The mode that asks every time is now called **Manual** (`default` in config). The built unit 3 already mentions this in a few cards. The owner decided: **tell learners to switch to Manual while they learn, and also teach them to use auto mode safely**, which gets its own unit (12).
 - **Deny rules match the command as written; they aren't a wall.** `Bash(curl *)` doesn't stop `/usr/bin/curl` or `sh -c 'curl …'`. The docs point to the sandbox for real limits, and the sandbox is off by default.
 - **A cloned repository can do more before you trust it than people assume.** Its hooks run if you trusted a parent folder, and a project skill's `allowed-tools` is never checked against trust. This feeds units 8, 9, and 11.
 
@@ -402,6 +415,16 @@ Where the mockups and this document disagree, this document wins:
 - Which "Blocked by default" and "Allowed by default" rules unit 12 uses, as long as both lists are represented and the "reading `.env` and sending to its matching API" case appears.
 - Hosting and deploy.
 - A content-validation script. Useful checks: every item has both languages; every option has feedback; answers point at real options; doc links use allowed hosts and known slugs; every fact ID exists in the facts sheet; every ready unit has `lastChecked` and an "Official docs" list; Approve or deny options match the prompt type they claim.
+
+## Changes to the repo rules
+
+`CLAUDE.md` on `main` encodes revision 1. The revision 2 plan updates these lines along with the code:
+
+- "Ready units have 3–5 Learn cards and 8–12 practice items" becomes **4–7 and 10–14**. Units 1–5 grow to fit (they're at 5 cards and 8–12 items now).
+- "There are no copy buttons anywhere" becomes **no copy buttons except on safe snippets in Try it cards**. The e2e layout check that asserts no copy buttons needs the same exception.
+- "at least one source URL" per ready unit becomes the **"Official docs" list** (doc slugs, 3–8 per unit), and `src/content/hosts.ts` gains the allowed doc-link hosts. Doc links are links the learner clicks, which is separate from the reserved-host rule for URLs inside simulations.
+- `content/course.json` goes from 11 to 13 units: new unit keys for "Skills, plugins and subagents" and "Auto mode, safely", with sandboxes, lockdown, and the boss renumbered. Saved progress is keyed by unit key, not number, so renumbering doesn't lose anyone's progress. The builder confirms this in `src/storage/progress.ts`.
+- The facts sheet keeps F1–F10 and adds new sections for the new topics. F4 already holds most of unit 12's facts.
 
 ## Calls I made (please check)
 
