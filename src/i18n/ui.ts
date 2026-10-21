@@ -43,6 +43,10 @@ export interface UiStrings {
   language: string;
   moveUp: string;
   moveDown: string;
+  feedback: string;
+  perfectRun: string;
+  retriedNote: string;
+  backToHome: string;
 }
 
 /** Keys whose Japanese value is intentionally identical to English. */
@@ -91,6 +95,10 @@ const en: UiStrings = {
   language: 'Language',
   moveUp: 'Move up',
   moveDown: 'Move down',
+  feedback: 'Feedback',
+  perfectRun: 'Perfect run: every answer right on the first try.',
+  retriedNote: 'Missed questions came back until you got them. That is the point.',
+  backToHome: 'Back to home',
 };
 
 const ja: UiStrings = {
@@ -136,6 +144,10 @@ const ja: UiStrings = {
   language: '言語',
   moveUp: '上へ移動',
   moveDown: '下へ移動',
+  feedback: 'フィードバック',
+  perfectRun: 'パーフェクト！すべて一回で正解しました。',
+  retriedNote: '間違えた問題は、正解するまで戻ってきます。それが狙いです。',
+  backToHome: 'ホームへ戻る',
 };
 
 export const UI: Record<Lang, UiStrings> = { en, ja };
