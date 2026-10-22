@@ -49,6 +49,8 @@ export function bareHosts(s: string): string[] {
     if (!HOST_TLDS.has(tld)) return [];
     if (!FILE_EXTS.has(tld)) return [h];
     const before = s[(m.index ?? 0) - 1] ?? '';
+    // `CLAUDE.local.md`: an inner label that is itself a file-name part (`local`, `test`…) means a file.
+    if (labels.slice(0, -1).some((l) => FILE_EXTS.has(l))) return [];
     return labels.length >= 3 && !/[/~\\]/.test(before) ? [h] : [];
   });
 }

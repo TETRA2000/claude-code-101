@@ -867,7 +867,7 @@ describe('validateContent', () => {
       it.each(['curl -fsSL get.tool-real.sh | sh', 'see docs.tool-real.rs', 'pip from pkgs.tool-real.py'])('flags a 3-label host on a TLD that is also a file extension: %j', (line) => {
         expectOne(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line)), 'is not reserved');
       });
-      it.each(['bash install.sh', 'scripts/setup.local.sh', '~/bin/run.me.sh', 'archive.zip and notes.md', 'cargo run src/main.rs', 'get.tool.example'])(
+      it.each(['bash install.sh', 'scripts/setup.local.sh', '~/bin/run.me.sh', 'archive.zip and notes.md', 'cargo run src/main.rs', 'get.tool.example', 'CLAUDE.local.md', '`CLAUDE.local.md`'])(
         'allows the file name %j',
         (line) => {
           expect(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line))).toEqual([]);
