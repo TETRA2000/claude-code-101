@@ -137,7 +137,11 @@ export interface HiddenItem extends Base {
   title: L;
   location: string;
   lines: {
-    /** The tool's name, untranslated. Required on every line of a `tools` source; `text` is its description. */
+    /**
+     * The tool's name, untranslated. Required on every line of a `tools` source (and only there); `text` is its
+     * description. To plant an order mid-description that only Claude sees, keep the visible part in `text` and put
+     * the planted tail in `raw.after` (shown in the "As Claude sees it" view only), with no `hidden` on the line.
+     */
     tool?: string;
     text: L;
     style: 'h1' | 'h2' | 'p' | 'button' | 'small';

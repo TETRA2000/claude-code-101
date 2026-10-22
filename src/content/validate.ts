@@ -9,6 +9,24 @@ const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PR
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/**
+ * A bare hostname with no scheme (`collect.example`, `*.evil.example`, `api.example.com:443`): 2+ lowercase labels
+ * ending in a 2+ letter label. Not matched: part of a longer word or path label, a dotted key followed by `:`
+ * (`"sandbox.network": …`, `scripts.postinstall: …`), and file names (see FILE_EXTS).
+ */
+const BARE_HOST = /(?<![\w.-])(?:\*\.)?((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,})(?![\w-]|\.[\w-]|["']?\s*:(?!\d))/g;
+/** Last labels that mean a file name, not a host (`settings.json`, `CLAUDE.md`, `history.jsonl`). */
+export const FILE_EXTS: ReadonlySet<string> = new Set(
+  ('json jsonl ndjson md mdx ts tsx js jsx mjs cjs sh bash zsh txt yml yaml toml lock lockb env log py css html htm ' +
+    'pub pem key sock conf cfg ini xml csv pdf png jpg jpeg gif svg zip gz tar tgz rs go rb java php sql db local bak tmp ' +
+    'xlsx xls docx pptx wasm exe dmg pkg deb rpm whl map').split(' '),
+);
+
+/** Hosts written without a scheme in `s`, wildcards stripped (`*.collect.example` → `collect.example`). */
+export function bareHosts(s: string): string[] {
+  return [...s.matchAll(BARE_HOST)].map((m) => m[1] ?? '').filter((h) => !FILE_EXTS.has(h.slice(h.lastIndexOf('.') + 1)));
+}
+
 /** Calls `fn` for every string reachable from `v`, with its dotted path. */
 function walkStrings(v: unknown, path: string, fn: (s: string, path: string) => void): void {
   if (typeof v === 'string') fn(v, path);
@@ -71,7 +89,7 @@ function checkRef(where: string, ref: DocRef, out: string[]): void {
   }
 }
 
-/** Rules 1, 12, 13 for any piece of content: empty text, unlisted hosts, live-looking secrets. */
+/** Rules 1, 12, 13 for any piece of content: empty text, unlisted hosts (in URLs and bare), live-looking secrets. */
 function checkText(where: string, v: unknown, extraUrls: string[], out: string[]): void {
   walkLocalized(v, '', (l, path) => {
     for (const lang of ['en', 'ja'] as const) {
@@ -82,6 +100,7 @@ function checkText(where: string, v: unknown, extraUrls: string[], out: string[]
   for (const u of extraUrls) hosts.add(hostOf(u));
   walkStrings(withoutLinks(v), '', (s, path) => {
     for (const m of s.matchAll(URL_IN_TEXT)) hosts.add(hostOf(m[0]));
+    for (const h of bareHosts(s)) hosts.add(h);
     if (SECRET.test(s) && !s.includes('FAKE')) out.push(`${where}: secret-looking text without FAKE at ${path}`);
   });
   for (const h of hosts) {
@@ -240,11 +259,10 @@ function checkHidden(it: HiddenItem): string[] {
   if (it.answer.length === 0) p.push(`${it.type}.answer is empty`);
   else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push(`${it.type}.answer out of range`);
   if (it.type === 'poisoned' && it.source !== 'tools') p.push('poisoned needs source "tools"');
-  if (it.source === 'tools') {
-    it.lines.forEach((l, i) => {
-      if (!nonEmpty(l.tool)) p.push(`tools line ${i} needs a tool name`);
-    });
-  }
+  it.lines.forEach((l, i) => {
+    if (it.source === 'tools' && !nonEmpty(l.tool)) p.push(`tools line ${i} needs a tool name`);
+    if (it.source !== 'tools' && l.tool !== undefined) p.push(`line ${i} has a tool name, but source is "${it.source}", not "tools"`);
+  });
   return p;
 }
 

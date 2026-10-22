@@ -12,6 +12,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
   const { ui, t } = useLang();
   const [view, setView] = useState<'you' | 'claude'>('you');
   const claude = view === 'claude';
+  const tools = item.source === 'tools';
   return (
     <div className={styles.root}>
       <div role="group" aria-label={ui.viewLabel} className={styles.views}>
@@ -28,7 +29,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
           <span className={styles.chromeTitle}>{t(item.title)}</span>
           <span className={styles.location}>{item.location}</span>
         </div>
-        <div className={claude ? styles.rawBody : styles.body}>
+        <div className={claude ? styles.rawBody : styles.body} role={tools ? 'list' : undefined}>
           {item.lines.map((l, i) => {
             const picked = answer.picked.includes(i);
             const isAnswer = item.answer.includes(i);
@@ -48,7 +49,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
             ]
               .filter(Boolean)
               .join(' ');
-            return (
+            const line = (
               <button
                 key={i}
                 type="button"
@@ -76,6 +77,13 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
                   </span>
                 )}
               </button>
+            );
+            return tools ? (
+              <div key={i} role="listitem">
+                {line}
+              </div>
+            ) : (
+              line
             );
           })}
         </div>
