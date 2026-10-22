@@ -153,8 +153,8 @@
       },
       "body": [
         {
-          "en": "Permission rules sit in three lists: `allow` runs without asking, `ask` always asks, `deny` blocks. A rule is a tool name, often with a pattern: `Bash(npm run test *)`, `Read(./.env)`, `WebFetch(domain:example.com)`, `mcp__notes__search`. A `*` matches any text.",
-          "ja": "許可ルールは3つのリストに入ります。`allow`（許可）は確認なしで実行、`ask`（確認）は毎回確認、`deny`（拒否）はブロックです。ルールはツール名で、たいていパターンがつきます。`Bash(npm run test *)`、`Read(./.env)`、`WebFetch(domain:example.com)`、`mcp__notes__search` などです。`*` はどんな文字列にも当てはまります。"
+          "en": "Permission rules sit in three lists: `allow` runs without asking, `ask` always asks, `deny` blocks. A rule is a tool name, often with a pattern: `Bash(npm run test *)`, `Read(./.env)`, `Edit(./config/**)`, `WebFetch(domain:example.com)`, `mcp__notes__search`. A `*` matches any text.",
+          "ja": "権限ルールは3つのリストに入ります。`allow`（許可）は確認なしで実行、`ask`（確認）は毎回確認、`deny`（拒否）はブロックです。ルールはツール名で、たいていパターンがつきます。`Bash(npm run test *)`、`Read(./.env)`、`Edit(./config/**)`、`WebFetch(domain:example.com)`、`mcp__notes__search` などです。`*` はどんな文字列にも当てはまります。"
         },
         {
           "en": "Claude Code checks deny, then ask, then allow, and the first match decides, however specific the others are. So a deny in any file beats an allow in any file. Deny and ask rules hold in every mode, Bypass permissions included.",
@@ -280,8 +280,8 @@
           },
           {
             "text": {
-              "en": "Add this. If the file already has a `\"permissions\"` block, add only the `\"deny\"` line inside it. Settings files are strict JSON: no comments, no comma after the last item.",
-              "ja": "次の内容を加えます。ファイルにすでに `\"permissions\"` のブロックがあれば、その中に `\"deny\"` の行だけを足します。設定ファイルは厳密な JSON なので、コメントや最後の項目のあとのカンマは書けません。"
+              "en": "If the file is new or empty, paste all of this. If it already has settings, put the `\"permissions\"` part inside its outer `{ }`, with a comma before it. If `\"permissions\"` already has a `\"deny\"` list, add the two rules to that list. Settings files are strict JSON: no comments, no comma after the last item.",
+              "ja": "ファイルが新しいか空なら、これをすべて貼り付けます。すでに設定が書かれていれば、`\"permissions\"` の部分をいちばん外側の `{ }` の中に入れ、前にカンマを付けます。`\"permissions\"` にすでに `\"deny\"` のリストがあれば、その中に2つのルールを足します。設定ファイルは厳密な JSON なので、コメントや最後の項目のあとのカンマは書けません。"
             },
             "code": "{\n  \"permissions\": {\n    \"deny\": [\"Read(./.env)\", \"Read(./.env.*)\"]\n  }\n}",
             "copy": true
@@ -327,8 +327,8 @@
           "ja": "フックとは、決まったタイミングで Claude Code が実行する、あなた自身のコマンドです。`PreToolUse` フックはツールを使う直前に動き、その呼び出しの中身をすべて見られます。終了コード2で終わると操作はブロックされ、理由が Claude に伝わります。フックは「deny」（拒否）の判定を返すこともでき、その拒否は Bypass permissions を含むすべてのモードで効きます。"
         },
         {
-          "en": "Hooks run with your full permissions, outside the sandbox. Treat a hook someone else wrote like any program you install. `/hooks` lists what's set.",
-          "ja": "フックはあなたの権限をすべて持ち、サンドボックスの外で動きます。他人が書いたフックは、インストールするプログラムと同じように扱いましょう。`/hooks` で設定済みのフックを一覧できます。"
+          "en": "Hooks run with your full permissions, outside the sandbox. Treat a hook someone else wrote like any program you install.",
+          "ja": "フックはあなたの権限をすべて持ち、サンドボックスの外で動きます。他人が書いたフックは、インストールするプログラムと同じように扱いましょう。"
         }
       ],
       "key": {
@@ -346,8 +346,8 @@
             "ja": "これは読むための練習で、設定する必要はありません。公式ドキュメントのスクリプト `.claude/hooks/protect-files.sh` は、編集のたびにその内容を受け取り、ファイルのパスを取り出します。"
           },
           {
-            "en": "It compares the path with a list: `.env`, `package-lock.json` and `.git/`. On a match it prints `Blocked: …` and exits with code 2, so the edit never happens and Claude reads the message. Otherwise it exits with 0, and the normal permission prompt follows.",
-            "ja": "そのパスを `.env`、`package-lock.json`、`.git/` の一覧と比べます。当てはまれば `Blocked: …` と表示して終了コード2で終わるので、編集は実行されず、Claude はそのメッセージを読みます。当てはまらなければ終了コード0で終わり、いつもの許可プロンプトに進みます。"
+            "en": "It compares the path with a list: `.env`, `package-lock.json` and `.git/`. On a match it prints `Blocked: …` and exits with code 2, so the edit never happens and Claude reads the message. Otherwise it exits with 0, and the normal permission check follows.",
+            "ja": "そのパスを `.env`、`package-lock.json`、`.git/` の一覧と比べます。当てはまれば `Blocked: …` と表示して終了コード2で終わるので、編集は実行されず、Claude はそのメッセージを読みます。当てはまらなければ終了コード0で終わり、いつもの許可の確認に進みます。"
           },
           {
             "en": "It's registered in `.claude/settings.json` under `PreToolUse`, with the matcher `Edit|Write`. That matcher fires only for those two tools, not when Claude changes a file through `Bash`.",
@@ -419,8 +419,8 @@
         }
       ],
       "key": {
-        "en": "Each layer catches what another one misses.",
-        "ja": "それぞれの層が、ほかの層の見逃しを受け止めます。"
+        "en": "No single layer is a wall: rules match text as written, and the sandbox covers only shell commands, not MCP servers or hooks.",
+        "ja": "どの層も、それだけでは壁になりません。ルールは書かれた文字列にしか当てはまらず、サンドボックスが囲むのはシェルのコマンドだけで、MCP サーバーやフックは対象外です。"
       },
       "more": {
         "slug": "permission-modes",
@@ -1004,8 +1004,13 @@
       "askRule": true,
       "choices": [
         "yes",
+        "always",
         "no"
       ],
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: git push *",
+        "ja": "はい、今後 git push * は確認しない"
+      },
       "accept": [
         "yes"
       ],
@@ -1014,6 +1019,12 @@
           "feedback": {
             "en": "Right. The branch and the remote (`origin`, your own repository) match what you asked for. The ask rule will stop the next push too.",
             "ja": "正解です。ブランチも送り先（`origin`、あなた自身のリポジトリ）も、頼んだ内容どおりです。次のプッシュでも ask ルールがまた止めてくれます。"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "The push was fine, but this saves an allow rule `Bash(git push *)` to `.claude/settings.local.json`. Ask is checked before allow, so you'll still be asked next time; and if the ask rule is ever removed, every push would run unasked. Approve this one with plain Yes.",
+            "ja": "プッシュ自体は問題ありませんが、この選択は allow ルール `Bash(git push *)` を `.claude/settings.local.json` に保存します。ask は allow より先に調べられるので、次回もやはり確認されます。そして ask ルールがいつか消されたら、どのプッシュも確認なしで実行されてしまいます。今回はただの「はい」で許可しましょう。"
           }
         },
         "no": {
