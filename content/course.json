@@ -505,7 +505,7 @@
   },
   {
     "key": "automode",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Auto mode, safely",
       "ja": "オートモードを安全に使う"
@@ -518,7 +518,70 @@
       "automode",
       "setup",
       "approve"
-    ]
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "eliminate-prompts-with-auto-mode"
+        },
+        "note": {
+          "en": "Read this if you want the full blocked and allowed lists, how boundaries and approvals in chat work, and when auto mode falls back.",
+          "ja": "既定でブロック・許可されるものの全リスト、会話での境界線と許可の働き、auto モードが確認に戻るときを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "auto-mode-config"
+        },
+        "note": {
+          "en": "Read this if you want to add ask rules as checkpoints, review blocked actions, or tell the classifier which services you trust.",
+          "ja": "ask ルールで関所を作りたいとき、ブロックされた操作を見直したいとき、信頼するサービスを分類器に伝えたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "manage-permissions"
+        },
+        "note": {
+          "en": "Read this if you want the rule syntax for the ask and deny rules that hold even in auto mode.",
+          "ja": "auto モードでも効く ask と deny のルールの書き方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing",
+          "anchor": "per-command-allowed-domains-in-auto-mode"
+        },
+        "note": {
+          "en": "Read this if you want to know how the sandbox limits commands in auto mode, one command's websites at a time.",
+          "ja": "auto モードでサンドボックスがコマンドをどう制限するのか、コマンドごとに Webサイトを開く仕組みを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://www.anthropic.com/engineering/claude-code-auto-mode",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you're curious how the classifier was built and tested.",
+          "ja": "分類器がどう作られ、どう試されたのかに興味があるとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://claude.com/blog/auto-mode",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you want the original announcement of what auto mode is for. Some details, like which plans have it, have changed since.",
+          "ja": "auto モードが何のためにあるのか、最初の発表を読みたいとき。対象のプランなど、一部の内容はその後変わっています。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "boss",

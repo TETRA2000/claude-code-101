@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { content } from './index';
 import { validateContent } from './validate';
-import type { ApproveItem, ChainItem, ChoiceItem, HiddenItem, RuleItem } from './types';
+import type { ApproveItem, AutoModeItem, ChainItem, ChoiceItem, HiddenItem, RuleItem } from './types';
 
 describe('content', () => {
   it('is valid', () => {
@@ -27,7 +27,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['extensions', 'automode', 'powers', 'mcp', 'installing', 'sandboxes', 'boss']) {
+    for (const key of ['extensions', 'powers', 'mcp', 'installing', 'sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -261,5 +261,45 @@ describe('unit 11: lockdown', () => {
     const hookSteps = [...(hooks?.try?.terminal ?? []), ...(hooks?.try?.desktop ?? [])];
     expect(hookSteps.every((s) => !s.copy || s.code === '/hooks')).toBe(true);
     expect(JSON.stringify(hooks)).toContain('protect-files.sh');
+  });
+});
+
+describe('unit 12: automode', () => {
+  it('is ready, with 6–7 cards and 12–14 items in the required mix', () => {
+    expect(content.unitByKey('automode')?.status).toBe('ready');
+    const body = content.bodyOf('automode');
+    const items = body?.items ?? [];
+    const nc = body?.cards.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(6);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(items.length).toBeGreaterThanOrEqual(12);
+    expect(items.length).toBeLessThanOrEqual(14);
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('automode')).toBeGreaterThanOrEqual(6);
+    expect(count('setup')).toBeGreaterThanOrEqual(2);
+    const approves = items.filter((it): it is ApproveItem => it.type === 'approve');
+    expect(approves.length).toBeGreaterThanOrEqual(2);
+    expect(approves.some((it) => it.accept.includes('auto'))).toBe(true);
+  });
+
+  it('demos the modes and links ahead to sandboxing', () => {
+    const cards = content.bodyOf('automode')?.cards ?? [];
+    expect(cards.some((c) => c.demo?.kind === 'modes')).toBe(true);
+    expect(cards.some((c) => c.more && 'slug' in c.more && c.more.slug === 'sandboxing' && !c.more.anchor)).toBe(true);
+  });
+
+  it('has an automode item whose setup mentions compaction', () => {
+    const autos = (content.bodyOf('automode')?.items ?? []).filter((it): it is AutoModeItem => it.type === 'automode');
+    expect(autos.some((it) => it.setup.some((s) => /compaction|compacted|summar/i.test(s.en)))).toBe(true);
+  });
+
+  it('has an automode item that reads .env and runs', () => {
+    const autos = (content.bodyOf('automode')?.items ?? []).filter((it): it is AutoModeItem => it.type === 'automode');
+    expect(autos.some((it) => it.action.target.includes('.env') && it.answer === 'runs')).toBe(true);
+  });
+
+  it('covers runs, blocked and asks', () => {
+    const autos = (content.bodyOf('automode')?.items ?? []).filter((it): it is AutoModeItem => it.type === 'automode');
+    expect(new Set(autos.map((it) => it.answer))).toEqual(new Set(['runs', 'blocked', 'asks']));
   });
 });
