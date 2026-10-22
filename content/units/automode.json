@@ -187,8 +187,8 @@
       },
       "body": [
         {
-          "en": "Blocked by default: downloading and running code (`curl … | bash`), sending sensitive data outside, production deploys, force pushes, destroying files that existed before the session, `git reset --hard`, and printing a live password or key.",
-          "ja": "既定でブロックされるもの：コードをダウンロードして実行すること（`curl … | bash`）、機密データを外部へ送ること、本番環境へのデプロイ、強制プッシュ、セッション前からあったファイルを消すこと、`git reset --hard`、本物のパスワードやキーを表示すること。"
+          "en": "Blocked by default: downloading and running code (`curl … | bash`), sending sensitive data outside, production deploys and migrations, force pushes, destroying files that existed before the session, `git reset --hard`, and printing a live password or key.",
+          "ja": "既定でブロックされるもの：コードをダウンロードして実行すること（`curl … | bash`）、機密データを外部へ送ること、本番環境へのデプロイやマイグレーション、強制プッシュ、セッション前からあったファイルを消すこと、`git reset --hard`、本物のパスワードやキーを表示すること。"
         },
         {
           "en": "Allowed by default, the part people miss: local file work, installing the dependencies your project lists, read-only web requests, pushing to any branch of your repository, and reading `.env` and sending a key to its matching service.",
@@ -301,17 +301,25 @@
           "ja": "ブロックされると `bash denied by auto mode · [Data Exfiltration] · /permissions` のようなお知らせが出ます。Claude には理由が伝わり、その操作は `/permissions` に記録されます。"
         },
         {
-          "en": "If you really meant it, approve it on purpose. Your message must name the action and what makes it risky, like the branch of a force push; \"you can force-push\" clears nothing. An approval covers that one action.",
-          "ja": "本当にそうしたかったのなら、意識して許可します。メッセージには、操作と、何が危ないのか（強制プッシュならどのブランチか）をはっきり書く必要があります。「強制プッシュしていいよ」だけでは何も解除されません。許可が効くのはその1回の操作だけです。"
-        },
-        {
-          "en": "After 3 blocks in a row, or 20 in a session, auto mode pauses and asks you again.",
-          "ja": "3回続けて、または1セッションで20回ブロックすると、auto モードは一時停止して、またあなたに確認するようになります。"
+          "en": "If you really meant it, approve it on purpose: name the action and what makes it risky, like the branch of a force push. \"You can force-push\" clears nothing, and an approval covers one action. Some blocks can't be cleared from chat; for those, switch to Manual and answer the prompt yourself.",
+          "ja": "本当にそうしたかったのなら、意識して許可します。操作と、何が危ないのか（強制プッシュならどのブランチか）をはっきり書きましょう。「強制プッシュしていいよ」だけでは何も解除されず、許可が効くのはその1回の操作だけです。会話では解除できないブロックもあります。その場合は Manual に切り替え、確認に自分で答えましょう。"
         }
       ],
       "key": {
         "en": "Read why it was blocked before you approve it.",
         "ja": "許可する前に、なぜブロックされたのかを読みましょう。"
+      },
+      "deep": {
+        "title": {
+          "en": "When auto mode gives up",
+          "ja": "auto モードが確認に戻るとき"
+        },
+        "body": [
+          {
+            "en": "After 3 blocks in a row, or 20 in a session, auto mode pauses and asks you again. Approving the prompted action turns it back on. These limits can't be changed.",
+            "ja": "3回続けて、または1セッションで20回ブロックすると、auto モードは一時停止して、またあなたに確認するようになります。確認された操作を許可すると、auto モードに戻ります。この回数は変えられません。"
+          }
+        ]
       },
       "try": {
         "terminal": [
@@ -325,8 +333,8 @@
           },
           {
             "text": {
-              "en": "Open the **Recently denied** tab. Every action auto mode blocked is listed there. Highlight one to read its full command below the list.",
-              "ja": "**Recently denied**（最近拒否された操作）タブを開きます。auto モードがブロックした操作がすべて並んでいます。1つを選ぶと、一覧の下にコマンドの全文が表示されます。"
+              "en": "Open the **Recently denied** tab. Actions the classifier blocked are listed there. Highlight one to read its full command below the list.",
+              "ja": "**Recently denied**（最近拒否された操作）タブを開きます。分類器がブロックした操作がここに並んでいます。1つを選ぶと、一覧の下にコマンドの全文が表示されます。"
             }
           },
           {
@@ -358,12 +366,12 @@
       },
       "body": [
         {
-          "en": "A sandbox is a wall your operating system puts around the commands Claude runs: they can write only inside your project and reach only websites you've allowed. It's off until you turn it on with `/sandbox`.",
-          "ja": "サンドボックスとは、Claude が実行するコマンドの周りに OS が立てる壁です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのはあなたが許可した Webサイトだけになります。`/sandbox` でオンにするまではオフです。"
+          "en": "A sandbox is a wall your operating system puts around the commands Claude runs: they can write only inside your project and reach only websites you've allowed, though they can still read most files. Turn it on with `/sandbox`.",
+          "ja": "サンドボックスとは、Claude が実行するコマンドの周りに OS が立てる壁です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのはあなたが許可した Webサイトだけになります。ただし、ほとんどのファイルは読めてしまいます。`/sandbox` でオンにします。"
         },
         {
-          "en": "The classifier decides whether a command runs; the sandbox limits what it can reach if it does. With both on, Claude lists the websites a command needs, the classifier reviews them with the command, and only those open, for that command alone.",
-          "ja": "分類器はコマンドを実行するかどうかを決め、サンドボックスは実行されたときに届く範囲を限ります。両方オンなら、Claude はコマンドに必要な Webサイトを書き出し、分類器がコマンドと一緒にそれを調べ、そのコマンドにかぎってそのサイトだけが開きます。"
+          "en": "The classifier decides whether a command runs; the sandbox limits what it can reach. With both on, Claude lists the websites a command needs, the classifier reviews them with it, and only those open, for that command alone.",
+          "ja": "分類器はコマンドを実行するかどうかを決め、サンドボックスは届く範囲を限ります。両方オンなら、Claude はコマンドに必要な Webサイトを書き出し、分類器がコマンドと一緒にそれを調べ、そのコマンドにかぎってそのサイトだけが開きます。"
         }
       ],
       "key": {
@@ -713,8 +721,8 @@
         "ja": "auto モードではどうなりますか？"
       },
       "explain": {
-        "en": "Reading `.env` and sending a key to its matching API is allowed by default. Auto mode won't stop it, or tell you.",
-        "ja": "`.env` を読んで、キーを対応する API へ送ることは既定で許可されています。auto モードは止めませんし、知らせもしません。"
+        "en": "Reading `.env` and sending a key to its matching API is allowed by default. Auto mode won't stop it or ask you.",
+        "ja": "`.env` を読んで、キーを対応する API へ送ることは既定で許可されています。auto モードは止めませんし、確認もしません。"
       },
       "surface": "terminal",
       "request": {
@@ -806,8 +814,8 @@
             "ja": "CLAUDE.md に「プッシュの前に必ず確認して」と1行書く"
           },
           "feedback": {
-            "en": "CLAUDE.md is instructions, not a rule Claude Code enforces. Only an ask rule guarantees the prompt.",
-            "ja": "CLAUDE.md は指示であって、Claude Code が強制するルールではありません。確認を確実に出せるのは ask ルールだけです。"
+            "en": "The classifier reads CLAUDE.md too, so it may block pushes, but that isn't a prompt and nothing enforces it. Only an ask rule guarantees you see the push first.",
+            "ja": "分類器も CLAUDE.md を読むので、プッシュをブロックすることはあるかもしれません。でもそれは確認ではなく、何も強制されません。プッシュを先に必ず見られるのは ask ルールだけです。"
           }
         },
         {
@@ -1048,8 +1056,8 @@
         "ja": "auto モードではどうなりますか？"
       },
       "explain": {
-        "en": "`.claude/` is protected, so writes there go to the classifier instead of just running. Widening Claude's own permissions goes beyond fixing a test.",
-        "ja": "`.claude/` は保護されているので、そこへの書き込みはそのまま実行されず、分類器に回ります。Claude が自分の権限を広げるのは、テストの修正の範囲を超えています。"
+        "en": "`.claude/` is protected, so writes there go to the classifier instead of just running. Claude changing its own permission settings, which you didn't ask for, is on the classifier's default block list.",
+        "ja": "`.claude/` は保護されているので、そこへの書き込みはそのまま実行されず、分類器に回ります。頼まれてもいないのに Claude が自分の権限設定を変えることは、分類器が既定でブロックするリストに入っています。"
       },
       "surface": "terminal",
       "request": {
@@ -1077,16 +1085,16 @@
       "answer": "blocked",
       "feedback": {
         "blocked": {
-          "en": "Right. `.claude/` is a protected folder, so this edit goes to the classifier instead of just running. Giving Claude wider permissions goes beyond fixing a test, so it's blocked.",
-          "ja": "正解です。`.claude/` は保護されたフォルダなので、この編集はそのまま実行されず、分類器に回ります。Claude の権限を広げることはテストの修正の範囲を超えているので、ブロックされます。"
+          "en": "Right. `.claude/` is a protected folder, so this edit goes to the classifier instead of just running. Rewriting Claude's own permissions to escape review is on the classifier's default block list, and you only asked for a test fix.",
+          "ja": "正解です。`.claude/` は保護されたフォルダなので、この編集はそのまま実行されず、分類器に回ります。Claude が審査を逃れるために自分の権限設定を書き換えることは、分類器が既定でブロックするリストに入っています。それに、あなたが頼んだのはテストの修正だけです。"
         },
         "runs": {
-          "en": "Edits in your folder usually just run, but `.claude/` is protected: writes there go to the classifier, and no allow rule pre-approves them. Widening Claude's own permissions goes beyond your request.",
-          "ja": "フォルダ内の編集はふだんならそのまま実行されますが、`.claude/` は保護されています。そこへの書き込みは分類器に回り、allow ルールで事前に許可することもできません。Claude が自分の権限を広げるのは、頼んだ範囲を超えています。"
+          "en": "Edits in your folder usually just run, but `.claude/` is protected: writes there go to the classifier, and no allow rule pre-approves them. Claude changing its own permissions without being asked is a default block. (Auto mode would set `Bash(*)` aside anyway, until you left it.)",
+          "ja": "フォルダ内の編集はふだんならそのまま実行されますが、`.claude/` は保護されています。そこへの書き込みは分類器に回り、allow ルールで事前に許可することもできません。頼まれずに Claude が自分の権限を変えることは、既定でブロックされます。（それに `Bash(*)` は、auto モードを抜けるまでは脇に置かれます。）"
         },
         "asks": {
-          "en": "In Manual mode this would ask you. In auto mode, writes to protected paths go to the classifier instead, and widening Claude's own permissions goes beyond your request.",
-          "ja": "Manual モードならあなたに確認が出ます。auto モードでは、保護されたパスへの書き込みは代わりに分類器に回ります。そして Claude が自分の権限を広げるのは、頼んだ範囲を超えています。"
+          "en": "In Manual mode this would ask you. In auto mode, writes to protected paths go to the classifier instead, and Claude changing its own permissions without being asked is on its default block list.",
+          "ja": "Manual モードならあなたに確認が出ます。auto モードでは、保護されたパスへの書き込みは代わりに分類器に回ります。そして頼まれずに Claude が自分の権限を変えることは、分類器が既定でブロックするリストに入っています。"
         }
       },
       "more": {
@@ -1117,8 +1125,8 @@
             "ja": "`/sandbox` でサンドボックスをオンにする"
           },
           "feedback": {
-            "en": "Right. Commands can then write only inside the project and reach only the websites allowed for them. It covers shell commands, not Claude's file and web tools.",
-            "ja": "正解です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのは許可された Webサイトだけになります。囲むのはシェルのコマンドで、Claude のファイル用ツールや Web用ツールは対象外です。"
+            "en": "Right. Commands can then write only inside the project and reach only the websites allowed for them, though they can still read most files. It covers shell commands, not Claude's file and web tools.",
+            "ja": "正解です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのは許可された Webサイトだけになります（ほとんどのファイルは読めます）。囲むのはシェルのコマンドで、Claude のファイル用ツールや Web用ツールは対象外です。"
           }
         },
         {

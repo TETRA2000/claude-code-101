@@ -508,7 +508,7 @@
     "status": "ready",
     "title": {
       "en": "Auto mode, safely",
-      "ja": "オートモードを安全に使う"
+      "ja": "auto モードを安全に使う"
     },
     "blurb": {
       "en": "What the classifier sees, what it blocks and allows by default, how to clear a block, and why a sandbox still matters.",
