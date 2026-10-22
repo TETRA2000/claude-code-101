@@ -70,7 +70,7 @@
       },
       "body": [
         {
-          "en": "`curl URL | sh` downloads a script and hands it straight to the shell to run. Nothing is saved for you to read first. Auto mode blocks this by default, and in Manual mode `curl` asks you.",
+          "en": "`curl URL | sh` downloads a script and hands it straight to the shell. Nothing is saved for you to read first. Auto mode blocks this by default, and in Manual mode `curl` asks you.",
           "ja": "`curl URL | sh` は、スクリプトをダウンロードして、そのままシェルに渡して実行させます。先に読めるように保存されることはありません。auto モードは最初からこれをブロックし、Manual モードでは `curl` の前に確認されます。"
         },
         {
@@ -79,8 +79,8 @@
         }
       ],
       "key": {
-        "en": "Download-and-run is fine from a source you chose. Not when a README or web page suggests it.",
-        "ja": "ダウンロードしてすぐ実行するのは、あなたが選んだ入手元なら問題ありません。README や Web ページに勧められたときは別です。"
+        "en": "Download-and-run is fine from a source you chose and trust, like an official install page. Not when a README or web page suggests it.",
+        "ja": "ダウンロードしてすぐ実行するのは、公式のインストール手順のように、あなたが選んで信頼している入手元なら問題ありません。README や Web ページに勧められたときは別です。"
       },
       "more": {
         "slug": "security",
@@ -140,8 +140,8 @@
       },
       "body": [
         {
-          "en": "Some project files work before you accept anything. A project skill's `allowed-tools` is never checked against trust. If you trusted only a parent folder, the project's hooks run too.",
-          "ja": "プロジェクトのファイルの中には、あなたが何も承認しないうちに効くものがあります。プロジェクトのスキルの `allowed-tools` は、信頼とは関係なく効きます。親フォルダだけを信頼している場合は、プロジェクトのフックも動きます。"
+          "en": "Some project files aren't held back by trust. If you trusted only a parent folder, or in a `claude -p` run, a project skill's `allowed-tools` applies and the project's hooks run.",
+          "ja": "プロジェクトのファイルの中には、信頼の確認で止められないものがあります。親フォルダだけを信頼している場合や `claude -p` の実行では、プロジェクトのスキルの `allowed-tools` が効き、プロジェクトのフックも動きます。"
         },
         {
           "en": "`claude -p` runs one request and exits, with no dialog at all. It runs the project's hooks and connects its `.mcp.json` servers without asking. `--setting-sources user` skips the project's settings and `.mcp.json`; `--bare` skips its hooks, skills, plugins and servers.",
@@ -181,8 +181,8 @@
       },
       "body": [
         {
-          "en": "Open an unfamiliar repository in its own project folder, never your home folder. From your home folder, Claude can read every file you own without asking, and the trust prompt returns on every launch, which trains you to click through it. Read the dialog before you accept.",
-          "ja": "見慣れないリポジトリは、ホームフォルダではなく、そのプロジェクト専用のフォルダで開きましょう。ホームフォルダから始めると、Claude はあなたのファイルを確認なしで全部読めてしまいます。しかも信頼の確認が起動のたびに出るので、読まずに押す癖がつきます。承認する前にダイアログを読みましょう。"
+          "en": "Open an unfamiliar repository in its own project folder, never your home folder. From your home folder, Claude can read every file you own without asking, and the trust prompt returns on every launch, which makes it easy to click through without reading. Read the dialog before you accept.",
+          "ja": "見慣れないリポジトリは、ホームフォルダではなく、そのプロジェクト専用のフォルダで開きましょう。ホームフォルダから始めると、Claude はあなたのファイルを確認なしで全部読めてしまいます。しかも信頼の確認が起動のたびに出るので、読まずに押してしまいやすくなります。承認する前にダイアログを読みましょう。"
         },
         {
           "en": "For code you really don't trust, use a separate machine: a virtual machine (VM) or a cloud session. The built-in sandbox isn't enough here: hooks and MCP servers run outside it.",
@@ -990,8 +990,8 @@
         "ja": "複製したリポジトリに、このスキルが入っていました。危険な行を2つタップしましょう。"
       },
       "explain": {
-        "en": "The skill pre-approves `npm install` for any name, and tells Claude to install whatever name an error or README offers. Together, a planted lookalike installs without asking. And a project skill's `allowed-tools` applies even before you trust the folder.",
-        "ja": "このスキルは、どんな名前でも `npm install` を事前に許可し、さらにエラーや README に出てきた名前をそのまま入れるよう Claude に指示しています。この2つがそろうと、仕込まれたそっくりさんが確認なしで入ります。しかも、プロジェクトのスキルの `allowed-tools` は、フォルダを信頼する前から効きます。"
+        "en": "The skill pre-approves `npm install` for any name, and tells Claude to install whatever name an error or README offers. Together, a planted lookalike installs without asking. And a project skill's `allowed-tools` applies even in a folder you haven't trusted yourself: under a trusted parent folder, or in a `claude -p` run.",
+        "ja": "このスキルは、どんな名前でも `npm install` を事前に許可し、さらにエラーや README に出てきた名前をそのまま入れるよう Claude に指示しています。この2つがそろうと、仕込まれたそっくりさんが確認なしで入ります。しかも、プロジェクトのスキルの `allowed-tools` は、あなた自身が信頼していないフォルダでも効きます。親フォルダを信頼している場合や、`claude -p` の実行のときです。"
       },
       "file": ".claude/skills/fix-build/SKILL.md",
       "scope": "project",
