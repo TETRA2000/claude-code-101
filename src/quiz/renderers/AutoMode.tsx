@@ -9,18 +9,26 @@ import styles from './AutoMode.module.css';
 export function AutoMode({ item, answer, act }: RendererProps<AutoModeItem>) {
   const { ui, t } = useLang();
   const label: Record<AutoOutcome, string> = { runs: ui.autoRuns, blocked: ui.autoBlocked, asks: ui.autoAsks };
+  const terminal = item.surface === 'terminal';
+  const action = (
+    <div>
+      <span className={terminal ? styles.tool : styles.cardTool}>{item.action.tool}</span> <span className={styles.target}>{item.action.target}</span>
+    </div>
+  );
   return (
     <div className={styles.root}>
-      <p className={styles.caption}>{item.surface === 'terminal' ? ui.inTerminal : ui.inDesktop}</p>
+      <p className={styles.caption}>{terminal ? ui.inTerminal : ui.inDesktop}</p>
       <p className={styles.request}>
         <span className={styles.label}>{ui.autoRequestLabel}</span>
         <RichText text={t(item.request)} />
       </p>
-      <TerminalFrame title="claude">
-        <div>
-          <span className={styles.tool}>{item.action.tool}</span> <span className={styles.target}>{item.action.target}</span>
+      {terminal ? (
+        <TerminalFrame title="claude">{action}</TerminalFrame>
+      ) : (
+        <div className={styles.card} data-testid="desktop-card">
+          {action}
         </div>
-      </TerminalFrame>
+      )}
       <div className={styles.setup}>
         <h3 className={styles.label}>{ui.autoSetupLabel}</h3>
         <ul className={styles.list}>

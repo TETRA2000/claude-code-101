@@ -42,6 +42,11 @@ describe('Learn new card kinds', () => {
     setup(cards.findIndex((c) => c.demo?.kind === 'rules'));
     expect(screen.getByRole('textbox', { name: 'Rule' })).toBeInTheDocument();
   });
+  it('renders a modes demo with the Shift+Tab button and the desktop selector', () => {
+    setup(cards.findIndex((c) => c.demo?.kind === 'modes'));
+    expect(screen.getByRole('button', { name: 'Press Shift+Tab' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Mode selector' })).toBeInTheDocument();
+  });
   it('renders a closed details for a deep section', () => {
     setup(1);
     const summary = screen.getByText('Under the hood');

@@ -34,7 +34,7 @@ export function ModesDemo({ demo }: Props) {
             {ui.pressShiftTab}
           </button>
         </div>
-        <span className={styles.sr} role="status">
+        <span className="sr-only" role="status">
           {announce}
         </span>
       </div>

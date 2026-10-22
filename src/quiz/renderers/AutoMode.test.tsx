@@ -9,11 +9,11 @@ import type { AnswerState } from '../types';
 import { AutoMode } from './AutoMode';
 
 const item = fixtureParts.bodies.demo!.items.find((i) => i.type === 'automode') as AutoModeItem;
-const draw = (answer: Partial<AnswerState> = {}, lang: 'en' | 'ja' = 'en') => {
+const draw = (answer: Partial<AnswerState> = {}, lang: 'en' | 'ja' = 'en', it: AutoModeItem = item) => {
   const act = vi.fn();
   render(
     <LangProvider lang={lang}>
-      <AutoMode item={item} answer={{ ...freshAnswer(item), ...answer }} act={act} />
+      <AutoMode item={it} answer={{ ...freshAnswer(item), ...answer }} act={act} />
     </LangProvider>,
   );
   return act;
@@ -43,6 +43,20 @@ describe('AutoMode', () => {
   it('labels are localized', () => {
     draw({}, 'ja');
     expect(screen.getByRole('button', { name: UI.ja.autoBlocked })).toBeInTheDocument();
+  });
+
+  it('a terminal item draws a terminal frame; a desktop item draws a desktop card instead', () => {
+    draw();
+    expect(screen.getByText('claude')).toBeInTheDocument();
+    expect(screen.getByText(UI.en.inTerminal)).toBeInTheDocument();
+    expect(screen.queryByTestId('desktop-card')).toBeNull();
+  });
+
+  it('a desktop item renders no terminal frame', () => {
+    draw({}, 'en', { ...item, surface: 'desktop' });
+    expect(screen.queryByText('claude')).toBeNull();
+    expect(screen.getByTestId('desktop-card')).toHaveTextContent('git push origin feature-x');
+    expect(screen.getByText(UI.en.inDesktop)).toBeInTheDocument();
   });
 
   it('disables the options once checked', () => {

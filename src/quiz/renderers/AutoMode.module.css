@@ -9,3 +9,6 @@
 .opt { min-height: var(--touch); padding: 10px 16px; text-align: left; font: inherit; font-weight: 700; font-size: 16px; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-bottom-width: 5px; border-radius: var(--radius-tile); cursor: pointer; overflow-wrap: anywhere; }
 .opt[aria-pressed='true'] { background: var(--primary-soft); border-color: var(--primary); }
 .opt:disabled { cursor: default; }
+.card { background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: var(--radius-hero); padding: 14px 16px; font-family: var(--font-body); min-width: 0; }
+.cardTool { font-weight: 700; color: var(--primary); }
+.card .target { font-family: var(--font-code); font-size: 14px; }
