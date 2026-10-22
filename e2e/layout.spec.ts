@@ -33,6 +33,22 @@ test.describe('layout and safety', () => {
           await expectNoOverflow(page, `${unit.key} card ${i + 1} ${lang}`);
           await expectNoCopyButtons(page);
           await expectCopyOnlyInTryIt(page);
+          const label = `${unit.key} card ${i + 1} ${lang}`;
+          const tryIt = page.locator('[data-try]');
+          if ((await tryIt.count()) > 0) {
+            await tryIt.getByRole('tab', { name: ui.tabDesktop, exact: true }).click();
+            await expectNoOverflow(page, `${label} (Desktop tab)`);
+            await expectNoCopyButtons(page);
+            await expectCopyOnlyInTryIt(page);
+            await tryIt.getByRole('tab', { name: ui.tabTerminal, exact: true }).click();
+          }
+          const deep = page.locator('details').filter({ has: page.locator('summary', { hasText: ui.underTheHood }) });
+          if ((await deep.count()) > 0) {
+            await deep.locator('summary').click();
+            await expect(deep).toHaveAttribute('open', '');
+            await expectNoOverflow(page, `${label} (Under the hood open)`);
+            await deep.locator('summary').click();
+          }
           if (i < n - 1) await page.getByRole('button', { name: ui.next, exact: true }).click();
         }
       });

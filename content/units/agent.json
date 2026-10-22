@@ -12,7 +12,7 @@
           "ja": "あなたはふつうの言葉で頼みます。すると Claude は、公式ドキュメントが「コンテキストを集める、行動する、結果を確かめる」と呼ぶループで動きます。ファイルを読んだりコマンドを実行したりして、結果を見て、次の一歩を選ぶ。これを、仕事が終わったと思えるまで続けます。"
         },
         {
-          "en": "You can step in anytime. `Esc` stops Claude at once. A message you type is read as soon as its current tool calls finish.",
+          "en": "You can step in anytime. `Esc` stops Claude at once. A message you type is read as soon as Claude's current tool calls finish.",
           "ja": "あなたはいつでも割り込めます。`Esc` を押すと Claude はすぐに止まります。入力したメッセージは、実行中のツール呼び出しが終わりしだい読まれます。"
         }
       ],
@@ -33,8 +33,8 @@
       },
       "body": [
         {
-          "en": "Claude acts only through tools, and you'll see their names on screen. Files: `Read`, `Edit`, `Write`. Commands: `Bash` runs shell commands, and on a Mac it's also how Claude searches. Web: `WebFetch` gets a page, `WebSearch` searches. `Agent` starts a helper.",
-          "ja": "Claude が何かをするときは必ずツールを通し、その名前は画面に表示されます。ファイル：`Read`、`Edit`、`Write`。コマンド：`Bash` はシェルのコマンドを実行します。Mac では Claude が検索するときもこれを使います。Web：`WebFetch` はページを取得し、`WebSearch` は検索します。`Agent` は補助役を起動します。"
+          "en": "Claude acts only through tools, and you'll see their names on screen. Files: `Read`, `Edit`, `Write`. Commands: `Bash` runs shell commands, and on a Mac it's also how Claude searches. Web: `WebFetch` gets a page, `WebSearch` searches. `Agent` starts a helper, and `LSP` adds code intelligence (with a plugin).",
+          "ja": "Claude が何かをするときは必ずツールを通し、その名前は画面に表示されます。ファイル：`Read`、`Edit`、`Write`。コマンド：`Bash` はシェルのコマンドを実行します。Mac では Claude が検索するときもこれを使います。Web：`WebFetch` はページを取得し、`WebSearch` は検索します。`Agent` は補助役を起動し、`LSP` は（プラグインがあれば）コードの解析機能を加えます。"
         },
         {
           "en": "Add-ons bring more: MCP servers connect outside services (unit 7), skills, plugins and subagents add know-how and helpers (unit 8), and hooks run your own checks (unit 11).",
@@ -315,14 +315,14 @@
           },
           {
             "text": {
-              "en": "The desktop app reads the same CLAUDE.md files as the terminal. To list and edit them with `/memory`, use a terminal session.",
-              "ja": "デスクトップアプリは、ターミナルと同じ CLAUDE.md ファイルを読みます。`/memory` で一覧を見たり編集したりするには、ターミナルのセッションを使いましょう。"
+              "en": "The desktop app reads the same CLAUDE.md files as the terminal. To list and edit them with `/memory`, use a terminal session, or open the CLAUDE.md file in your editor.",
+              "ja": "デスクトップアプリは、ターミナルと同じ CLAUDE.md ファイルを読みます。`/memory` で一覧を見たり編集したりするにはターミナルのセッションを使うか、CLAUDE.md ファイルをエディタで開きましょう。"
             }
           }
         ],
         "check": {
-          "en": "`/context` shows a breakdown of what fills the window, and `/memory` lists your user and project CLAUDE.md, even ones you haven't created yet.",
-          "ja": "`/context` でウィンドウを埋めているものの内訳が表示され、`/memory` にはユーザー用とプロジェクト用の CLAUDE.md が、まだ作っていないものも含めて並びます。"
+          "en": "`/context` shows a breakdown of what fills the window. In the terminal, `/memory` lists your user and project CLAUDE.md, even ones you haven't created yet.",
+          "ja": "`/context` でウィンドウを埋めているものの内訳が表示されます。ターミナルでは、`/memory` にユーザー用とプロジェクト用の CLAUDE.md が、まだ作っていないものも含めて並びます。"
         }
       },
       "more": {
@@ -362,8 +362,8 @@
       },
       "body": [
         {
-          "en": "Before Claude edits a file, Claude Code saves a snapshot, called a checkpoint. Press `Esc` twice, or ask Claude, to rewind those edits.",
-          "ja": "Claude がファイルを編集する前に、Claude Code はその時点の控え（チェックポイント）を保存します。`Esc` を2回押すか Claude に頼めば、その編集を巻き戻せます。"
+          "en": "Before Claude edits a file, Claude Code saves a snapshot, called a checkpoint. In the terminal, press `Esc` twice with the prompt box empty, or ask Claude, to rewind those edits.",
+          "ja": "Claude がファイルを編集する前に、Claude Code はその時点の控え（チェックポイント）を保存します。ターミナルで入力欄が空のときに `Esc` を2回押すか、Claude に頼めば、その編集を巻き戻せます。"
         },
         {
           "en": "But checkpoints cover file edits only. Files changed by commands like `rm` aren't tracked. And nothing pulls back what reached the outside world: a sent message, a deployed site, a database change, an API call.",
@@ -711,8 +711,8 @@
       "opts": [
         {
           "text": {
-            "en": "Yes. Press Esc twice (or run /rewind) and choose to restore the code",
-            "ja": "はい。Esc を2回押して（または /rewind を実行して）、コードの復元を選ぶ"
+            "en": "Yes. With the prompt box empty, press Esc twice (or run /rewind) and choose to restore the code",
+            "ja": "はい。入力欄が空の状態で Esc を2回押して（または /rewind を実行して）、コードの復元を選ぶ"
           },
           "feedback": {
             "en": "Right. Claude Code snapshotted `styles.css` before the edit, so a rewind puts it back. You can also simply ask Claude to undo.",
@@ -1045,8 +1045,8 @@
             "ja": "問題ない。入力した指示は Claude Code が強制する"
           },
           "feedback": {
-            "en": "Typed instructions are context, not enforcement. Only permission rules are enforced by Claude Code.",
-            "ja": "入力した指示はコンテキストであって、強制力はありません。Claude Code が強制するのは権限ルールだけです。"
+            "en": "Typed instructions are context, not enforcement. Permission rules (and hooks, unit 11) are what Claude Code enforces.",
+            "ja": "入力した指示はコンテキストであって、強制力はありません。Claude Code が強制するのは、権限ルール（とフック、ユニット11）です。"
           }
         },
         {
@@ -1078,8 +1078,8 @@
         "ja": "これは元に戻せますか？"
       },
       "situation": {
-        "en": "You asked Claude to post a status update to your team's chat. It used a chat tool from an MCP server and sent the message, with the wrong launch date. You press `Esc` twice to open the rewind menu.",
-        "ja": "チームのチャットに進捗を投稿するよう Claude に頼みました。Claude は MCP サーバーのチャット用ツールを使ってメッセージを送りましたが、公開日が間違っていました。あなたは `Esc` を2回押して巻き戻しメニューを開きます。"
+        "en": "You asked Claude to post a status update to your team's chat. It used a chat tool from an MCP server and sent the message, with the wrong launch date. With the prompt box empty, you press `Esc` twice to open the rewind menu.",
+        "ja": "チームのチャットに進捗を投稿するよう Claude に頼みました。Claude は MCP サーバーのチャット用ツールを使ってメッセージを送りましたが、公開日が間違っていました。あなたは入力欄が空の状態で `Esc` を2回押し、巻き戻しメニューを開きます。"
       },
       "code": [
         "mcp__chat__send_message(\"#launch\", \"We launch on May 3!\")"
@@ -1121,8 +1121,8 @@
             "ja": "いいえ。ただし Claude に「取り消して」と頼めば、全員のチャットから消える"
           },
           "feedback": {
-            "en": "Asking Claude to undo uses the same checkpoints. At best Claude could try another tool, and people may have read the message already.",
-            "ja": "Claude に取り消しを頼んでも、使われるのは同じチェックポイントです。せいぜい Claude が別のツールを試せるくらいで、そのときにはもう誰かが読んでいるかもしれません。"
+            "en": "Asking Claude to undo can only change your files or try another tool. It can't pull back a message people may already have read.",
+            "ja": "Claude に取り消しを頼んでも、できるのはあなたのファイルを変えるか、別のツールを試すことだけです。もう誰かが読んだかもしれないメッセージを取り戻すことはできません。"
           }
         }
       ],

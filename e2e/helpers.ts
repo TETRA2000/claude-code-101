@@ -189,8 +189,19 @@ export async function expectNoCopyButtons(page: Page) {
   await expect(page.getByRole('button', { name: /copy|コピー/i }).and(chrome)).toHaveCount(0);
 }
 
-/** Every copy button sits inside a Try it card. */
+/**
+ * Every copy button (outside quoted mock documents) sits inside a Try it card and has its own
+ * accessible name, "Copy: <code>" / "コピー: <code>".
+ */
 export async function expectCopyOnlyInTryIt(page: Page) {
-  const outside = page.locator(':not([data-source] *):not([data-try] *)');
-  await expect(page.getByRole('button', { name: /copy|コピー/i }).and(outside)).toHaveCount(0);
+  const buttons = page.getByRole('button', { name: /copy|コピー/i }).and(page.locator(':not([data-source] *)'));
+  const n = await buttons.count();
+  const names: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const b = buttons.nth(i);
+    expect(await b.evaluate((el) => el.closest('[data-try]') !== null), `copy button ${i} is inside a Try it card`).toBe(true);
+    await expect(b).toHaveAccessibleName(/^(Copy|コピー): \S/);
+    names.push((await b.getAttribute('aria-label')) ?? '');
+  }
+  expect(new Set(names).size, `copy button names are distinct: ${names.join(' | ')}`).toBe(names.length);
 }
