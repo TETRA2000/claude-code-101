@@ -1,6 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
+import { choiceLabels, choicesOf } from '../src/content/approve';
+import { resolvePicks } from '../src/content/picks';
+import { outcomeOf } from '../src/rules/match';
+import { AUTO_OUTCOMES } from '../src/content/types';
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
 import { UI } from '../src/i18n/ui';
 import type { Lang } from '../src/i18n/lang';
@@ -11,10 +15,14 @@ export const READY = UNITS.filter((u) => u.status === 'ready');
 export const SOON = UNITS.filter((u) => u.status === 'soon');
 // Every content/units/<key>.json, so a new unit needs no edit here.
 const UNITS_DIR = new URL('../content/units/', import.meta.url);
-const BODIES: Record<string, UnitBody> = Object.fromEntries(
-  readdirSync(UNITS_DIR)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => [f.slice(0, -'.json'.length), JSON.parse(readFileSync(new URL(f, UNITS_DIR), 'utf8')) as UnitBody]),
+// A boss unit's items are resolved from its picks, the same way the app's loader does it.
+const BODIES: Record<string, UnitBody> = resolvePicks(
+  UNITS,
+  Object.fromEntries(
+    readdirSync(UNITS_DIR)
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => [f.slice(0, -'.json'.length), JSON.parse(readFileSync(new URL(f, UNITS_DIR), 'utf8')) as UnitBody]),
+  ),
 );
 export const bodyOf = (key: string): UnitBody => {
   const b = BODIES[key];
@@ -38,17 +46,19 @@ export async function expectNoOverflow(page: Page, where: string) {
   expect(o.scrollWidth, `horizontal overflow at ${where}`).toBeLessThanOrEqual(o.innerWidth);
 }
 
-/** Shared ARMED wait: Check/Continue ignore activation for ACTIVATION_GUARD_MS after appearing. */
-const GUARD_WAIT = 450;
+/** Shared ARMED wait: Check/Continue (and a new boss prompt) ignore activation for ACTIVATION_GUARD_MS after appearing. */
+export const GUARD_WAIT = 450;
 
 export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = false): Promise<void> {
   const ui = UI[lang];
   const btn = (name: string) => page.getByRole('button', { name, exact: true }).first().click();
   switch (item.type) {
     case 'approve': {
-      const labels = [ui.approveYes, item.alwaysLabel[lang], ui.approveNo];
-      const right = item.accept[0] ?? 'yes';
-      const idx = wrong ? [0, 1, 2].find((i) => !item.accept.includes(['yes', 'always', 'no'][i] as 'yes')) ?? 0 : ['yes', 'always', 'no'].indexOf(right);
+      // Same list as the answer buttons: choicesOf(item), labelled by choiceLabels.
+      const choices = choicesOf(item);
+      const labels = choiceLabels(item, lang);
+      const idx = wrong ? choices.findIndex((c) => !item.accept.includes(c)) : choices.indexOf(item.accept[0] ?? 'yes');
+      if (idx < 0) throw new Error(`${item.id}: no ${wrong ? 'wrong' : 'right'} choice`);
       await btn(labels[idx] ?? '');
       return;
     }
@@ -58,7 +68,11 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
       return;
     }
     case 'setup':
-    case 'combo': {
+    case 'combo':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist': {
       const i = wrong ? item.opts.findIndex((_, k) => !item.accept.includes(k)) : (item.accept[0] ?? 0);
       await btn(item.opts[i]?.text[lang] ?? '');
       return;
@@ -69,11 +83,31 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
       await page.locator('button[aria-pressed]').filter({ hasText: `${i + 1}. ${s?.tool} ${s?.target}` }).first().click();
       return;
     }
-    case 'hidden': {
+    case 'hidden':
+    case 'poisoned': {
       await page.getByRole('button', { name: ui.asClaudeSees, exact: true }).click();
       const lines = page.locator('[data-source] button');
       const picks = wrong ? [item.lines.findIndex((_, k) => !item.answer.includes(k))] : item.answer;
       for (const i of picks) await lines.nth(i).click();
+      return;
+    }
+    case 'settings':
+    case 'review':
+    case 'trim': {
+      const lines = page.locator('[data-settings-file] button');
+      const picks = wrong ? [item.lines.findIndex((_, k) => !item.answer.includes(k))] : item.answer;
+      for (const i of picks) await lines.nth(i).click();
+      return;
+    }
+    case 'precedence': {
+      const i = wrong ? item.opts.findIndex((_, k) => k !== item.answer) : item.answer;
+      await page.getByTestId('precedence-options').getByRole('button', { name: item.opts[i]?.text[lang] ?? '', exact: true }).click();
+      return;
+    }
+    case 'automode': {
+      const names = { runs: ui.autoRuns, blocked: ui.autoBlocked, asks: ui.autoAsks };
+      const o = wrong ? AUTO_OUTCOMES.find((x) => x !== item.answer)! : item.answer;
+      await btn(names[o]);
       return;
     }
     case 'order': {
@@ -106,6 +140,18 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
         await btn(p.left[lang]);
         await btn(p.right[lang]);
       }
+      return;
+    }
+    case 'rule': {
+      // Brute force over (list, pattern) with the same matcher the grader uses.
+      const pairs = item.lists.flatMap((list, l) => item.patterns.map((text, p) => ({ l, p, list, text })));
+      const pick = pairs.find(({ list, text }) => {
+        const rules = [...(item.existing ?? []), { list, text }];
+        return item.tests.every((t) => outcomeOf(rules, t.call) === t.want) !== wrong;
+      });
+      if (!pick) throw new Error(`${item.id}: no ${wrong ? 'wrong' : 'right'} rule`);
+      await btn(pick.list);
+      await btn(pick.text);
       return;
     }
     case 'decode': {
@@ -145,10 +191,27 @@ export async function openUnit(page: Page, unit: UnitMeta, lang: Lang, which: 'l
 }
 
 /**
- * No copy buttons anywhere. Lines inside a mock document ([data-source]) are quoted lesson text
- * (e.g. "website copy"), not controls, so they are excluded.
+ * No copy buttons outside Try it cards. Lines inside a mock document ([data-source]) are quoted lesson
+ * text (e.g. "website copy"), not controls, and Try it cards ([data-try]) may have copy buttons.
  */
 export async function expectNoCopyButtons(page: Page) {
-  const chrome = page.locator(':not([data-source] *)');
+  const chrome = page.locator(':not([data-source] *):not([data-try] *)');
   await expect(page.getByRole('button', { name: /copy|コピー/i }).and(chrome)).toHaveCount(0);
+}
+
+/**
+ * Every copy button (outside quoted mock documents) sits inside a Try it card and has its own
+ * accessible name, "Copy: <code>" / "コピー: <code>".
+ */
+export async function expectCopyOnlyInTryIt(page: Page) {
+  const buttons = page.getByRole('button', { name: /copy|コピー/i }).and(page.locator(':not([data-source] *)'));
+  const n = await buttons.count();
+  const names: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const b = buttons.nth(i);
+    expect(await b.evaluate((el) => el.closest('[data-try]') !== null), `copy button ${i} is inside a Try it card`).toBe(true);
+    await expect(b).toHaveAccessibleName(/^(Copy|コピー): \S/);
+    names.push((await b.getAttribute('aria-label')) ?? '');
+  }
+  expect(new Set(names).size, `copy button names are distinct: ${names.join(' | ')}`).toBe(names.length);
 }

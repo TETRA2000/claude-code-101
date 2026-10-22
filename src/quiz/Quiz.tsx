@@ -50,7 +50,7 @@ export function Quiz({ unitKey, items, onExit, onComplete, onLang, guardMs = ACT
     }
   }, [session, onComplete]);
 
-  if (session.phase === 'done') return <QuizDone session={session} onHome={onExit} onRetry={restart} />;
+  if (session.phase === 'done') return <QuizDone session={session} docs={content.unitByKey(unitKey)?.docs} onHome={onExit} onRetry={restart} />;
   if (session.phase === 'out') return <QuizOut onHome={onExit} onRetry={restart} />;
   return <QuizQuestion session={session} dispatch={dispatch} onExit={onExit} onLang={onLang} guardMs={guardMs} content={content} />;
 }

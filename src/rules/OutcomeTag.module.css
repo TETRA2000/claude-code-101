@@ -1,0 +1,4 @@
+.tag { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 4px 10px; border-radius: var(--radius-pill); border: 2px solid; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.runs { background: var(--correct-bg); border-color: var(--correct); color: var(--correct-edge); }
+.asks { background: var(--learn-bg); border-color: var(--learn-border); color: var(--learn-text); }
+.blocked { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong-edge); }

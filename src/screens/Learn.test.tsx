@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { LangProvider } from '../i18n/LangContext';
@@ -7,6 +7,7 @@ import { Learn } from './Learn';
 
 const unit = fixtureParts.units.find((u) => u.key === 'demo')!;
 const cards = fixtureParts.bodies.demo!.cards;
+const last = cards.length - 1;
 
 function setup(card: number) {
   const dispatch = vi.fn();
@@ -18,12 +19,55 @@ function setup(card: number) {
   return dispatch;
 }
 
+describe('Learn docs links', () => {
+  it('shows the card\'s Learn more link', () => {
+    setup(0);
+    const a = screen.getByRole('link', { name: /Learn more/ });
+    expect(a).toHaveAttribute('href', 'https://code.claude.com/docs/en/claude-directory');
+    expect(a).toHaveAttribute('target', '_blank');
+  });
+  it('shows the unit\'s official docs list on the last card only', () => {
+    setup(0);
+    expect(screen.queryByRole('heading', { name: 'Official docs' })).toBeNull();
+    cleanup();
+    setup(last);
+    expect(screen.getByRole('heading', { name: 'Official docs' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link')).toHaveLength(unit.docs!.length);
+    expect(screen.getByText('Read this for the safety model.')).toBeInTheDocument();
+  });
+});
+
+describe('Learn new card kinds', () => {
+  it('renders a rules demo with a labeled rule input', () => {
+    setup(cards.findIndex((c) => c.demo?.kind === 'rules'));
+    expect(screen.getByRole('textbox', { name: 'Rule' })).toBeInTheDocument();
+  });
+  it('renders a modes demo with the Shift+Tab button and the desktop selector', () => {
+    setup(cards.findIndex((c) => c.demo?.kind === 'modes'));
+    expect(screen.getByRole('button', { name: 'Press Shift+Tab' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Mode selector' })).toBeInTheDocument();
+  });
+  it('renders a closed details for a deep section', () => {
+    setup(1);
+    const summary = screen.getByText('Under the hood');
+    expect(summary.tagName).toBe('SUMMARY');
+    const details = summary.closest('details')!;
+    expect(details).not.toHaveAttribute('open');
+    expect(details).toHaveTextContent('How the prompt is built');
+  });
+  it('renders the Try it card with data-try', () => {
+    setup(1);
+    expect(screen.getByRole('heading', { name: 'Try it' })).toBeInTheDocument();
+    expect(document.querySelector('[data-try]')).not.toBeNull();
+  });
+});
+
 describe('Learn', () => {
   it('first card: no Back, shows key idea, Next goes to card 1', async () => {
     const dispatch = setup(0);
     expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
     expect(screen.getByText('Key idea')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', String(Math.round(100 / cards.length)));
     await userEvent.click(screen.getByRole('button', { name: 'Next' }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 1 });
   });
@@ -33,7 +77,7 @@ describe('Learn', () => {
     expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 0 });
   });
   it('last card finishes with practice or done', async () => {
-    const dispatch = setup(2);
+    const dispatch = setup(last);
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
     await userEvent.click(screen.getByRole('button', { name: 'Practice this' }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'finishLearn', practice: true });

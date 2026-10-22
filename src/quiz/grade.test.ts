@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { ApproveItem, ChoiceItem, Item } from '../content/types';
-import { fixtureContent } from '../test/fixtures';
+import { AUTO_OUTCOMES, type ApproveItem, type AutoModeItem, type ChoiceItem, type HiddenItem, type Item, type SettingsItem } from '../content/types';
+import { fixtureContent, wave2Items } from '../test/fixtures';
 import { canCheck, freshAnswer, isAutoGraded, isCorrect } from './grade';
 
 const items = fixtureContent.bodyOf('demo')!.items;
@@ -9,7 +9,7 @@ const ans = (item: Item, patch: Partial<ReturnType<typeof freshAnswer>>) => ({ .
 
 describe('isCorrect', () => {
   it('approve is correct iff the chosen button is accepted', () => {
-    const harmless = get<ApproveItem>('approve');
+    const harmless: ApproveItem = { ...get<ApproveItem>('approve'), choices: ['yes', 'always', 'no'] };
     expect(isCorrect(harmless, ans(harmless, { sel: 0 }))).toBe(true); // yes
     expect(isCorrect(harmless, ans(harmless, { sel: 1 }))).toBe(true); // always
     expect(isCorrect(harmless, ans(harmless, { sel: 2 }))).toBe(false); // no
@@ -17,6 +17,20 @@ describe('isCorrect', () => {
     expect(isCorrect(dangerous, ans(dangerous, { sel: 0 }))).toBe(false);
     expect(isCorrect(dangerous, ans(dangerous, { sel: 1 }))).toBe(false);
     expect(isCorrect(dangerous, ans(dangerous, { sel: 2 }))).toBe(true);
+  });
+
+  it('approve sel indexes the item\'s own choices (four-option Bash prompt)', () => {
+    const four: ApproveItem = { ...get<ApproveItem>('approve'), choices: ['yes', 'always', 'auto', 'no'], accept: ['no'] };
+    expect(isCorrect(four, ans(four, { sel: 3 }))).toBe(true); // no
+    expect(isCorrect(four, ans(four, { sel: 2 }))).toBe(false); // auto
+    expect(isCorrect(four, ans(four, { sel: 4 }))).toBe(false); // out of range
+  });
+
+  it('approve without choices defaults to yes / always / no', () => {
+    const { choices: _c, ...rest } = get<ApproveItem>('approve');
+    const three = rest as ApproveItem;
+    expect(isCorrect(three, ans(three, { sel: 1 }))).toBe(true); // always
+    expect(isCorrect(three, ans(three, { sel: 2 }))).toBe(false); // no
   });
 
   it('predict and chain compare sel with answer', () => {
@@ -34,12 +48,60 @@ describe('isCorrect', () => {
     }
   });
 
+  it('scopes, package, inside and allowlist grade like setup', () => {
+    for (const type of ['scopes', 'package', 'inside', 'allowlist'] as const) {
+      const it = wave2Items.find((i) => i.type === type) as ChoiceItem;
+      expect(canCheck(it, ans(it, {}))).toBe(false);
+      expect(canCheck(it, ans(it, { sel: 0 }))).toBe(true);
+      for (let i = 0; i < it.opts.length; i++) expect(isCorrect(it, ans(it, { sel: i }))).toBe(it.accept.includes(i));
+    }
+  });
+
+  it('poisoned grades like hidden: exactly the answer set', () => {
+    const it = wave2Items.find((i) => i.type === 'poisoned')!;
+    expect(canCheck(it, ans(it, {}))).toBe(false);
+    expect(canCheck(it, ans(it, { picked: [1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [0, 1] }))).toBe(false);
+  });
+
   it('hidden needs exactly the answer set, in any order', () => {
-    const base = get<Extract<Item, { type: 'hidden' }>>('hidden');
+    const base = get<HiddenItem>('hidden');
     const it = { ...base, answer: [1, 2] };
     expect(isCorrect(it, ans(it, { picked: [2, 1] }))).toBe(true);
     expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(false);
     expect(isCorrect(it, ans(it, { picked: [1, 2, 0] }))).toBe(false);
+  });
+
+  it('settings needs exactly the answer set, in any order (review and trim too)', () => {
+    const base = get<SettingsItem>('settings');
+    const it = { ...base, answer: [1, 2] };
+    expect(isCorrect(it, ans(it, { picked: [2, 1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(false);
+    expect(isCorrect(it, ans(it, { picked: [1, 2, 0] }))).toBe(false);
+    for (const type of ['review', 'trim'] as const) {
+      const other = { ...it, type };
+      expect(isCorrect(other, ans(other, { picked: [1, 2] }))).toBe(true);
+      expect(canCheck(other, freshAnswer(other))).toBe(false);
+      expect(canCheck(other, ans(other, { picked: [0] }))).toBe(true);
+    }
+  });
+
+  it('precedence compares sel with answer', () => {
+    const it = get<Extract<Item, { type: 'precedence' }>>('precedence');
+    expect(isCorrect(it, ans(it, { sel: it.answer }))).toBe(true);
+    expect(isCorrect(it, ans(it, { sel: it.answer + 1 }))).toBe(false);
+    expect(canCheck(it, ans(it, { sel: 0 }))).toBe(true);
+  });
+
+  it('automode compares the picked outcome (sel indexes AUTO_OUTCOMES) with the answer', () => {
+    const it = get<AutoModeItem>('automode');
+    expect(it.answer).toBe('runs');
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('runs') }))).toBe(true);
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('blocked') }))).toBe(false);
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('asks') }))).toBe(false);
+    expect(isCorrect(it, freshAnswer(it))).toBe(false);
+    expect(canCheck(it, ans(it, { sel: 2 }))).toBe(true);
   });
 
   it('order needs the steps order', () => {
@@ -54,7 +116,7 @@ describe('canCheck', () => {
     const p = get<Extract<Item, { type: 'predict' }>>('predict');
     expect(canCheck(p, freshAnswer(p))).toBe(false);
     expect(canCheck(p, ans(p, { sel: 0 }))).toBe(true);
-    const h = get<Extract<Item, { type: 'hidden' }>>('hidden');
+    const h = get<HiddenItem>('hidden');
     expect(canCheck(h, freshAnswer(h))).toBe(false);
     expect(canCheck(h, ans(h, { picked: [0] }))).toBe(true);
   });

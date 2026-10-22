@@ -5,13 +5,14 @@ import { useLang } from '../../i18n/LangContext';
 import type { RendererProps } from './Approve';
 import styles from './HiddenDoc.module.css';
 
-/** Decorative glyph per source; the frame is generic chrome, never a real product look. */
-const GLYPH: Record<DocSource, string> = { notes: '▤', web: '◎', design: '◫', readme: '≡', issue: '●', email: '✉' };
+/** Decorative glyph per source; the frame is generic chrome, never a real product look. `tools` is an MCP tool list. */
+const GLYPH: Record<DocSource, string> = { notes: '▤', web: '◎', design: '◫', readme: '≡', issue: '●', email: '✉', tools: '⚙' };
 
 export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
   const { ui, t } = useLang();
   const [view, setView] = useState<'you' | 'claude'>('you');
   const claude = view === 'claude';
+  const tools = item.source === 'tools';
   return (
     <div className={styles.root}>
       <div role="group" aria-label={ui.viewLabel} className={styles.views}>
@@ -28,7 +29,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
           <span className={styles.chromeTitle}>{t(item.title)}</span>
           <span className={styles.location}>{item.location}</span>
         </div>
-        <div className={claude ? styles.rawBody : styles.body}>
+        <div className={claude ? styles.rawBody : styles.body} role={tools ? 'list' : undefined}>
           {item.lines.map((l, i) => {
             const picked = answer.picked.includes(i);
             const isAnswer = item.answer.includes(i);
@@ -48,7 +49,7 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
             ]
               .filter(Boolean)
               .join(' ');
-            return (
+            const line = (
               <button
                 key={i}
                 type="button"
@@ -59,6 +60,11 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
                 data-concealed={concealed ? 'true' : undefined}
                 onClick={() => act({ type: 'togglePick', line: i })}
               >
+                {l.tool !== undefined && (
+                  <code className={styles.toolName} data-tool-name aria-hidden={concealed ? 'true' : undefined}>
+                    {l.tool}
+                  </code>
+                )}
                 <span className={styles.text} aria-hidden={concealed ? 'true' : undefined}>{text}</span>
                 {right && (
                   <span className={styles.mark}>
@@ -71,6 +77,13 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
                   </span>
                 )}
               </button>
+            );
+            return tools ? (
+              <div key={i} role="listitem">
+                {line}
+              </div>
+            ) : (
+              line
             );
           })}
         </div>

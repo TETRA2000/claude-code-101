@@ -3,12 +3,19 @@ import { Button } from '../components/Button';
 import { CloseIcon } from '../components/icons';
 import { LangSwitch } from '../components/LangSwitch';
 import { ProgressBar } from '../components/ProgressBar';
+import { DocLink } from '../components/DocLink';
 import { RichText } from '../components/RichText';
 import type { Card, Demo, UnitMeta } from '../content/types';
 import { useLang } from '../i18n/LangContext';
 import type { Action } from '../state/app';
+import { Deep } from './cards/Deep';
+import { DocsList } from './cards/DocsList';
+import { TryIt } from './cards/TryIt';
 import { AnatomyDemo } from './demos/AnatomyDemo';
 import { ContextDemo } from './demos/ContextDemo';
+import { ModesDemo } from './demos/ModesDemo';
+import { RulesDemo } from './demos/RulesDemo';
+import { SettingsDemo } from './demos/SettingsDemo';
 import { TerminalDemo } from './demos/TerminalDemo';
 import styles from './Learn.module.css';
 
@@ -27,6 +34,12 @@ function DemoView({ demo }: { demo: Demo }) {
       return <ContextDemo demo={demo} />;
     case 'anatomy':
       return <AnatomyDemo demo={demo} />;
+    case 'rules':
+      return <RulesDemo demo={demo} />;
+    case 'settings':
+      return <SettingsDemo demo={demo} />;
+    case 'modes':
+      return <ModesDemo demo={demo} />;
   }
 }
 
@@ -68,6 +81,10 @@ export function Learn({ unit, cards, card, dispatch }: Props) {
               </p>
             </aside>
           )}
+          {c.try && <TryIt data={c.try} />}
+          {c.deep && <Deep deep={c.deep} />}
+          {c.more && <DocLink docRef={c.more} />}
+          {last && <DocsList docs={unit.docs} />}
         </section>
         {c.demo && (
           <section className={styles.demo} key={c.id}>

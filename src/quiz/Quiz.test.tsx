@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -62,6 +62,19 @@ async function answerRight(user: ReturnType<typeof userEvent.setup>, id: string)
     case 'demo-order':
       await user.click(btn('Move down: The result goes into context'));
       await user.click(btn('Move down: The result goes into context'));
+      break;
+    case 'demo-rule':
+      await user.click(btn('deny'));
+      await user.click(btn('Bash(curl *)'));
+      break;
+    case 'demo-settings':
+      await user.click(btn(/bypassPermissions/));
+      break;
+    case 'demo-automode':
+      await user.click(btn('Runs'));
+      break;
+    case 'demo-precedence':
+      await user.click(within(screen.getByTestId('precedence-options')).getByRole('button', { name: 'plan' }));
       break;
     case 'demo-pairs':
       autoGraded = true;

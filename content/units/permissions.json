@@ -8,21 +8,17 @@
       },
       "body": [
         {
-          "en": "Before Claude Code edits a file, runs a command or contacts a website, it can stop and ask you first. That pause is a permission prompt: your one chance to look before the action happens.",
-          "ja": "Claude Code はファイルを編集する前、コマンドを実行する前、Webサイトにアクセスする前に、いったん止まってあなたに確認することがあります。この確認が「許可プロンプト」です。操作が実行される前に中身を確かめられる、ただ一度のチャンスです。"
+          "en": "A permission prompt is Claude Code asking before it acts. It shows the tool, the target (the exact command, file or web address), Claude's reason, and your answers.",
+          "ja": "許可プロンプトとは、Claude Code が動く前にあなたに確認する画面です。ツール、対象（実行されるコマンド、ファイル、Webアドレスそのもの）、Claude が書いた理由、そしてあなたの答え方が表示されます。"
         },
         {
-          "en": "Most prompts show the same three things: which tool Claude wants to use, the target (exactly what it will act on: a command, a file path, a web address), and Claude's reason. Here is the same request in the terminal and in the desktop app's Code tab.",
-          "ja": "ほとんどのプロンプトには、同じ3つが表示されます。Claude が使いたいツール、対象（何に対して動くのか。コマンド、ファイルのパス、Webアドレスなど）、そして Claude が書いた理由です。下は同じ依頼を、ターミナルとデスクトップアプリの Code タブで並べたものです。"
-        },
-        {
-          "en": "The terminal drawing follows Claude Code's real prompt. The desktop card is a simplified drawing: the real app's wording, and even which options it offers, may differ. Read both the same way: tool, then target, then reason.",
-          "ja": "ターミナル側は Claude Code の実際のプロンプトに沿って描いています。デスクトップ側のカードは簡略化した絵で、実際のアプリとは文言だけでなく、どの選択肢が出るかも違うことがあります。どちらも読み方は同じです。ツール、対象、理由の順に読みましょう。"
+          "en": "Read the target, not the reason. Slow down at red flags: paths outside the project (`~`, `/`), sending a file (`curl -d @file`), a download piped into `sh`, `rm -rf`, `sudo`, `chmod 777`, global installs (`npm install -g`), shell settings files like `~/.zshrc`, `git push --force`, and anything touching `.claude/` or `.mcp.json`.",
+          "ja": "理由ではなく、対象を読みましょう。次のような危険のサインがあったら手を止めます。プロジェクトの外を指すパス（`~`、`/`）、ファイルの送信（`curl -d @file`）、ダウンロードしたものを `sh` に流し込む操作、`rm -rf`、`sudo`、`chmod 777`、グローバルインストール（`npm install -g`）、`~/.zshrc` のようなシェルの設定ファイル、`git push --force`、そして `.claude/` や `.mcp.json` に触れるものすべてです。"
         }
       ],
       "key": {
-        "en": "Read the target, not the reason. Claude's explanation can sound fine while the command isn't.",
-        "ja": "理由ではなく、対象を読みましょう。Claude の説明がもっともらしくても、コマンドそのものが安全とは限りません。"
+        "en": "A red flag means read every character, not an automatic No.",
+        "ja": "危険のサインは「一文字ずつ読む」合図で、自動的に「いいえ」という意味ではありません。"
       },
       "demo": {
         "kind": "anatomy",
@@ -61,170 +57,348 @@
           {
             "part": "options",
             "text": {
-              "en": "Your answers. The terminal also offers one that switches to auto mode; skip it while you're learning.",
-              "ja": "あなたの答え方です。ターミナルには auto モードに切り替える選択肢もありますが、慣れるまでは選ばないでおきましょう。"
+              "en": "Your answers on a command prompt in Manual mode: up to four, since the auto-mode option appears only when auto mode is available. The next card explains each one.",
+              "ja": "Manual モードでのコマンドのプロンプトの答え方です。auto モードに切り替える選択肢は auto モードが使えるときだけ出るので、最大4つです。次のカードでひとつずつ説明します。"
             }
           }
         ]
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "permission-system"
       }
     },
     {
       "id": "permissions-card-answers",
       "title": {
-        "en": "Yes, don't ask again, or No",
-        "ja": "はい・今後は確認しない・いいえ"
+        "en": "The four answers",
+        "ja": "4つの答え方"
       },
       "body": [
         {
-          "en": "\"Yes\" allows this one action, once. The next time Claude wants to do it, it asks again.",
-          "ja": "「はい」は、この操作を今回だけ許可します。次に Claude が同じことをしようとすれば、また確認されます。"
+          "en": "`Yes` allows this action once. `Yes, and don't ask again` also saves a lasting rule, named in the option, like `npm test *`. `Yes, and switch to auto mode` hands later decisions to a checker model; skip it while learning. `No` blocks the action.",
+          "ja": "`Yes`（はい）は、この操作を今回だけ許可します。`Yes, and don't ask again`（今後は確認しない）は許可に加えて長く残るルールを保存し、選択肢にそのルール（たとえば `npm test *`）が書かれています。`Yes, and switch to auto mode`（auto モードに切り替えて許可）は、この先の判断をチェック役の別モデルに任せます。学んでいる間は選ばないでおきましょう。`No`（いいえ）は操作を止めます。"
         },
         {
-          "en": "\"Yes, and don't ask again\" also saves a rule, so read what the option names. For a command it shows the pattern it will save, like `npm test *`. That rule is permanent for this project: it's stored in `.claude/settings.local.json` and keeps applying in future sessions until you remove it with `/permissions`. For file edits, the approval lasts until the session ends.",
-          "ja": "「はい、今後は確認しない」は、許可に加えてルールを保存します。だから、その選択肢に何が書かれているかを読みましょう。コマンドの場合は、保存されるパターン（たとえば `npm test *`）が表示されます。このルールはこのプロジェクトでずっと有効です。`.claude/settings.local.json` に保存され、`/permissions` で削除するまで、次回以降のセッションでも効き続けます。ファイル編集の場合は、セッションが終わるまで有効です。"
+          "en": "Some prompts offer only a one-time Yes: saving a rule is offered only when the prompt can show everything it would allow.",
+          "ja": "その場かぎりの「はい」しか出ないプロンプトもあります。Claude Code は、ルールが許すことをすべてプロンプトに表示できるときだけ、ルールを保存する選択肢を出すからです。"
         },
         {
-          "en": "\"No\" blocks the action; with no note added, it also stops Claude's turn. On most terminal prompts you can press `Tab` on an answer to add a note, like \"show me the error instead\", so Claude knows what to do differently.",
-          "ja": "「いいえ」は操作を止めます。メモを添えなければ、Claude の作業もそこで中断します。ターミナルのほとんどのプロンプトでは、答えを選んだ状態で `Tab` を押すとメモを添えられます。「代わりにエラーを見せて」のように伝えれば、Claude は別のやり方を考えられます。"
+          "en": "`Esc` cancels. `Tab` on Yes or No adds a note; a No with a note tells Claude why and lets it keep working.",
+          "ja": "`Esc` でキャンセルできます。Yes か No を選んだ状態で `Tab` を押すと、メモを添えられます。メモつきの No は、Claude に理由を伝え、作業を続けさせます。"
         }
       ],
       "key": {
-        "en": "\"Don't ask again\" is a promise about the future. Save it only for narrow, routine commands.",
-        "ja": "「今後は確認しない」は、未来に対する約束です。範囲が狭く、いつもの作業だとわかるコマンドにだけ使いましょう。"
+        "en": "\"Don't ask again\" is a promise about the future.",
+        "ja": "「今後は確認しない」は、未来に対する約束です。"
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "add-a-comment-when-you-answer-a-permission-prompt"
+      }
+    },
+    {
+      "id": "permissions-card-saved",
+      "title": {
+        "en": "See and remove saved rules",
+        "ja": "保存したルールを確認して削除する"
+      },
+      "body": [
+        {
+          "en": "\"Don't ask again\" on a command or a web-fetch domain saves an allow rule in `.claude/settings.local.json` at your repository's root (the top folder git tracks; without git, the folder you started in). It applies in later sessions too. File-edit approvals end with the session. Approving `git status && npm test` saves a rule for each part that needed one: here, `npm test`.",
+          "ja": "コマンドや Web取得のドメインで「今後は確認しない」を選ぶと、リポジトリのルート（git が管理するフォルダのいちばん上。git を使っていなければ、起動したフォルダ）にある `.claude/settings.local.json` に allow（許可）ルールが保存されます。次回以降のセッションでも有効です。ファイル編集の許可は、セッションが終わると消えます。`git status && npm test` を許可すると、確認が必要だった部分ごとにルールが保存されます。この例では `npm test` です。"
+        },
+        {
+          "en": "Permission fatigue: after twenty prompts, you click Yes without reading. A broad rule like `curl *` then lets the next upload through unasked.",
+          "ja": "確認疲れ：プロンプトが20回も続くと、読まずに「はい」を押すようになります。そこで `curl *` のような広いルールを保存すると、次のアップロードは確認なしで通ってしまいます。"
+        }
+      ],
+      "key": {
+        "en": "Save only narrow, routine rules, and check the list now and then.",
+        "ja": "保存するのは、範囲が狭くいつもの作業のルールだけ。ときどき一覧を見直しましょう。"
+      },
+      "try": {
+        "terminal": [
+          {
+            "text": {
+              "en": "In a Claude Code session, type `/permissions` and press Enter.",
+              "ja": "Claude Code のセッションで `/permissions` と入力して Enter を押します。"
+            },
+            "code": "/permissions",
+            "copy": true
+          },
+          {
+            "text": {
+              "en": "The dialog lists every rule (Allow, Ask, Deny) and the settings file each one came from. Look for broad ones, like `Bash(curl *)`.",
+              "ja": "ダイアログに、すべてのルール（Allow＝許可、Ask＝確認、Deny＝拒否）と、それぞれがどの設定ファイルから来たかが表示されます。`Bash(curl *)` のような範囲の広いルールがないか探しましょう。"
+            }
+          },
+          {
+            "text": {
+              "en": "Select a rule you don't want and remove it. The change applies from Claude's next action.",
+              "ja": "不要なルールを選んで削除します。変更は Claude の次の操作から反映されます。"
+            }
+          }
+        ],
+        "desktopNote": {
+          "en": "In the desktop app's Code tab, `/permissions` replies \"isn't available in this environment\". Run it in a terminal session in the same project folder, or open `.claude/settings.local.json` in a text editor.",
+          "ja": "デスクトップアプリの Code タブでは、`/permissions` は「isn't available in this environment」（この環境では使えません）と返します。同じプロジェクトフォルダでターミナルのセッションを開いて実行するか、`.claude/settings.local.json` をテキストエディタで開きましょう。"
+        },
+        "check": {
+          "en": "The rule you removed is gone from the list, and the next matching action asks you again.",
+          "ja": "削除したルールが一覧から消え、次に同じ操作が来たときにまた確認されれば成功です。"
+        }
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "manage-permissions"
+      }
+    },
+    {
+      "id": "permissions-card-noask",
+      "title": {
+        "en": "What doesn't ask",
+        "ja": "確認されないもの"
+      },
+      "body": [
+        {
+          "en": "In Manual mode, two things never ask: reading files in your working folder (where you started Claude Code), and built-in look-only commands: `ls`, `cat`, `echo`, `pwd`, `head`, `tail`, `grep`, `find`, `wc`, `which`, `diff`, `stat`, `du`, `cd` and read-only `git`. Exceptions still ask, like `ps` options that print environment variables (where secrets can sit) and commands Claude Code can't fully parse.",
+          "ja": "Manual モードでも、確認されないものが2つあります。作業フォルダ（Claude Code を起動したフォルダ）の中のファイルを読むことと、組み込みの「見るだけ」のコマンド（`ls`、`cat`、`echo`、`pwd`、`head`、`tail`、`grep`、`find`、`wc`、`which`、`diff`、`stat`、`du`、`cd`、読み取りだけの `git`）です。ただし例外は確認されます。環境変数（秘密情報が入っていることがある）を表示する `ps` のオプションや、Claude Code が完全には読み解けないコマンドなどです。"
+        },
+        {
+          "en": "The working folder is a prompt, not a wall. Claude's file tools ask before reading or writing outside it, but an approved shell command can write anywhere you can.",
+          "ja": "作業フォルダは「確認」であって「壁」ではありません。Claude のファイル用ツールは、フォルダの外を読み書きする前に確認します。でも、一度許可したシェルのコマンドは、あなたが書き込める場所ならどこにでも書き込めます。"
+        }
+      ],
+      "more": {
+        "slug": "permissions",
+        "anchor": "read-only-commands"
       }
     },
     {
       "id": "permissions-card-modes",
       "title": {
-        "en": "What asks, and the permission modes",
-        "ja": "何が確認されるか、そして許可モード"
+        "en": "Permission modes",
+        "ja": "許可モード"
       },
       "body": [
         {
-          "en": "In Manual mode (\"ask before acting\"), Claude Code asks before it edits files, runs most commands, fetches most web pages or searches the web. Reading files inside your project doesn't ask; reading outside it does. A short list of look-only commands, like `ls`, `pwd` and `git status`, runs without asking. Network commands like `curl` are not on that list.",
-          "ja": "Manual モード（「実行前に確認」）では、Claude Code はファイルの編集、ほとんどのコマンドの実行、大半のWebページの取得、Web検索の前に確認します。プロジェクトの中のファイルを読むときは確認されませんが、外のファイルを読むときは確認されます。`ls`、`pwd`、`git status` のような「見るだけ」のコマンドは短いリストにまとめられていて、確認なしで動きます。`curl` のようなネットワークを使うコマンドは、このリストに入っていません。"
+          "en": "A mode sets what runs without asking. Manual asks before edits and commands. Accept edits also makes file edits and runs common file commands like `mkdir`, `mv` and `rm` in the folder. Plan reads and proposes a plan without editing. Auto lets a checker model decide instead of you; the docs warn it \"does not guarantee safety\".",
+          "ja": "モードは、何を確認なしで実行するかを決めます。Manual（手動）は編集やコマンドの前に確認します。Accept edits（編集を自動承認）は、ファイルの編集に加え、`mkdir`、`mv`、`rm` のようなよく使うファイル操作コマンドもフォルダ内なら確認なしで実行します。Plan（計画）は読んで計画を提案するだけで、編集はしません。Auto（自動）は、あなたの代わりにチェック役の別モデルが判断します。公式ドキュメントにも「安全を保証するものではない」とあります。"
         },
         {
-          "en": "Other modes ask less. Accept edits also edits files and runs common file commands like `rm` and `mv` inside the project without asking. Plan only reads and proposes a plan. Auto has a second AI model check commands and network actions instead of you: it blocks some clearly risky things, but the docs warn it \"does not guarantee safety\". It still allows things like reading `.env` and sending keys to their matching service. Bypass permissions asks nothing at all and is meant only for isolated containers or virtual machines, never your own computer.",
-          "ja": "ほかのモードは、確認が少なくなります。Accept edits は、ファイルの編集に加えて、`rm` や `mv` のようなよく使うファイル操作コマンドも、プロジェクト内なら確認なしで実行します。Plan は読むだけで、計画を提案します。Auto は、あなたの代わりに別のAIモデルがコマンドやネットワークを使う操作をチェックします。明らかに危険なものの一部は止めてくれますが、公式ドキュメントにも「安全を保証するものではない」と書かれています。たとえば `.env` を読み、そのキーを対応するサービスへ送ることは許されてしまいます。Bypass permissions は一切確認せず、隔離されたコンテナや仮想マシン専用のモードです。自分のパソコンで使うものではありません。"
-        },
-        {
-          "en": "Recent versions start terminal sessions in auto mode. While you're learning, switch to Manual. In the terminal, press `Shift+Tab` until the status line at the bottom says `⏸ manual mode on` (or start with `claude --permission-mode manual`). In the desktop app, pick Manual in the mode selector under the prompt box; the app remembers it for that folder.",
-          "ja": "最近のバージョンでは、ターミナルのセッションは auto モードで始まります。慣れるまでは Manual に切り替えましょう。ターミナルでは、画面下のステータス行に `⏸ manual mode on` と表示されるまで `Shift+Tab` を押します（`claude --permission-mode manual` で起動しても同じです）。デスクトップアプリでは、入力欄の下にあるモード選択から Manual を選びます。この選択はフォルダごとに記憶されます。"
+          "en": "Two more: Don't ask (terminal only) runs only pre-approved tools and refuses the rest. Bypass permissions asks nothing, and is only for isolated containers or virtual machines, never your own computer.",
+          "ja": "ほかに2つあります。Don't ask（確認しない）はターミナル専用で、事前に許可したツールだけを実行し、それ以外は断ります。Bypass permissions（許可をスキップ）は何も確認せず、隔離されたコンテナや仮想マシン専用です。自分のパソコンでは決して使いません。"
         }
       ],
-      "key": {
-        "en": "Learn in Manual. Auto is a convenience, not a guarantee, and Bypass permissions is never for your own computer.",
-        "ja": "慣れるまでは Manual で。Auto は便利な機能であって保証ではありません。Bypass permissions は自分のパソコンでは決して使わないこと。"
+      "demo": {
+        "kind": "modes",
+        "modes": [
+          {
+            "mode": "auto",
+            "status": "⏵⏵ auto mode on",
+            "desktop": "Auto",
+            "runs": [
+              {
+                "en": "Reads and file edits in the working folder",
+                "ja": "作業フォルダ内の読み取りとファイル編集"
+              },
+              {
+                "en": "Commands and web actions the checker model allows",
+                "ja": "チェック役のモデルが通したコマンドやWebの操作"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Anything an ask rule covers",
+                "ja": "ask（確認）ルールに当てはまるもの"
+              },
+              {
+                "en": "After 3 blocks in a row, it pauses and asks you again",
+                "ja": "3回続けてブロックすると一時停止し、またあなたに確認する"
+              }
+            ]
+          },
+          {
+            "mode": "default",
+            "status": "⏸ manual mode on",
+            "desktop": "Manual",
+            "runs": [
+              {
+                "en": "Reading files in the working folder",
+                "ja": "作業フォルダ内のファイルの読み取り"
+              },
+              {
+                "en": "Look-only commands like `ls` and `cat`",
+                "ja": "`ls` や `cat` のような見るだけのコマンド"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Every file edit",
+                "ja": "すべてのファイル編集"
+              },
+              {
+                "en": "Other commands",
+                "ja": "それ以外のコマンド"
+              },
+              {
+                "en": "Web fetches and searches",
+                "ja": "Webページの取得と検索"
+              },
+              {
+                "en": "Reads outside the working folder",
+                "ja": "作業フォルダの外の読み取り"
+              }
+            ]
+          },
+          {
+            "mode": "acceptEdits",
+            "status": "⏵⏵ accept edits on",
+            "desktop": "Accept edits",
+            "runs": [
+              {
+                "en": "Reads and file edits in the working folder",
+                "ja": "作業フォルダ内の読み取りとファイル編集"
+              },
+              {
+                "en": "Common file commands like `mkdir`, `mv` and `rm` there",
+                "ja": "そこでの `mkdir`、`mv`、`rm` のようなよく使うファイル操作"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Other commands",
+                "ja": "それ以外のコマンド"
+              },
+              {
+                "en": "Writes to protected files like `.zshrc`",
+                "ja": "`.zshrc` のような保護されたファイルへの書き込み"
+              }
+            ]
+          },
+          {
+            "mode": "plan",
+            "status": "⏸ plan mode on",
+            "desktop": "Plan",
+            "runs": [
+              {
+                "en": "Reading and exploring",
+                "ja": "読み取りと調査"
+              },
+              {
+                "en": "Commands the checker model allows, when auto mode is available",
+                "ja": "auto モードが使えるときは、チェック役のモデルが通したコマンド"
+              }
+            ],
+            "asks": [
+              {
+                "en": "No edits until you approve the plan",
+                "ja": "計画を承認するまで編集はしない"
+              },
+              {
+                "en": "Without auto mode, commands beyond the look-only set",
+                "ja": "auto モードがなければ、見るだけ以外のコマンド"
+              }
+            ]
+          }
+        ]
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "available-modes"
       }
     },
     {
-      "id": "permissions-card-redflags",
+      "id": "permissions-card-manual",
       "title": {
-        "en": "Red flags: slow down and read",
-        "ja": "危険のサイン：手を止めて読む"
+        "en": "Switch to Manual",
+        "ja": "Manual に切り替える"
       },
       "body": [
         {
-          "en": "Most prompts are routine. A few patterns in the target mean \"stop and read every character\".",
-          "ja": "ほとんどのプロンプトは、いつもの作業です。ただし、対象に次のようなパターンがあったら「手を止めて、一文字ずつ読む」合図です。"
-        },
-        {
-          "en": "Paths outside the project: `~` (your home folder), `/`, `~/.ssh`, `~/.zshrc`. Sending files: `curl -d @file`, uploads. Running downloads: `curl … | sh`. Deleting: `rm -rf`. Extra power: `sudo`, `chmod 777`, global installs like `npm install -g`. Rewriting shared history: `git push --force`.",
-          "ja": "プロジェクトの外を指すパス：`~`（ホームフォルダ）、`/`、`~/.ssh`、`~/.zshrc`。ファイルの送信：`curl -d @file`、アップロード。ダウンロードしたものの実行：`curl … | sh`。削除：`rm -rf`。強い権限：`sudo`、`chmod 777`、`npm install -g` のようなグローバルインストール。共有している履歴の書き換え：`git push --force`。"
-        },
-        {
-          "en": "A red flag isn't an automatic No. Ask yourself: did my task need this? Does the target match what I asked for? If not, say No and tell Claude what to do instead.",
-          "ja": "危険のサインは、自動的に「いいえ」という意味ではありません。自分に問いかけましょう。この作業に本当に必要？　対象は自分が頼んだことと合っている？　合っていなければ「いいえ」を選び、代わりにどうしてほしいかを Claude に伝えます。"
+          "en": "New terminal sessions start in auto mode, where a checker model approves most actions and you rarely see a prompt. While you learn, switch to Manual so every edit and command reaches you first.",
+          "ja": "新しいターミナルのセッションは auto モードで始まります。チェック役のモデルがほとんどの操作を通すので、プロンプトはめったに表示されません。学んでいる間は Manual に切り替えて、すべての編集とコマンドを先に見せてもらいましょう。"
         }
       ],
       "key": {
-        "en": "Claude's reason can sound fine while the target isn't. The target is what actually happens.",
-        "ja": "Claude の理由がもっともらしくても、対象が安全とは限りません。実際に起きるのは、対象に書かれていることです。"
+        "en": "Learn in Manual. Auto is a convenience, not a guarantee.",
+        "ja": "慣れるまでは Manual で。Auto は便利な機能であって、保証ではありません。"
+      },
+      "try": {
+        "terminal": [
+          {
+            "text": {
+              "en": "Press `Shift+Tab` until the status line at the bottom says `⏸ manual mode on`. From auto mode, that is one press.",
+              "ja": "画面下のステータス行に `⏸ manual mode on` と表示されるまで `Shift+Tab` を押します。auto モードからなら1回です。"
+            }
+          },
+          {
+            "text": {
+              "en": "To start every session in Manual, open `~/.claude/settings.json` (your user settings) and add this. If the file already has a `\"permissions\"` block, add only the `\"defaultMode\"` line inside it.",
+              "ja": "毎回 Manual で始めるには、`~/.claude/settings.json`（ユーザー設定）を開いて、次の内容を加えます。ファイルにすでに `\"permissions\"` のブロックがあれば、その中に `\"defaultMode\"` の行だけを足します。"
+            },
+            "code": "{\n  \"permissions\": {\n    \"defaultMode\": \"manual\"\n  }\n}",
+            "copy": true
+          },
+          {
+            "text": {
+              "en": "On some plans, Claude Code asks once whether to change this setting to auto mode. Decline to keep Manual.",
+              "ja": "プランによっては、Claude Code がこの設定を auto モードに変えるか一度だけ聞いてきます。断れば Manual のままです。"
+            }
+          }
+        ],
+        "desktop": [
+          {
+            "text": {
+              "en": "In the Code tab, open the mode selector in the row under the prompt box and pick Manual.",
+              "ja": "Code タブで、入力欄の下の行にあるモード選択を開き、Manual を選びます。"
+            }
+          },
+          {
+            "text": {
+              "en": "The app remembers your pick for this folder. Each file change now shows a diff with Accept and Reject buttons.",
+              "ja": "この選択はフォルダごとに記憶されます。これでファイルを変更するたびに、差分と Accept（承認）・Reject（却下）のボタンが表示されます。"
+            }
+          }
+        ],
+        "check": {
+          "en": "The terminal status line says `⏸ manual mode on` (the next new session too, if you edited the settings), and the desktop selector shows Manual.",
+          "ja": "ターミナルのステータス行に `⏸ manual mode on` と表示され（設定を編集した場合は次の新しいセッションでも）、デスクトップのモード選択に Manual と表示されていれば成功です。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "switch-permission-modes"
       }
     },
     {
-      "id": "permissions-card-fatigue",
+      "id": "permissions-card-protected",
       "title": {
-        "en": "Permission fatigue",
-        "ja": "確認疲れ"
+        "en": "Protected files, critical paths, trust",
+        "ja": "保護されたファイル、重要なパス、信頼"
       },
       "body": [
         {
-          "en": "After twenty routine prompts, your hand starts pressing Yes before your eyes finish reading. That's permission fatigue, and it's exactly when a bad request slips through.",
-          "ja": "いつもの確認が20回も続くと、目で読み終わる前に手が「はい」を押すようになります。これが「確認疲れ」です。そして危険な依頼がすり抜けるのは、まさにそういうときです。"
+          "en": "Writes to protected files and folders always ask in Manual and Accept edits; allow rules can't skip that: `.git`, `.claude`, shell files like `.zshrc`, `.npmrc`, `.gitconfig`, `.mcp.json` and more. No rule can pre-approve an `rm` that Claude Code recognizes as deleting `/`, your home folder or your working folder, though the check can miss some forms.",
+          "ja": "保護されたファイルやフォルダへの書き込みは、Manual と Accept edits では必ず確認され、allow ルールでも省けません。`.git`、`.claude`、`.zshrc` のようなシェルの設定ファイル、`.npmrc`、`.gitconfig`、`.mcp.json` などです。`/`（ルート）、ホームフォルダ、作業フォルダを消すと Claude Code が判断した `rm` は、どんなルールでも事前に許可できません。ただし、この判定は見逃す書き方もあります。"
         },
         {
-          "en": "Fight it by making prompts easier to read, not by turning them off: save narrow rules (like `npm run build *`) for commands you approve over and over, give Claude smaller tasks, and take a break when you notice you're skimming.",
-          "ja": "対策は、確認をオフにすることではなく、読みやすくすることです。何度も許可するコマンドには範囲の狭いルール（たとえば `npm run build *`）を保存する。Claude に頼む作業を小さく区切る。流し読みしている自分に気づいたら、ひと休みする。"
-        },
-        {
-          "en": "Fatigue works the other way too. Saying No to everything blocks routine work, and soon you stop reading prompts at all. The goal is a quick Yes for the routine and a careful look at red flags.",
-          "ja": "逆向きの確認疲れもあります。何でも「いいえ」にすると、いつもの作業まで止まってしまい、やがてプロンプトを読まなくなります。目指すのは、いつもの作業にはさっと「はい」、危険のサインにはじっくり目を通すことです。"
+          "en": "A folder's first opening shows a trust dialog listing what its settings would allow. Start Claude Code in a project folder: in your home folder, trust is never saved.",
+          "ja": "はじめて開くフォルダでは、そのフォルダの設定が何を許可するかを並べた「信頼」のダイアログが表示されます。Claude Code はプロジェクトのフォルダで起動しましょう。ホームフォルダで起動すると、信頼の選択は保存されません。"
         }
       ],
       "key": {
-        "en": "Fewer, clearer prompts beat no prompts. Never cure fatigue with Bypass permissions.",
-        "ja": "確認をなくすより、少なく、読みやすくするほうがずっと安全です。確認疲れを Bypass permissions で解決してはいけません。"
+        "en": "A prompt on a protected file is a checkpoint: read it twice.",
+        "ja": "保護されたファイルのプロンプトは、大事な関所です。二度読みましょう。"
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "protected-paths"
       }
     }
   ],
   "items": [
-    {
-      "id": "permissions-approve-1",
-      "type": "approve",
-      "surface": "terminal",
-      "prompt": {
-        "en": "Claude wants to do this. What do you press?",
-        "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
-      },
-      "explain": {
-        "en": "Read the target: `git status` only looks, and it matches your request. In real Claude Code it's on the short built-in list of look-only commands, so it usually runs without asking at all. When something this routine does ask, Yes is fine.",
-        "ja": "対象を読みましょう。`git status` は見るだけのコマンドで、あなたの依頼とも合っています。実際の Claude Code では、組み込みの「見るだけ」のコマンドのリストに入っているので、ふつうは確認なしで実行されます。これくらいいつもの作業なら、確認されても「はい」で大丈夫です。"
-      },
-      "task": {
-        "en": "Which files have I changed today?",
-        "ja": "今日、どのファイルを変更したか教えて。"
-      },
-      "narration": {
-        "en": "I'll ask git, the project's version history tool, which files have changed.",
-        "ja": "プロジェクトの変更履歴を管理するツール git に、どのファイルが変わったかを聞いてみます。"
-      },
-      "tool": "Bash",
-      "target": "git status",
-      "reason": {
-        "en": "Show changed files",
-        "ja": "変更されたファイルを表示します"
-      },
-      "alwaysLabel": {
-        "en": "Yes, and don't ask again for: git status *",
-        "ja": "はい、今後 git status * は確認しない"
-      },
-      "accept": [
-        "yes",
-        "always"
-      ],
-      "outcomes": {
-        "yes": {
-          "feedback": {
-            "en": "Right. `git status` only lists which files changed. It doesn't change, delete or send anything.",
-            "ja": "正解です。`git status` は変更されたファイルを一覧にするだけです。何かを変えたり、消したり、送ったりはしません。"
-          }
-        },
-        "always": {
-          "feedback": {
-            "en": "Fine too. The saved rule covers only `git status` in this project, a look-only command. Narrow rules like this are a good way to cut down routine prompts.",
-            "ja": "これも問題ありません。保存されるルールは、このプロジェクトでの `git status` だけ。見るだけのコマンドです。こうした範囲の狭いルールは、いつもの確認を減らす良い方法です。"
-          }
-        },
-        "no": {
-          "feedback": {
-            "en": "This one was safe: `git status` only lists changed files, exactly what you asked for. Blocking routine work is its own trap. Claude can't help, and you start treating every prompt as noise.",
-            "ja": "これは安全でした。`git status` は変更されたファイルを一覧にするだけで、まさにあなたが頼んだことです。いつもの作業を止めるのも、それ自体が落とし穴です。Claude は手伝えなくなり、あなたもプロンプトを雑音のように扱い始めてしまいます。"
-          }
-        }
-      }
-    },
     {
       "id": "permissions-approve-2",
       "type": "approve",
@@ -255,6 +429,12 @@
         "en": "Yes, and don't ask again for: npm run build *",
         "ja": "はい、今後 npm run build * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "yes",
         "always"
@@ -270,6 +450,12 @@
           "feedback": {
             "en": "Good choice for a command you'll see again and again. It saves one narrow rule, `Bash(npm run build *)`, in `.claude/settings.local.json` for this project. Future builds run without asking; everything else still asks. You can review saved rules with `/permissions`.",
             "ja": "何度も出てくるコマンドには良い選択です。このプロジェクトの `.claude/settings.local.json` に、範囲の狭いルール `Bash(npm run build *)` がひとつ保存されます。今後のビルドは確認なしで動き、それ以外は引き続き確認されます。保存したルールは `/permissions` で見直せます。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The command itself was fine: `npm run build` just runs your project's own build script. But this course asks you to stay in Manual mode while you learn. Switching to auto mode would also stop most prompts like this one from reaching you: a classifier model would decide instead of you.",
+            "ja": "コマンド自体は問題ありませんでした。`npm run build` はプロジェクト自身のビルド用スクリプトを実行するだけです。ただ、このコースでは、学んでいる間は Manual モードのままにしておきましょう。auto モードに切り替えると、今後はこうした確認のほとんどがあなたに表示されなくなり、あなたの代わりに分類モデルが判断します。"
           }
         },
         "no": {
@@ -365,6 +551,12 @@
         "en": "Yes, and don't ask again for: curl *",
         "ja": "はい、今後 curl * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "no"
       ],
@@ -387,6 +579,16 @@
           "feedback": {
             "en": "Same leak: `-d @.env` uploaded your `.env` file with your API keys to paste.rs, a public website. Worse, you saved a rule for every `curl` in this project, so the next time Claude sends something, it won't ask.",
             "ja": "同じ流出です。`-d @.env` で、APIキーの入った `.env` ファイルが公開サイト paste.rs にアップロードされました。さらに悪いことに、このプロジェクトのすべての `curl` を許可するルールを保存したので、次に Claude が何かを送るときは確認されません。"
+          }
+        },
+        "auto": {
+          "headline": {
+            "en": "Developer's API keys posted to public paste site",
+            "ja": "開発者のAPIキー、公開ペーストサイトに流出"
+          },
+          "feedback": {
+            "en": "Same leak: `-d @.env` uploaded your `.env` file with your API keys to paste.rs, a public website. And you switched to auto mode, so from now on most prompts like this one won't reach you: a classifier model decides instead of you, and the docs warn that auto mode does not guarantee safety.",
+            "ja": "同じ流出です。`-d @.env` で、APIキーの入った `.env` ファイルが公開サイト paste.rs にアップロードされました。さらに auto モードに切り替えたので、今後はこうした確認のほとんどがあなたに表示されなくなります。代わりに分類モデルが判断しますが、ドキュメントにもあるとおり、auto モードは安全を保証しません。"
           }
         },
         "no": {
@@ -490,6 +692,116 @@
       ]
     },
     {
+      "id": "permissions-approve-1",
+      "type": "approve",
+      "surface": "desktop",
+      "prompt": {
+        "en": "Claude wants to do this. What do you press?",
+        "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
+      },
+      "explain": {
+        "en": "Reading outside the working folder asks, so you get to check the path. This is the one file you named. Approve it once: the \"don't ask again\" option here names your whole Downloads folder, not just this file.",
+        "ja": "作業フォルダの外を読むときは確認されるので、パスを確かめられます。これはあなたが名前を挙げたファイルそのものです。今回だけ許可しましょう。ここでの「今後は確認しない」の選択肢には、このファイルだけでなくダウンロードフォルダ全体が書かれています。"
+      },
+      "task": {
+        "en": "Use the client brief I saved in Downloads (client-brief.md) to write the About page.",
+        "ja": "ダウンロードに保存したクライアントの資料（client-brief.md）をもとに、About ページを書いて。"
+      },
+      "narration": {
+        "en": "The brief is outside this project, so I'll read it from your Downloads folder.",
+        "ja": "資料はこのプロジェクトの外にあるので、ダウンロードフォルダから読み込みます。"
+      },
+      "tool": "Read",
+      "target": "~/Downloads/client-brief.md",
+      "reason": {
+        "en": "Read the client brief you mentioned",
+        "ja": "あなたが挙げたクライアントの資料を読みます"
+      },
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for reading ~/Downloads/",
+        "ja": "はい、今後 ~/Downloads/ の読み取りは確認しない"
+      },
+      "accept": [
+        "yes"
+      ],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Right. The path is exactly the file you named, and reading it is what the task needs. The next read outside the project will ask again.",
+            "ja": "正解です。パスはあなたが名前を挙げたファイルそのもので、読むことが作業に必要です。プロジェクトの外を次に読むときも、また確認されます。"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "Reading this file is fine, but this option names all of `~/Downloads/`, where tax forms, contracts and other private files tend to pile up. Approve this one file with plain Yes.",
+            "ja": "このファイルを読むのは問題ありません。でもこの選択肢に書かれているのは `~/Downloads/` 全体です。そこには税金の書類や契約書など、私的なファイルがたまりがちです。このファイル1つだけを、ただの「はい」で許可しましょう。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "This was safe: it's the exact file you asked Claude to use. A path outside the project is a reason to check, and here the check passes. Saying No just leaves Claude without the brief.",
+            "ja": "これは安全でした。あなたが使うよう頼んだファイルそのものです。プロジェクトの外のパスは確かめる理由になりますが、今回は確かめた結果、問題ありません。「いいえ」を選んでも、Claude が資料を読めなくなるだけです。"
+          }
+        }
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "working-directories"
+      }
+    },
+    {
+      "id": "permissions-approve-10",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": {
+        "en": "Claude wants to do this. What do you press?",
+        "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
+      },
+      "explain": {
+        "en": "This prompt offers only a one-time Yes. Some prompts do: Claude Code offers to save a rule only when the prompt can show everything the rule would allow, and a tool's maker can mark it to ask on every call. The invite matches your request, so Yes.",
+        "ja": "このプロンプトには、その場かぎりの「はい」しかありません。こういうプロンプトもあります。Claude Code は、ルールが許すことをすべて表示できるときだけルールの保存を提案しますし、ツールの作り手が「毎回確認する」と指定することもできます。招待はあなたの依頼どおりなので「はい」です。"
+      },
+      "task": {
+        "en": "Put a 30-minute portfolio review with Sam on my calendar for Friday at 10.",
+        "ja": "金曜10時に、Sam とのポートフォリオレビューを30分、カレンダーに入れて。"
+      },
+      "narration": {
+        "en": "I'll create the event with the calendar tool you connected, and invite Sam.",
+        "ja": "あなたが接続したカレンダーのツールで予定を作り、Sam を招待します。"
+      },
+      "tool": "mcp__calendar__create_event",
+      "target": "title: \"Portfolio review\" · Fri 10:00–10:30 · invite: sam@example.com",
+      "reason": {
+        "en": "Create the review meeting",
+        "ja": "レビューの予定を作成します"
+      },
+      "choices": [
+        "yes",
+        "no"
+      ],
+      "accept": [
+        "yes"
+      ],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Right. Title, time and guest all match what you asked. With no \"don't ask again\" here, the next event will ask too, and that's fine: it's a one-second read.",
+            "ja": "正解です。タイトル、時間、招待する相手、すべて依頼どおりです。「今後は確認しない」がないので次の予定も確認されますが、それで大丈夫。読むのは一瞬です。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "This was the invite you asked for: right title, right time, right guest. A prompt with fewer options isn't a warning sign. Saying No just leaves the meeting unbooked.",
+            "ja": "これは、あなたが頼んだとおりの招待でした。タイトルも時間も相手も合っています。選択肢が少ないプロンプトは、危険のサインではありません。「いいえ」を選んでも、予定が入らないだけです。"
+          }
+        }
+      },
+      "more": {
+        "slug": "permissions",
+        "anchor": "permission-system"
+      }
+    },
+    {
       "id": "permissions-approve-5",
       "type": "approve",
       "surface": "desktop",
@@ -542,6 +854,68 @@
           }
         }
       }
+    },
+    {
+      "id": "permissions-setup-1",
+      "type": "setup",
+      "surface": "terminal",
+      "prompt": {
+        "en": "What do you do first?",
+        "ja": "最初に何をしますか？"
+      },
+      "explain": {
+        "en": "Recent versions start terminal sessions in auto mode. While you're learning, switch to Manual (\"ask before acting\") so every edit and command is shown to you first.",
+        "ja": "最近のバージョンでは、ターミナルのセッションは auto モードで始まります。慣れるまでは Manual（「実行前に確認」）に切り替えて、すべての編集とコマンドを先に見せてもらいましょう。"
+      },
+      "scenario": {
+        "en": "You've just started Claude Code in the terminal, in your real project folder. The status line at the bottom says `⏵⏵ auto mode on`. You're still learning what Claude does.",
+        "ja": "本物のプロジェクトフォルダで、ターミナルから Claude Code を起動したところです。画面下のステータス行には `⏵⏵ auto mode on` と表示されています。あなたはまだ、Claude が何をするのかを学んでいる最中です。"
+      },
+      "opts": [
+        {
+          "text": {
+            "en": "Press Shift+Tab until the status line says \"manual mode on\"",
+            "ja": "ステータス行が「manual mode on」になるまで Shift+Tab を押す"
+          },
+          "feedback": {
+            "en": "Right. From auto mode, one press of `Shift+Tab` takes you to Manual (`⏸ manual mode on`). Now Claude asks before editing files or running commands, and you read each request. You can also start in it with `claude --permission-mode manual`.",
+            "ja": "正解です。auto モードからなら、`Shift+Tab` を1回押せば Manual（`⏸ manual mode on`）になります。これで Claude はファイルの編集やコマンドの実行の前に確認するので、あなたは一つひとつの依頼を読めます。`claude --permission-mode manual` で、最初から Manual で起動することもできます。"
+          }
+        },
+        {
+          "text": {
+            "en": "Leave auto mode on: its safety checks will catch anything risky",
+            "ja": "auto モードのままにする。安全チェックが危険なものを全部止めてくれる"
+          },
+          "feedback": {
+            "en": "Auto mode has a second AI model check actions instead of you. It blocks some clearly risky things, but the docs warn it \"does not guarantee safety\", and you'd never see what it let through. While learning, you want to see each request.",
+            "ja": "auto モードでは、あなたの代わりに別のAIモデルが操作をチェックします。明らかに危険なものの一部は止めますが、公式ドキュメントにも「安全を保証するものではない」とあり、何が通されたのかをあなたが見ることもありません。学んでいる間は、一つひとつの依頼を自分の目で見たいところです。"
+          }
+        },
+        {
+          "text": {
+            "en": "Switch to Bypass permissions so nothing interrupts",
+            "ja": "作業が中断されないよう Bypass permissions に切り替える"
+          },
+          "feedback": {
+            "en": "Never on your own computer. Bypass permissions runs everything without asking and is meant only for isolated containers or virtual machines (throwaway computers inside your computer).",
+            "ja": "自分のパソコンでは絶対にだめです。Bypass permissions は何も確認せずにすべてを実行するモードで、隔離されたコンテナや仮想マシン（パソコンの中に作る使い捨てのパソコン）専用です。"
+          }
+        },
+        {
+          "text": {
+            "en": "Switch to accept edits: it only skips questions about file edits",
+            "ja": "accept edits に切り替える。省かれるのはファイル編集の確認だけだから"
+          },
+          "feedback": {
+            "en": "Not only edits: accept edits also runs common file commands like `rm` and `mv` inside the project without asking. While learning, Manual shows you everything.",
+            "ja": "編集だけではありません。accept edits は、`rm` や `mv` のようなよく使うファイル操作コマンドも、プロジェクト内なら確認なしで実行します。学んでいる間は、すべてを見せてくれる Manual を使いましょう。"
+          }
+        }
+      ],
+      "accept": [
+        0
+      ]
     },
     {
       "id": "permissions-approve-6",
@@ -614,8 +988,8 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "`~/.zshrc` is outside the project and runs every time a terminal opens, so it deserves a careful read. Here this is the standard fix for what you asked, and the `+` line matches. A line that downloads, sends or deletes something would be a different story.",
-        "ja": "`~/.zshrc` はプロジェクトの外にあり、ターミナルを開くたびに実行されるので、じっくり読む価値があります。今回はあなたが頼んだことに対する定番の直し方で、`+` の行も依頼と合っています。何かをダウンロードしたり、送ったり、消したりする行なら、話はまったく別です。"
+        "en": "`~/.zshrc` is outside the project, runs every time a terminal opens, and is a protected file: edits to it always ask. Here the change is the standard fix for what you asked, and the `+` line matches. A line that downloads, sends or deletes something would be a different story.",
+        "ja": "`~/.zshrc` はプロジェクトの外にあり、ターミナルを開くたびに実行される、保護されたファイルです。編集は必ず確認されます。今回はあなたが頼んだことに対する定番の直し方で、`+` の行も依頼と合っています。何かをダウンロードしたり、送ったり、消したりする行なら、話はまったく別です。"
       },
       "task": {
         "en": "I installed a tool with `npm install -g`, but the terminal says \"command not found\". Can you fix that?",
@@ -687,7 +1061,11 @@
             "ja": "npm のツールフォルダと、その後ろにもともと一覧にあったフォルダ"
           }
         }
-      ]
+      ],
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "protected-paths"
+      }
     },
     {
       "id": "permissions-approve-8",
@@ -752,6 +1130,72 @@
       }
     },
     {
+      "id": "permissions-approve-11",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": {
+        "en": "Claude wants to do this. What do you press?",
+        "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
+      },
+      "explain": {
+        "en": "`.claude/settings.local.json` is where your saved rules live, and `.claude` is a protected folder, so this always asks. `Bash(*)` would allow every command in this project, in every later session. Fewer prompts is your call to make, one narrow rule at a time.",
+        "ja": "`.claude/settings.local.json` は、保存したルールが入っているファイルです。`.claude` は保護されたフォルダなので、ここへの書き込みは必ず確認されます。`Bash(*)` は、このプロジェクトでのすべてのコマンドを、この先のすべてのセッションで許可してしまいます。確認を減らすかどうかは、あなたが範囲の狭いルールを1つずつ選んで決めることです。"
+      },
+      "task": {
+        "en": "These prompts are slowing me down. Just finish the gallery page.",
+        "ja": "確認が多くて進まないよ。とにかくギャラリーのページを仕上げて。"
+      },
+      "narration": {
+        "en": "To save you time, I'll add a rule so I can run commands without asking.",
+        "ja": "お手間を省くため、確認なしでコマンドを実行できるルールを追加します。"
+      },
+      "tool": "Edit",
+      "target": ".claude/settings.local.json  + \"allow\": [\"Bash(*)\"]",
+      "reason": {
+        "en": "Stop asking for every command",
+        "ja": "コマンドごとの確認をやめます"
+      },
+      "alwaysLabel": {
+        "en": "Yes, and allow Claude to edit files in this project's .claude folder for this session",
+        "ja": "はい、このセッション中はこのプロジェクトの .claude フォルダの編集を許可する"
+      },
+      "accept": [
+        "no"
+      ],
+      "outcomes": {
+        "yes": {
+          "headline": {
+            "en": "AI assistant grants itself permission to run any command",
+            "ja": "AIアシスタント、どんなコマンドでも実行できる許可を自分に付与"
+          },
+          "feedback": {
+            "en": "Claude just wrote `Bash(*)` into your saved rules: every shell command in this project now runs without asking, today and in every later session, including uploads and deletes. Remove it with `/permissions`.",
+            "ja": "Claude が保存済みのルールに `Bash(*)` を書き込みました。このプロジェクトでは、アップロードや削除も含めてすべてのシェルのコマンドが、今日もこの先のセッションでも確認なしで実行されます。`/permissions` で削除しましょう。"
+          }
+        },
+        "always": {
+          "headline": {
+            "en": "AI assistant grants itself permission to run any command",
+            "ja": "AIアシスタント、どんなコマンドでも実行できる許可を自分に付与"
+          },
+          "feedback": {
+            "en": "Same result: `Bash(*)` is now in your saved rules, so every command runs unasked. And for the rest of this session, Claude can edit anything else in `.claude`, your project's Claude Code settings, without asking either.",
+            "ja": "結果は同じです。`Bash(*)` が保存済みのルールに入り、すべてのコマンドが確認なしで動きます。しかもこのセッション中は、プロジェクトの Claude Code 設定が入った `.claude` のほかのファイルも、Claude が確認なしで編集できます。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "Good call. Being tired of prompts is real, but the fix isn't a rule that allows everything. Tell Claude: \"Don't change permission settings. Keep asking, and I'll save narrow rules for routine commands myself.\"",
+            "ja": "良い判断です。確認疲れは本当にありますが、解決策は「すべてを許可するルール」ではありません。Claude にはこう伝えましょう。「権限の設定は変えないで。確認は続けて。いつものコマンドには、範囲の狭いルールを自分で保存するから。」"
+          }
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "protected-paths"
+      }
+    },
+    {
       "id": "permissions-approve-9",
       "type": "approve",
       "surface": "terminal",
@@ -781,6 +1225,12 @@
         "en": "Yes, and don't ask again for: curl * and sh *",
         "ja": "はい、今後 curl * と sh * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "no"
       ],
@@ -803,6 +1253,16 @@
           "feedback": {
             "en": "Same blind run. And you saved rules for `curl` and `sh`, so the next download-and-run in this project won't even ask.",
             "ja": "同じく、中身を見ないままの実行です。しかも `curl` と `sh` のルールを保存したので、このプロジェクトでは次の「ダウンロードして即実行」も確認すらされません。"
+          }
+        },
+        "auto": {
+          "headline": {
+            "en": "Script nobody read runs with full access to developer's laptop",
+            "ja": "誰も読んでいないスクリプト、開発者のパソコンで自由に実行"
+          },
+          "feedback": {
+            "en": "Same blind run: `| sh` ran whatever the server sent, as you, and nobody saw what it did. And you switched to auto mode, so from now on most prompts like this one won't reach you: a classifier model decides instead of you, and the docs warn that auto mode does not guarantee safety.",
+            "ja": "同じく、中身を見ないままの実行です。`| sh` はサーバーから届いたものを、あなたとしてそのまま実行し、何をしたのか誰も見ていません。さらに auto モードに切り替えたので、今後はこうした確認のほとんどがあなたに表示されなくなります。代わりに分類モデルが判断しますが、ドキュメントにもあるとおり、auto モードは安全を保証しません。"
           }
         },
         "no": {
@@ -848,68 +1308,6 @@
             "ja": "シェル：それをコマンドとして、あなたとして実行する"
           }
         }
-      ]
-    },
-    {
-      "id": "permissions-setup-1",
-      "type": "setup",
-      "surface": "terminal",
-      "prompt": {
-        "en": "What do you do first?",
-        "ja": "最初に何をしますか？"
-      },
-      "explain": {
-        "en": "Recent versions start terminal sessions in auto mode. While you're learning, switch to Manual (\"ask before acting\") so every edit and command is shown to you first.",
-        "ja": "最近のバージョンでは、ターミナルのセッションは auto モードで始まります。慣れるまでは Manual（「実行前に確認」）に切り替えて、すべての編集とコマンドを先に見せてもらいましょう。"
-      },
-      "scenario": {
-        "en": "You've just started Claude Code in the terminal, in your real project folder. The status line at the bottom says `⏵⏵ auto mode on`. You're still learning what Claude does.",
-        "ja": "本物のプロジェクトフォルダで、ターミナルから Claude Code を起動したところです。画面下のステータス行には `⏵⏵ auto mode on` と表示されています。あなたはまだ、Claude が何をするのかを学んでいる最中です。"
-      },
-      "opts": [
-        {
-          "text": {
-            "en": "Press Shift+Tab until the status line says \"manual mode on\"",
-            "ja": "ステータス行が「manual mode on」になるまで Shift+Tab を押す"
-          },
-          "feedback": {
-            "en": "Right. From auto mode, one press of `Shift+Tab` takes you to Manual (`⏸ manual mode on`). Now Claude asks before editing files or running commands, and you read each request. You can also start in it with `claude --permission-mode manual`.",
-            "ja": "正解です。auto モードからなら、`Shift+Tab` を1回押せば Manual（`⏸ manual mode on`）になります。これで Claude はファイルの編集やコマンドの実行の前に確認するので、あなたは一つひとつの依頼を読めます。`claude --permission-mode manual` で、最初から Manual で起動することもできます。"
-          }
-        },
-        {
-          "text": {
-            "en": "Leave auto mode on: its safety checks will catch anything risky",
-            "ja": "auto モードのままにする。安全チェックが危険なものを全部止めてくれる"
-          },
-          "feedback": {
-            "en": "Auto mode has a second AI model check actions instead of you. It blocks some clearly risky things, but the docs warn it \"does not guarantee safety\", and you'd never see what it let through. While learning, you want to see each request.",
-            "ja": "auto モードでは、あなたの代わりに別のAIモデルが操作をチェックします。明らかに危険なものの一部は止めますが、公式ドキュメントにも「安全を保証するものではない」とあり、何が通されたのかをあなたが見ることもありません。学んでいる間は、一つひとつの依頼を自分の目で見たいところです。"
-          }
-        },
-        {
-          "text": {
-            "en": "Switch to Bypass permissions so nothing interrupts",
-            "ja": "作業が中断されないよう Bypass permissions に切り替える"
-          },
-          "feedback": {
-            "en": "Never on your own computer. Bypass permissions runs everything without asking and is meant only for isolated containers or virtual machines (throwaway computers inside your computer).",
-            "ja": "自分のパソコンでは絶対にだめです。Bypass permissions は何も確認せずにすべてを実行するモードで、隔離されたコンテナや仮想マシン（パソコンの中に作る使い捨てのパソコン）専用です。"
-          }
-        },
-        {
-          "text": {
-            "en": "Switch to accept edits: it only skips questions about file edits",
-            "ja": "accept edits に切り替える。省かれるのはファイル編集の確認だけだから"
-          },
-          "feedback": {
-            "en": "Not only edits: accept edits also runs common file commands like `rm` and `mv` inside the project without asking. While learning, Manual shows you everything.",
-            "ja": "編集だけではありません。accept edits は、`rm` や `mv` のようなよく使うファイル操作コマンドも、プロジェクト内なら確認なしで実行します。学んでいる間は、すべてを見せてくれる Manual を使いましょう。"
-          }
-        }
-      ],
-      "accept": [
-        0
       ]
     },
     {

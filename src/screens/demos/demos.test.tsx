@@ -1,11 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { LangProvider } from '../../i18n/LangContext';
+import { UI } from '../../i18n/ui';
 import { fixtureParts } from '../../test/fixtures';
 import type { Demo } from '../../content/types';
 import { AnatomyDemo } from './AnatomyDemo';
 import { ContextDemo } from './ContextDemo';
+import { RulesDemo } from './RulesDemo';
 import { TerminalDemo } from './TerminalDemo';
 
 const cards = fixtureParts.bodies.demo!.cards;
@@ -51,5 +53,45 @@ describe('AnatomyDemo', () => {
     expect(container.querySelector('[data-surface="desktop"]')).not.toBeNull();
     expect(screen.getByText('Which tool runs.')).toBeInTheDocument();
     expect(screen.getAllByRole('listitem').length).toBeGreaterThan(0);
+  });
+});
+
+describe('RulesDemo', () => {
+  const row = (target: string) => screen.getByTestId(`call-${target}`);
+  const input = () => screen.getByRole('textbox', { name: 'Rule' });
+
+  it('shows each call with an outcome in text, from the demo rules', () => {
+    wrap(<RulesDemo demo={demo('rules')} />);
+    expect(within(row('npm test')).getByText('Runs')).toBeInTheDocument();
+    expect(within(row('curl https://example.com')).getByText('Asks you')).toBeInTheDocument();
+    expect(within(row('./.env')).getByText('Runs')).toBeInTheDocument();
+    expect(screen.getByText('Bash(npm test)')).toBeInTheDocument();
+    const summary = screen.getByTestId('rules-summary');
+    expect(summary).toHaveAttribute('aria-live', 'polite');
+    expect(summary).toHaveTextContent('Runs: 2 · Asks you: 1 · Blocked: 0');
+  });
+
+  it('adding deny Read(./.env) turns the .env call to blocked', async () => {
+    wrap(<RulesDemo demo={demo('rules')} />);
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'List' }), 'deny');
+    await userEvent.type(input(), 'Read(./.env)');
+    expect(within(row('./.env')).getByText('Blocked')).toBeInTheDocument();
+    expect(within(row('npm test')).getByText('Runs')).toBeInTheDocument();
+    expect(screen.getByTestId('rules-summary')).toHaveTextContent('Runs: 1 · Asks you: 1 · Blocked: 1');
+    expect(screen.queryByText(UI.en.ruleNotUnderstood)).toBeNull();
+  });
+
+  it('a malformed rule shows ruleNotUnderstood and changes nothing (Review Focus 5)', async () => {
+    wrap(<RulesDemo demo={demo('rules')} />);
+    expect(screen.queryByText(UI.en.ruleNotUnderstood)).toBeNull();
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'List' }), 'deny');
+    for (const bad of ['Bash(', 'Bash(npm *) extra', 'Nope(x)', '(x)']) {
+      await userEvent.clear(input());
+      await userEvent.type(input(), bad.replace(/[[{]/g, (c) => c + c));
+      expect(screen.getByText(UI.en.ruleNotUnderstood)).toBeInTheDocument();
+      expect(within(row('npm test')).getByText('Runs')).toBeInTheDocument();
+    }
+    await userEvent.clear(input());
+    expect(screen.queryByText(UI.en.ruleNotUnderstood)).toBeNull();
   });
 });

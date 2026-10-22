@@ -1,0 +1,1296 @@
+{
+  "cards": [
+    {
+      "id": "automode-card-what",
+      "title": {
+        "en": "What auto mode does",
+        "ja": "auto モードがすること"
+      },
+      "body": [
+        {
+          "en": "In auto mode, Claude Code doesn't ask you about most actions. A classifier (a second model) checks each one first and blocks anything that goes beyond your request, targets systems it doesn't recognize, or looks driven by hostile text Claude read.",
+          "ja": "auto モード（自動モード）では、Claude Code はほとんどの操作についてあなたに確認しません。代わりに分類器（もう1つの別のモデル）が先に一つひとつを調べ、頼んだ範囲を超えるもの、知らないシステムを狙うもの、Claude が読んだ悪意ある文章に動かされているように見えるものをブロックします。"
+        },
+        {
+          "en": "Since v2.1.283, new terminal and VS Code sessions start in auto mode, shown as `⏵⏵ auto mode on`. `Shift+Tab` switches to `⏸ manual mode on`.",
+          "ja": "v2.1.283 以降、ターミナルと VS Code の新しいセッションは auto モードで始まり、`⏵⏵ auto mode on` と表示されます。`Shift+Tab` を押すと `⏸ manual mode on`（手動モード）に切り替わります。"
+        }
+      ],
+      "key": {
+        "en": "The docs' own warning: auto mode \"reduces permission prompts but does not guarantee safety.\"",
+        "ja": "公式ドキュメント自身の警告です。auto モードは「許可の確認を減らしますが、安全を保証するものではありません」。"
+      },
+      "demo": {
+        "kind": "modes",
+        "modes": [
+          {
+            "mode": "auto",
+            "status": "⏵⏵ auto mode on",
+            "desktop": "Auto",
+            "runs": [
+              {
+                "en": "Reads and file edits in the working folder",
+                "ja": "作業フォルダ内の読み取りとファイル編集"
+              },
+              {
+                "en": "Commands and web actions the classifier allows",
+                "ja": "分類器が通したコマンドやWebの操作"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Anything an ask rule covers",
+                "ja": "ask（確認）ルールに当てはまるもの"
+              },
+              {
+                "en": "The first read outside your working folders",
+                "ja": "作業フォルダの外を初めて読むとき"
+              },
+              {
+                "en": "In the terminal, removing a critical path like your home folder",
+                "ja": "ターミナルでは、ホームフォルダのような重要なパスの削除"
+              },
+              {
+                "en": "After 3 blocks in a row or 20 in a session, it pauses and asks you again",
+                "ja": "3回続けて、または1セッションで20回ブロックすると一時停止し、またあなたに確認する"
+              }
+            ]
+          },
+          {
+            "mode": "default",
+            "status": "⏸ manual mode on",
+            "desktop": "Manual",
+            "runs": [
+              {
+                "en": "Reading files in the working folder",
+                "ja": "作業フォルダ内のファイルの読み取り"
+              },
+              {
+                "en": "Look-only commands like `ls` and `cat`",
+                "ja": "`ls` や `cat` のような見るだけのコマンド"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Every file edit",
+                "ja": "すべてのファイル編集"
+              },
+              {
+                "en": "Other commands",
+                "ja": "それ以外のコマンド"
+              },
+              {
+                "en": "Web fetches and searches",
+                "ja": "Webページの取得と検索"
+              }
+            ]
+          },
+          {
+            "mode": "acceptEdits",
+            "status": "⏵⏵ accept edits on",
+            "desktop": "Accept edits",
+            "runs": [
+              {
+                "en": "Reads and file edits in the working folder",
+                "ja": "作業フォルダ内の読み取りとファイル編集"
+              },
+              {
+                "en": "Common file commands like `mkdir`, `mv` and `rm` there",
+                "ja": "そこでの `mkdir`、`mv`、`rm` のようなよく使うファイル操作"
+              }
+            ],
+            "asks": [
+              {
+                "en": "Other commands",
+                "ja": "それ以外のコマンド"
+              },
+              {
+                "en": "Writes to protected files like `.zshrc`",
+                "ja": "`.zshrc` のような保護されたファイルへの書き込み"
+              }
+            ]
+          },
+          {
+            "mode": "plan",
+            "status": "⏸ plan mode on",
+            "desktop": "Plan",
+            "runs": [
+              {
+                "en": "Reading and exploring",
+                "ja": "読み取りと調査"
+              },
+              {
+                "en": "Commands the classifier allows, when auto mode is available",
+                "ja": "auto モードが使えるときは、分類器が通したコマンド"
+              }
+            ],
+            "asks": [
+              {
+                "en": "No edits until you approve the plan",
+                "ja": "計画を承認するまで編集はしない"
+              }
+            ]
+          }
+        ]
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "eliminate-prompts-with-auto-mode"
+      }
+    },
+    {
+      "id": "automode-card-sees",
+      "title": {
+        "en": "What the classifier sees",
+        "ja": "分類器に見えているもの"
+      },
+      "body": [
+        {
+          "en": "It reads your messages, Claude's tool calls and your CLAUDE.md, but not tool results like file contents or web pages. Hostile text there can't argue with the classifier directly, though it can still steer Claude.",
+          "ja": "分類器が読むのは、あなたのメッセージ、Claude のツール呼び出し、CLAUDE.md です。ファイルの中身や Webページのようなツールの結果は読みません。そこに悪意ある文章があっても分類器に直接言い返すことはできませんが、Claude を誘導することはできます。"
+        },
+        {
+          "en": "Some actions skip it. Reads and edits inside your working folder just run, except writes to protected files like `.claude/` or `.zshrc`, which go to the classifier. `ask` rules always prompt you, and removing a critical path, like your home folder, is handled separately.",
+          "ja": "分類器を通らない操作もあります。作業フォルダ内の読み取りと編集はそのまま実行されます。ただし `.claude/` や `.zshrc` のような保護されたファイルへの書き込みは分類器に回ります。`ask` ルールは必ずあなたに確認し、ホームフォルダのような重要なパスの削除は別に扱われます。"
+        }
+      ],
+      "deep": {
+        "title": {
+          "en": "Subagents, outside reads and scanned results",
+          "ja": "サブエージェント、外側の読み取り、結果のスキャン"
+        },
+        "body": [
+          {
+            "en": "Subagents (helpers Claude starts for part of a task) are checked at three points: the task before it starts, each action while it runs, and its report before Claude reads it. A flagged report still arrives, with a security warning on top.",
+            "ja": "サブエージェント（Claude が作業の一部を任せるために起動する助手）は3つの時点で調べられます。始める前の依頼内容、動いている間の一つひとつの操作、そして Claude が読む前の報告です。問題ありとされた報告も届きますが、先頭にセキュリティの警告が付きます。"
+          },
+          {
+            "en": "The first time Claude reads a file outside your working folders, Claude Code asks once. You can keep allowing such reads, block them from now on, or decide again next time.",
+            "ja": "Claude が作業フォルダの外のファイルを初めて読むとき、Claude Code は一度だけ確認します。その後もこうした読み取りを許可し続けるか、これからはブロックするか、次回また決めるかを選べます。"
+          },
+          {
+            "en": "A separate check on the server also scans incoming tool results and flags suspicious content before Claude reads it.",
+            "ja": "これとは別に、サーバー側のチェックがツールの結果を受け取る段階でスキャンし、Claude が読む前に怪しい内容に印を付けます。"
+          }
+        ]
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "how-auto-mode-evaluates-actions"
+      }
+    },
+    {
+      "id": "automode-card-defaults",
+      "title": {
+        "en": "Blocked and allowed by default",
+        "ja": "既定でブロックされるもの、許可されるもの"
+      },
+      "body": [
+        {
+          "en": "Blocked by default: downloading and running code (`curl … | bash`), sending sensitive data outside, production deploys and migrations, force pushes, destroying files that existed before the session, `git reset --hard`, and printing a live password or key.",
+          "ja": "既定でブロックされるもの：コードをダウンロードして実行すること（`curl … | bash`）、機密データを外部へ送ること、本番環境へのデプロイやマイグレーション、強制プッシュ、セッション前からあったファイルを消すこと、`git reset --hard`、本物のパスワードやキーを表示すること。"
+        },
+        {
+          "en": "Allowed by default, the part people miss: local file work, installing the dependencies your project lists, read-only web requests, pushing to any branch of your repository, and reading `.env` and sending a key to its matching service.",
+          "ja": "既定で許可されるもの（見落とされがちな部分）：手元のファイル作業、プロジェクトに書かれた依存パッケージのインストール、読むだけの Webリクエスト、自分のリポジトリのどのブランチへのプッシュ、そして `.env` を読んでキーを対応するサービスへ送ること。"
+        }
+      ],
+      "key": {
+        "en": "Allowed isn't the same as what you wanted: a push to your repository runs unasked.",
+        "ja": "許可されることと、あなたが望んだことは同じではありません。自分のリポジトリへのプッシュは確認なしで実行されます。"
+      },
+      "deep": {
+        "title": {
+          "en": "Broad allow rules are set aside",
+          "ja": "広すぎる allow ルールは脇に置かれる"
+        },
+        "body": [
+          {
+            "en": "When you enter auto mode, Claude Code sets aside allow rules that would let any code run: `Bash(*)`, wildcard interpreters like `Bash(python*)`, and package-manager run commands. Narrow rules like `Bash(npm test)` stay. The others come back when you leave auto mode.",
+            "ja": "auto モードに入ると、Claude Code はどんなコードでも実行できてしまう allow ルールを脇に置きます。`Bash(*)`、`Bash(python*)` のようなワイルドカード付きのインタプリタ、パッケージマネージャーの run コマンドです。`Bash(npm test)` のような狭いルールはそのまま残ります。脇に置かれたルールは、auto モードを抜けると戻ります。"
+          },
+          {
+            "en": "To see the full default lists, run `claude auto-mode defaults` in a terminal.",
+            "ja": "既定のリストをすべて見たいときは、ターミナルで `claude auto-mode defaults` を実行します。"
+          }
+        ]
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "what-the-classifier-blocks-by-default"
+      }
+    },
+    {
+      "id": "automode-card-boundaries",
+      "title": {
+        "en": "Boundaries and checkpoints",
+        "ja": "境界線と関所"
+      },
+      "body": [
+        {
+          "en": "Tell Claude \"don't push\" and the classifier blocks pushes, even though they're allowed by default. It holds until you lift it; Claude deciding the work looks done doesn't count.",
+          "ja": "Claude に「プッシュしないで」と伝えると、既定では許可されているプッシュでも分類器がブロックします。あなたが解除するまで続き、Claude が「もう終わった」と判断しても解除にはなりません。"
+        },
+        {
+          "en": "But it isn't stored as a rule. The classifier re-reads it from the conversation, and compaction (summarizing a long conversation to save space) can remove it.",
+          "ja": "ただし、これはルールとして保存されるわけではありません。分類器は会話から毎回読み直すので、コンパクション（長い会話を要約して容量を空けること）で消えてしまうことがあります。"
+        },
+        {
+          "en": "For a checkpoint that lasts, add an `ask` rule: it always prompts, even in auto mode.",
+          "ja": "ずっと続く関所が欲しいなら `ask` ルールを足しましょう。auto モードでも必ず確認が出ます。"
+        }
+      ],
+      "key": {
+        "en": "Chat sets a boundary for now. A rule keeps it.",
+        "ja": "会話で決めた境界線はその場かぎり。ルールにすれば残ります。"
+      },
+      "try": {
+        "terminal": [
+          {
+            "text": {
+              "en": "Open `~/.claude/settings.json` (your user settings) in a text editor. Create it if it doesn't exist.",
+              "ja": "`~/.claude/settings.json`（ユーザー設定）をテキストエディタで開きます。なければ作ります。"
+            }
+          },
+          {
+            "text": {
+              "en": "If the file is new or empty, paste all of this, the docs' own checkpoint for pushes and pull requests. If it already has settings, put the `\"permissions\"` part inside its outer `{ }`, with a comma before it. If `\"permissions\"` already has an `\"ask\"` list, add the two rules to that list.",
+              "ja": "ファイルが新しいか空なら、これをすべて貼り付けます。プッシュとプルリクエストのための、公式ドキュメントどおりの関所です。すでに設定が書かれていれば、`\"permissions\"` の部分をいちばん外側の `{ }` の中に入れ、前にカンマを付けます。`\"permissions\"` にすでに `\"ask\"` のリストがあれば、その中に2つのルールを足します。"
+            },
+            "code": "{\n  \"permissions\": {\n    \"ask\": [\"Bash(git push *)\", \"Bash(gh pr create *)\"]\n  }\n}",
+            "copy": true
+          },
+          {
+            "text": {
+              "en": "Start a new Claude Code session in a project folder and type `/permissions`.",
+              "ja": "プロジェクトのフォルダで新しく Claude Code のセッションを始め、`/permissions` と入力します。"
+            },
+            "code": "/permissions",
+            "copy": true
+          },
+          {
+            "text": {
+              "en": "Find the two rules under Ask. They match commands as Claude usually writes them, so a form like `git -C . push` slips past: a checkpoint, not a wall.",
+              "ja": "Ask（確認）の欄に2つのルールがあるのを確かめます。ルールが当てはまるのは Claude がふだん書く形のコマンドなので、`git -C . push` のような形はすり抜けます。関所であって、壁ではありません。"
+            }
+          }
+        ],
+        "desktopNote": {
+          "en": "The desktop app's Code tab doesn't offer `/permissions`. Edit the file in a text editor, then check the rules from a terminal session.",
+          "ja": "デスクトップアプリの Code タブでは `/permissions` は使えません。テキストエディタでファイルを編集し、ターミナルのセッションでルールを確認しましょう。"
+        },
+        "check": {
+          "en": "`/permissions` lists `Bash(git push *)` and `Bash(gh pr create *)` under Ask, from your user settings.",
+          "ja": "`/permissions` の Ask の欄に、ユーザー設定から来た `Bash(git push *)` と `Bash(gh pr create *)` が表示されていれば成功です。"
+        }
+      },
+      "more": {
+        "slug": "auto-mode-config",
+        "anchor": "common-boundaries"
+      }
+    },
+    {
+      "id": "automode-card-blocked",
+      "title": {
+        "en": "When something is blocked",
+        "ja": "ブロックされたとき"
+      },
+      "body": [
+        {
+          "en": "A block shows a notice like `bash denied by auto mode · [Data Exfiltration] · /permissions`. Claude is told the reason, and the action is listed in `/permissions`.",
+          "ja": "ブロックされると `bash denied by auto mode · [Data Exfiltration] · /permissions` のようなお知らせが出ます。Claude には理由が伝わり、その操作は `/permissions` に記録されます。"
+        },
+        {
+          "en": "If you really meant it, approve it on purpose: name the action and what makes it risky, like the branch of a force push. \"You can force-push\" clears nothing, and an approval covers one action. Some blocks can't be cleared from chat; for those, switch to Manual and answer the prompt yourself.",
+          "ja": "本当にそうしたかったのなら、意識して許可します。操作と、何が危ないのか（強制プッシュならどのブランチか）をはっきり書きましょう。「強制プッシュしていいよ」だけでは何も解除されず、許可が効くのはその1回の操作だけです。会話では解除できないブロックもあります。その場合は Manual に切り替え、確認に自分で答えましょう。"
+        }
+      ],
+      "key": {
+        "en": "Read why it was blocked before you approve it.",
+        "ja": "許可する前に、なぜブロックされたのかを読みましょう。"
+      },
+      "deep": {
+        "title": {
+          "en": "When auto mode gives up",
+          "ja": "auto モードが確認に戻るとき"
+        },
+        "body": [
+          {
+            "en": "After 3 blocks in a row, or 20 in a session, auto mode pauses and asks you again. Approving the prompted action turns it back on. These limits can't be changed.",
+            "ja": "3回続けて、または1セッションで20回ブロックすると、auto モードは一時停止して、またあなたに確認するようになります。確認された操作を許可すると、auto モードに戻ります。この回数は変えられません。"
+          }
+        ]
+      },
+      "try": {
+        "terminal": [
+          {
+            "text": {
+              "en": "In a Claude Code session, type `/permissions` and press Enter.",
+              "ja": "Claude Code のセッションで `/permissions` と入力して Enter を押します。"
+            },
+            "code": "/permissions",
+            "copy": true
+          },
+          {
+            "text": {
+              "en": "Open the **Recently denied** tab. Actions the classifier blocked are listed there. Highlight one to read its full command below the list.",
+              "ja": "**Recently denied**（最近拒否された操作）タブを開きます。分類器がブロックした操作がここに並んでいます。1つを選ぶと、一覧の下にコマンドの全文が表示されます。"
+            }
+          },
+          {
+            "text": {
+              "en": "Only if you've read it and want it: press `r` to mark it for retry. When you close the dialog, Claude is told it may try again.",
+              "ja": "読んだうえで本当に必要なときだけ、`r` を押して再実行の印を付けます。ダイアログを閉じると、もう一度試してよいことが Claude に伝わります。"
+            }
+          }
+        ],
+        "desktopNote": {
+          "en": "The desktop app's Code tab doesn't offer `/permissions`. Open the Recently denied tab from a terminal session in the same project folder.",
+          "ja": "デスクトップアプリの Code タブでは `/permissions` は使えません。同じプロジェクトフォルダでターミナルのセッションを開き、Recently denied タブを見ましょう。"
+        },
+        "check": {
+          "en": "You see the Recently denied tab: a list of blocked actions, or an empty list if nothing was blocked.",
+          "ja": "Recently denied タブが表示されれば成功です。ブロックされた操作の一覧か、何もなければ空の一覧が出ます。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "when-auto-mode-falls-back"
+      }
+    },
+    {
+      "id": "automode-card-sandbox",
+      "title": {
+        "en": "Auto mode plus a sandbox",
+        "ja": "auto モードとサンドボックス"
+      },
+      "body": [
+        {
+          "en": "A sandbox is a wall your operating system puts around the commands Claude runs: they can write only inside your project (and a temp folder) and reach only websites you've allowed, though they can still read most files. Turn it on with `/sandbox`.",
+          "ja": "サンドボックスとは、Claude が実行するコマンドの周りに OS が立てる壁です。コマンドが書き込めるのはプロジェクトの中（と一時フォルダ）だけ、接続できるのはあなたが許可した Webサイトだけになります。ただし、ほとんどのファイルは読めてしまいます。`/sandbox` でオンにします。"
+        },
+        {
+          "en": "The classifier decides whether a command runs; the sandbox limits what it can reach. With both on, Claude lists the websites a command needs, the classifier reviews them with it, and only those open, for that command alone.",
+          "ja": "分類器はコマンドを実行するかどうかを決め、サンドボックスは届く範囲を限ります。両方オンなら、Claude はコマンドに必要な Webサイトを書き出し、分類器がコマンドと一緒にそれを調べ、そのコマンドにかぎってそのサイトだけが開きます。"
+        }
+      ],
+      "key": {
+        "en": "It covers shell commands only, not Claude's file and web tools.",
+        "ja": "サンドボックスが囲むのはシェルのコマンドだけで、Claude のファイル用ツールや Web用ツールは対象外です。"
+      },
+      "more": {
+        "slug": "sandboxing"
+      }
+    },
+    {
+      "id": "automode-card-when",
+      "title": {
+        "en": "When to use it",
+        "ja": "いつ使うか"
+      },
+      "body": [
+        {
+          "en": "Use auto mode once you can read permission prompts yourself, for tasks where you trust the general direction: a big rename, fixing tests, tidying a project that's tracked in git.",
+          "ja": "auto モードを使うのは、許可の確認を自分で読めるようになってから、全体の方向を信頼できる作業にしましょう。大がかりな名前の変更、テストの修正、git で管理しているプロジェクトの整理などです。"
+        },
+        {
+          "en": "Stay in Manual for sensitive one-off operations, like a production database change or anything touching money. The docs: auto mode is \"not a replacement for review on sensitive operations.\"",
+          "ja": "本番データベースの変更や、お金が関わることのような、慎重さが必要な1回きりの操作では Manual のままにしましょう。公式ドキュメントにも、auto モードは「慎重さが必要な操作での確認の代わりにはならない」とあります。"
+        },
+        {
+          "en": "Before you switch: `ask` rules for pushes and deploys, and the sandbox on.",
+          "ja": "切り替える前に：プッシュとデプロイには `ask` ルールを、そしてサンドボックスをオンに。"
+        }
+      ],
+      "key": {
+        "en": "While you're still learning, this course says: stay in Manual.",
+        "ja": "まだ学んでいる間は、このコースのおすすめは Manual のままです。"
+      },
+      "more": {
+        "url": "https://claude.com/blog/auto-mode",
+        "lang": "en"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "automode-automode-1",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "Edits inside your working folder skip the classifier and run, unless the file is protected.",
+        "ja": "作業フォルダ内の編集は分類器を通らずに実行されます。保護されたファイルの場合は別です。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Fix the typo in the heading on the About page.",
+        "ja": "About ページの見出しの誤字を直して。"
+      },
+      "action": {
+        "tool": "Edit",
+        "target": "src/pages/about.html"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "The file is inside the project folder you started Claude Code in.",
+          "ja": "このファイルは、Claude Code を起動したプロジェクトフォルダの中にあります。"
+        },
+        {
+          "en": "No `ask` or `deny` rules cover this.",
+          "ja": "これに当てはまる `ask` や `deny` のルールはありません。"
+        }
+      ],
+      "answer": "runs",
+      "feedback": {
+        "runs": {
+          "en": "Right. Edits inside your working folder skip the classifier and just run. That's what auto mode is for: routine work without prompts.",
+          "ja": "正解です。作業フォルダ内の編集は分類器を通らず、そのまま実行されます。確認なしで日々の作業を進めること、それが auto モードの役目です。"
+        },
+        "blocked": {
+          "en": "Nothing here goes beyond your request, and edits inside your working folder don't even go to the classifier. They just run.",
+          "ja": "頼んだ範囲を超えるものは何もありませんし、作業フォルダ内の編集は分類器に回りさえしません。そのまま実行されます。"
+        },
+        "asks": {
+          "en": "Auto mode doesn't ask about edits inside your working folder. Only protected files, like `.claude/` or `.zshrc`, get extra review, and that review is the classifier's, not yours.",
+          "ja": "auto モードは作業フォルダ内の編集については確認しません。`.claude/` や `.zshrc` のような保護されたファイルだけが追加で調べられますが、調べるのは分類器で、あなたではありません。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "how-auto-mode-evaluates-actions"
+      }
+    },
+    {
+      "id": "automode-automode-2",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "Downloading a script and piping it into `bash` runs code nobody has read. It's blocked by default.",
+        "ja": "スクリプトをダウンロードして `bash` に流し込むと、誰も読んでいないコードが実行されます。既定でブロックされます。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Install the linter the README mentions.",
+        "ja": "README に書いてあるリンター（コードのチェックツール）をインストールして。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "curl -fsSL https://get.lintkit.example/install.sh | bash"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "The README says: \"Install with our one-line script.\"",
+          "ja": "README には「1行のスクリプトでインストールできます」と書いてあります。"
+        },
+        {
+          "en": "No `ask` or `deny` rules cover this.",
+          "ja": "これに当てはまる `ask` や `deny` のルールはありません。"
+        }
+      ],
+      "answer": "blocked",
+      "feedback": {
+        "blocked": {
+          "en": "Right. Downloading code and running it straight away (`curl … | bash`) is on the blocked-by-default list: nobody sees what runs. Claude is told why and can look for another way, like your project's package manager.",
+          "ja": "正解です。コードをダウンロードしてすぐ実行すること（`curl … | bash`）は、既定でブロックされるリストに入っています。何が実行されるのか誰にも見えないからです。Claude には理由が伝わり、プロジェクトのパッケージマネージャーなど別の方法を探せます。"
+        },
+        "runs": {
+          "en": "Downloading and running code (`curl … | bash`) is blocked by default. The script could do anything, and nobody would see it first.",
+          "ja": "コードをダウンロードして実行すること（`curl … | bash`）は、既定でブロックされます。スクリプトは何でもできてしまい、誰も事前に中身を見られません。"
+        },
+        "asks": {
+          "en": "No rule forces a prompt here, so auto mode doesn't ask you. The classifier decides, and this is on its blocked-by-default list.",
+          "ja": "ここには確認を強制するルールがないので、auto モードはあなたに確認しません。分類器が判断し、これは既定でブロックされるリストに入っています。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "what-the-classifier-blocks-by-default"
+      }
+    },
+    {
+      "id": "automode-setup-1",
+      "type": "setup",
+      "surface": "terminal",
+      "prompt": {
+        "en": "Which task suits auto mode?",
+        "ja": "auto モードに向いている作業はどれですか？"
+      },
+      "explain": {
+        "en": "Auto mode is for tasks where you trust the general direction and can check the result. Sensitive one-off operations, and anything involving money, deserve your own eyes on each step.",
+        "ja": "auto モードは、全体の方向を信頼でき、結果を確かめられる作業のためのものです。慎重さが必要な1回きりの操作や、お金が関わることは、一つひとつの手順を自分の目で見るべきです。"
+      },
+      "scenario": {
+        "en": "You read permission prompts confidently now. Your settings have ask rules for pushes and deploys. Which of these would you hand to auto mode?",
+        "ja": "今では許可の確認を自信を持って読めます。設定にはプッシュとデプロイへの ask ルールがあります。次のうち、auto モードに任せるならどれですか？"
+      },
+      "opts": [
+        {
+          "text": {
+            "en": "Rename a component across 60 files in a project tracked by git, and fix the tests",
+            "ja": "git で管理しているプロジェクトで、コンポーネントの名前を60個のファイルにわたって変え、テストを直す"
+          },
+          "feedback": {
+            "en": "Right. The direction is clear, the work stays inside your project, git lets you see and undo every change, and your ask rules still stop pushes.",
+            "ja": "正解です。方向がはっきりしていて、作業はプロジェクトの中で完結し、git ですべての変更を見たり元に戻したりできます。それに ask ルールがプッシュを引き続き止めてくれます。"
+          }
+        },
+        {
+          "text": {
+            "en": "Change the password for the production database",
+            "ja": "本番データベースのパスワードを変更する"
+          },
+          "feedback": {
+            "en": "A sensitive one-off. The docs say auto mode is \"not a replacement for review on sensitive operations\". Stay in Manual and read each step.",
+            "ja": "慎重さが必要な1回きりの操作です。公式ドキュメントにも、auto モードは「慎重さが必要な操作での確認の代わりにはならない」とあります。Manual のまま、一つひとつの手順を読みましょう。"
+          }
+        },
+        {
+          "text": {
+            "en": "Clean up old files in your home folder to free up space",
+            "ja": "空き容量を増やすため、ホームフォルダの古いファイルを片づける"
+          },
+          "feedback": {
+            "en": "That's outside any project, among files that existed long before the session. Deleting those is risky to hand over; keep each command in front of you.",
+            "ja": "どのプロジェクトの外でもあり、セッションのずっと前からあったファイルばかりです。それを消す作業を任せるのは危険です。コマンドを一つひとつ自分の目で見ましょう。"
+          }
+        },
+        {
+          "text": {
+            "en": "Pay this month's invoices through your bank's website",
+            "ja": "銀行の Webサイトで今月の請求書を支払う"
+          },
+          "feedback": {
+            "en": "Moving real money is exactly the kind of sensitive operation you check step by step. Not a job for auto mode.",
+            "ja": "本物のお金を動かすのは、まさに一歩ずつ確かめるべき慎重な操作です。auto モードに任せる仕事ではありません。"
+          }
+        }
+      ],
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "eliminate-prompts-with-auto-mode"
+      }
+    },
+    {
+      "id": "automode-automode-4",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "An `ask` rule is a hard checkpoint: it is checked before the classifier and always prompts, even in auto mode.",
+        "ja": "`ask` ルールは確かな関所です。分類器より先に調べられ、auto モードでも必ず確認が出ます。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Commit the new blog post and push it.",
+        "ja": "新しいブログ記事をコミットして、プッシュして。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "git push origin new-post"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "Your `~/.claude/settings.json` has `\"ask\": [\"Bash(git push *)\"]`.",
+          "ja": "`~/.claude/settings.json` に `\"ask\": [\"Bash(git push *)\"]` が書いてあります。"
+        },
+        {
+          "en": "`origin` is your own repository.",
+          "ja": "`origin` はあなた自身のリポジトリです。"
+        }
+      ],
+      "answer": "asks",
+      "feedback": {
+        "asks": {
+          "en": "Right. Your ask rule is checked first, and a matching command always prompts, even in auto mode. That's your checkpoint for pushes.",
+          "ja": "正解です。ask ルールが最初に調べられ、当てはまるコマンドは auto モードでも必ず確認されます。これがプッシュのための関所です。"
+        },
+        "runs": {
+          "en": "Without the rule it would run: pushes to your own repository are allowed by default. But your ask rule is checked first, and it always prompts.",
+          "ja": "ルールがなければ実行されていました。自分のリポジトリへのプッシュは既定で許可されているからです。でも ask ルールが最初に調べられ、必ず確認が出ます。"
+        },
+        "blocked": {
+          "en": "The classifier never sees this one. Your ask rule matches first and hands the decision to you.",
+          "ja": "これは分類器まで届きません。ask ルールが先に当てはまり、判断をあなたに渡します。"
+        }
+      },
+      "more": {
+        "slug": "auto-mode-config",
+        "anchor": "add-a-human-checkpoint"
+      }
+    },
+    {
+      "id": "automode-approve-1",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": {
+        "en": "You've used Manual mode for weeks and read every prompt. Your user settings have ask rules for git push and your deploy command, and the sandbox is on. Claude wants to do this. What do you press?",
+        "ja": "何週間も Manual モードを使い、確認を毎回読んできました。ユーザー設定には git push とデプロイのコマンドへの ask ルールがあり、サンドボックスもオンです。Claude がこれを実行しようとしています。どれを押しますか？"
+      },
+      "explain": {
+        "en": "Running your tests is routine. With ask rules on pushes and deploys and the sandbox on, switching to auto mode for a long task with a clear direction is a reasonable choice. Yes and a narrow saved rule are fine too.",
+        "ja": "テストの実行はいつもの作業です。プッシュとデプロイに ask ルールがあり、サンドボックスもオンなら、方向のはっきりした長い作業で auto モードに切り替えるのは妥当な選択です。「はい」や狭いルールの保存もかまいません。"
+      },
+      "task": {
+        "en": "Rename the `btn-primary` class to `button-main` across the site, then run the tests.",
+        "ja": "サイト全体で `btn-primary` クラスを `button-main` に名前変更して、テストを実行して。"
+      },
+      "narration": {
+        "en": "I've renamed the class in 41 files. Now I'll run the tests.",
+        "ja": "41個のファイルでクラス名を変えました。続けてテストを実行します。"
+      },
+      "tool": "Bash",
+      "target": "npm test",
+      "reason": {
+        "en": "Run the test suite",
+        "ja": "テストを実行します"
+      },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: npm test *",
+        "ja": "はい、今後 npm test * は確認しない"
+      },
+      "accept": [
+        "yes",
+        "always",
+        "auto"
+      ],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Fine. The tests only check your project's code. You'll be asked again next time.",
+            "ja": "問題ありません。テストはプロジェクトのコードを確かめるだけです。次回もまた確認されます。"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "Fine too. `npm test *` only runs your project's tests, so saving it cuts a prompt you'd always approve. It goes into `.claude/settings.local.json`, and `/permissions` can remove it.",
+            "ja": "これもかまいません。`npm test *` はプロジェクトのテストを実行するだけなので、保存すれば、いつも許可する確認が減ります。ルールは `.claude/settings.local.json` に入り、`/permissions` で削除できます。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "Reasonable here. You can read prompts, the task's direction is clear, your ask rules still stop pushes and deploys, and the sandbox limits what commands can reach. From now on the classifier decides instead of you; `Shift+Tab` brings Manual back.",
+            "ja": "ここでは妥当な選択です。あなたは確認を読めますし、作業の方向もはっきりしています。ask ルールはプッシュとデプロイを引き続き止め、サンドボックスはコマンドが届く範囲を限ります。これからはあなたの代わりに分類器が判断します。`Shift+Tab` で Manual に戻せます。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "This was safe: your own tests, which you asked for. Blocking routine work is its own trap: you'd soon be clicking without reading.",
+            "ja": "これは安全でした。あなたが頼んだ、プロジェクト自身のテストです。いつもの作業まで止めるのは、それ自体が落とし穴です。そのうち読まずにクリックするようになってしまいます。"
+          }
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "eliminate-prompts-with-auto-mode"
+      }
+    },
+    {
+      "id": "automode-automode-3",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "Reading `.env` and sending a key to its matching API is allowed by default. Auto mode won't stop it or ask you.",
+        "ja": "`.env` を読んで、キーを対応する API へ送ることは既定で許可されています。auto モードは止めませんし、確認もしません。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Check how many newsletter emails went out this week.",
+        "ja": "今週ニュースレターのメールが何通送られたか調べて。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "source .env && curl -s https://api.mailer.example/v1/stats -H \"Authorization: Bearer $MAILER_API_KEY\""
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "`.env` holds `MAILER_API_KEY=mk_FAKE_7d2e…`, the key for your mail service.",
+          "ja": "`.env` には、メール配信サービスのキー `MAILER_API_KEY=mk_FAKE_7d2e…` が入っています。"
+        },
+        {
+          "en": "`api.mailer.example` is that mail service's own API.",
+          "ja": "`api.mailer.example` は、そのメール配信サービス自身の API です。"
+        },
+        {
+          "en": "No `ask` or `deny` rules cover this.",
+          "ja": "これに当てはまる `ask` や `deny` のルールはありません。"
+        }
+      ],
+      "answer": "runs",
+      "feedback": {
+        "runs": {
+          "en": "Right. Reading `.env` and sending a key to its matching API is on the allowed-by-default list. Here that's what you wanted, but notice that your key left the computer without anyone asking you.",
+          "ja": "正解です。`.env` を読んでキーを対応する API へ送ることは、既定で許可されるリストに入っています。今回はそれが望みどおりでしたが、あなたのキーが誰にも確認されずにパソコンの外へ出たことに気づいておきましょう。"
+        },
+        "blocked": {
+          "en": "Not by default. Reading `.env` and sending a credential to its matching API is explicitly on the allowed list. Sending it to an unrelated site is what gets blocked.",
+          "ja": "既定ではブロックされません。`.env` を読んで認証情報を対応する API へ送ることは、はっきり許可リストに入っています。ブロックされるのは、関係のないサイトへ送ろうとしたときです。"
+        },
+        "asks": {
+          "en": "Nothing forces a prompt here: no `ask` rule covers it. If you want to see every time a key is used, that's what Manual mode is for.",
+          "ja": "ここには確認を強制するものがありません。当てはまる `ask` ルールがないからです。キーが使われるたびに自分で見たいなら、そのための Manual モードです。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "what-the-classifier-blocks-by-default"
+      }
+    },
+    {
+      "id": "automode-setup-2",
+      "type": "setup",
+      "surface": "terminal",
+      "prompt": {
+        "en": "Which do you add first?",
+        "ja": "最初に足すのはどれですか？"
+      },
+      "explain": {
+        "en": "An ask rule is checked before the classifier and always prompts. Chat boundaries can be lost to compaction, and CLAUDE.md is guidance, not a rule Claude Code enforces.",
+        "ja": "ask ルールは分類器より先に調べられ、必ず確認が出ます。会話で伝えた境界線はコンパクションで消えることがあり、CLAUDE.md は指針であって、Claude Code が強制するルールではありません。"
+      },
+      "scenario": {
+        "en": "You're about to use auto mode on your website project. By default it lets Claude push to any branch and open pull requests without asking. You want to see those before they happen.",
+        "ja": "Webサイトのプロジェクトで auto モードを使おうとしています。既定では、Claude はどのブランチへのプッシュも、プルリクエストの作成も確認なしで行えます。あなたはそれらを実行前に見たいと考えています。"
+      },
+      "opts": [
+        {
+          "text": {
+            "en": "`\"ask\": [\"Bash(git push *)\", \"Bash(gh pr create *)\"]` in your settings",
+            "ja": "設定に `\"ask\": [\"Bash(git push *)\", \"Bash(gh pr create *)\"]` を書く"
+          },
+          "feedback": {
+            "en": "Right. This is the docs' own recipe: ask rules always prompt, even in auto mode. They match commands as written, so a form like `git -C . push` slips past. A checkpoint, not a wall.",
+            "ja": "正解です。公式ドキュメントどおりのやり方です。ask ルールは auto モードでも必ず確認を出します。ただし書かれた形のコマンドにしか当てはまらないので、`git -C . push` のような形はすり抜けます。関所であって、壁ではありません。"
+          }
+        },
+        {
+          "text": {
+            "en": "`\"allow\": [\"Bash(*)\"]` so nothing slows you down",
+            "ja": "作業が止まらないよう `\"allow\": [\"Bash(*)\"]` を書く"
+          },
+          "feedback": {
+            "en": "That's the opposite of a checkpoint. Auto mode sets `Bash(*)` aside anyway, and when you leave auto mode it would approve every command.",
+            "ja": "それは関所とは正反対です。auto モードでは `Bash(*)` は脇に置かれますし、auto モードを抜けるとあらゆるコマンドを許可してしまいます。"
+          }
+        },
+        {
+          "text": {
+            "en": "A line in CLAUDE.md: \"Always ask me before pushing.\"",
+            "ja": "CLAUDE.md に「プッシュの前に必ず確認して」と1行書く"
+          },
+          "feedback": {
+            "en": "The classifier reads CLAUDE.md too, so it may block pushes, but that isn't a prompt and nothing enforces it. Only an ask rule guarantees you see the push first.",
+            "ja": "分類器も CLAUDE.md を読むので、プッシュをブロックすることはあるかもしれません。でもそれは確認ではなく、何も強制されません。プッシュを先に必ず見られるのは ask ルールだけです。"
+          }
+        },
+        {
+          "text": {
+            "en": "Tell Claude \"don't push\" at the start of each session",
+            "ja": "セッションの始めに毎回「プッシュしないで」と伝える"
+          },
+          "feedback": {
+            "en": "That works as a boundary for a while, but the classifier re-reads it from the conversation, and compaction can remove it. A rule doesn't depend on the conversation.",
+            "ja": "しばらくは境界線として効きますが、分類器は会話からそれを読み直すので、コンパクションで消えることがあります。ルールなら会話に左右されません。"
+          }
+        }
+      ],
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "auto-mode-config",
+        "anchor": "add-a-human-checkpoint"
+      }
+    },
+    {
+      "id": "automode-automode-5",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "A boundary you state in chat makes the classifier block matching actions until you lift it yourself.",
+        "ja": "会話で伝えた境界線があると、あなたが自分で解除するまで、分類器は当てはまる操作をブロックします。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Update the prices on the pricing page.",
+        "ja": "料金ページの価格を更新して。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "git push origin pricing-update"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "A few messages ago you said: \"Don't push anything until I've reviewed it.\"",
+          "ja": "少し前に、あなたは「確認するまで何もプッシュしないで」と伝えました。"
+        },
+        {
+          "en": "Claude says: \"The edits look right, so I'll push now.\"",
+          "ja": "Claude は「編集は問題なさそうなので、プッシュします」と言っています。"
+        },
+        {
+          "en": "No `ask` or `deny` rules cover this.",
+          "ja": "これに当てはまる `ask` や `deny` のルールはありません。"
+        }
+      ],
+      "answer": "blocked",
+      "feedback": {
+        "blocked": {
+          "en": "Right. Your \"don't push\" makes the classifier block pushes, even though they're allowed by default. It stays until you lift it; Claude deciding the work looks fine doesn't count.",
+          "ja": "正解です。「プッシュしないで」と伝えたので、既定では許可されているプッシュでも分類器がブロックします。あなたが解除するまで続き、Claude が「問題なさそう」と判断しても解除にはなりません。"
+        },
+        "runs": {
+          "en": "Pushes to your repository are allowed by default, but you set a boundary. The classifier re-reads it on each check and blocks the push until you lift it.",
+          "ja": "自分のリポジトリへのプッシュは既定で許可されていますが、あなたは境界線を伝えました。分類器は確認のたびにそれを読み直し、あなたが解除するまでプッシュをブロックします。"
+        },
+        "asks": {
+          "en": "No ask rule covers this, so nothing prompts you. The classifier blocks it because of your boundary, and it shows up under Recently denied.",
+          "ja": "当てはまる ask ルールがないので、確認は出ません。あなたの境界線を理由に分類器がブロックし、Recently denied（最近拒否された操作）に表示されます。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "boundaries-you-state-in-conversation"
+      }
+    },
+    {
+      "id": "automode-automode-6",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "Boundaries aren't stored as rules. When compaction removed your message, the push became an ordinary push, allowed by default.",
+        "ja": "境界線はルールとして保存されません。コンパクションであなたのメッセージが消えると、このプッシュはただのプッシュになり、既定で許可されます。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Update the prices on the pricing page.",
+        "ja": "料金ページの価格を更新して。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "git push origin pricing-update"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "Early on you said: \"Don't push anything until I've reviewed it.\"",
+          "ja": "最初のほうで、あなたは「確認するまで何もプッシュしないで」と伝えました。"
+        },
+        {
+          "en": "The conversation got long, and Claude Code compacted it: older messages were replaced by a summary. The summary left out your \"don't push\" message.",
+          "ja": "会話が長くなったので、Claude Code がコンパクションを行い、古いメッセージを要約に置き換えました。その要約には「プッシュしないで」のメッセージが入っていません。"
+        },
+        {
+          "en": "No `ask` or `deny` rules cover this.",
+          "ja": "これに当てはまる `ask` や `deny` のルールはありません。"
+        }
+      ],
+      "answer": "runs",
+      "feedback": {
+        "runs": {
+          "en": "Right, unfortunately. The classifier re-reads boundaries from the conversation on each check. Once compaction removed your message, this was an ordinary push to your own repository, which is allowed by default. For a boundary that lasts, add an ask or deny rule.",
+          "ja": "残念ながら正解です。分類器は確認のたびに会話から境界線を読み直します。コンパクションであなたのメッセージが消えたので、これは自分のリポジトリへのただのプッシュになり、既定で許可されます。ずっと続く境界線にするには、ask か deny のルールを足しましょう。"
+        },
+        "blocked": {
+          "en": "It would have been while your message was still there. But boundaries aren't stored as rules, and compaction removed it. Now it's an ordinary push to your repository, allowed by default.",
+          "ja": "あなたのメッセージが残っている間ならブロックされていました。でも境界線はルールとして保存されず、コンパクションで消えてしまいました。今はただの自分のリポジトリへのプッシュで、既定で許可されます。"
+        },
+        "asks": {
+          "en": "No ask rule covers pushes here, so nothing prompts you. That's the fix: `Bash(git push *)` in `ask` survives any compaction.",
+          "ja": "ここにはプッシュに当てはまる ask ルールがないので、確認は出ません。それこそが対策です。`ask` に `Bash(git push *)` を入れておけば、コンパクションがあっても消えません。"
+        }
+      },
+      "more": {
+        "slug": "auto-mode-config",
+        "anchor": "common-boundaries"
+      }
+    },
+    {
+      "id": "automode-approve-2",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": {
+        "en": "You're in auto mode, with an ask rule for git push. This prompt appears. What do you press?",
+        "ja": "auto モードで、git push への ask ルールを設定しています。この確認が出ました。どれを押しますか？"
+      },
+      "explain": {
+        "en": "`--force` replaces the branch on the server with your copy, wiping out commits your teammates pushed. Your ask rule made sure you saw it. Say No, and ask Claude to pull and merge instead.",
+        "ja": "`--force` はサーバー上のブランチをあなたの手元の内容で置き換え、仲間がプッシュしたコミットを消してしまいます。ask ルールのおかげで、あなたはそれを目にできました。「いいえ」を選び、代わりに取り込んでマージするよう Claude に頼みましょう。"
+      },
+      "task": {
+        "en": "Push my footer fix.",
+        "ja": "フッターの修正をプッシュして。"
+      },
+      "narration": {
+        "en": "The push was rejected because the server has newer commits. I'll force-push so your version goes through.",
+        "ja": "サーバーに新しいコミットがあるため、プッシュが拒否されました。あなたの版が通るよう、強制プッシュします。"
+      },
+      "tool": "Bash",
+      "target": "git push --force origin main",
+      "reason": {
+        "en": "Push the footer fix to main",
+        "ja": "フッターの修正を main にプッシュします"
+      },
+      "askRule": true,
+      "choices": [
+        "yes",
+        "always",
+        "no"
+      ],
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: git push *",
+        "ja": "はい、今後 git push * は確認しない"
+      },
+      "accept": [
+        "no"
+      ],
+      "outcomes": {
+        "yes": {
+          "headline": {
+            "en": "A morning of the team's work vanishes from main after a \"footer fix\"",
+            "ja": "「フッターの修正」のあと、チームの午前中の作業が main から消失"
+          },
+          "feedback": {
+            "en": "`--force` replaces `main` on the server with your copy, deleting the newer commits your teammates pushed. Say: \"Don't force-push. Pull the new commits, merge, and push normally.\"",
+            "ja": "`--force` はサーバー上の `main` をあなたの手元の内容で置き換え、仲間がプッシュした新しいコミットを消してしまいます。「強制プッシュはしないで。新しいコミットを取り込んでマージしてから、ふつうにプッシュして」と伝えましょう。"
+          }
+        },
+        "always": {
+          "headline": {
+            "en": "A morning of the team's work vanishes from main after a \"footer fix\"",
+            "ja": "「フッターの修正」のあと、チームの午前中の作業が main から消失"
+          },
+          "feedback": {
+            "en": "This force-pushes now, and saves an allow rule for every `git push`. Your ask rule still wins next time, but if it's ever removed, every push would run unasked.",
+            "ja": "今回強制プッシュされるうえに、すべての `git push` を許可するルールが保存されます。次回は ask ルールが優先されますが、いつか ask ルールが消されたら、どのプッシュも確認なしで実行されてしまいます。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "Right. Your ask rule did its job: it put this push in front of you. Then tell Claude: \"Don't force-push. Pull the new commits, merge, and push normally.\"",
+            "ja": "正解です。ask ルールが役目を果たし、このプッシュをあなたの前に出してくれました。そのうえで Claude に「強制プッシュはしないで。新しいコミットを取り込んでマージしてから、ふつうにプッシュして」と伝えましょう。"
+          }
+        }
+      },
+      "decode": [
+        {
+          "code": "git push",
+          "means": {
+            "en": "Send your commits to the server",
+            "ja": "コミットをサーバーへ送る"
+          }
+        },
+        {
+          "code": "--force",
+          "means": {
+            "en": "Overwrite the server's copy, even if it has commits you don't",
+            "ja": "手元にないコミットがあっても、サーバー側を上書きする"
+          }
+        },
+        {
+          "code": "origin main",
+          "means": {
+            "en": "The shared main branch on your repository's server",
+            "ja": "リポジトリのサーバーにある、共有の main ブランチ"
+          }
+        }
+      ],
+      "more": {
+        "slug": "auto-mode-config",
+        "anchor": "add-a-human-checkpoint"
+      }
+    },
+    {
+      "id": "automode-automode-7",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "`.claude/` is protected, so writes there go to the classifier instead of just running. Claude changing its own permission settings, which you didn't ask for, is on the classifier's default block list.",
+        "ja": "`.claude/` は保護されているので、そこへの書き込みはそのまま実行されず、分類器に回ります。頼まれてもいないのに Claude が自分の権限設定を変えることは、分類器が既定でブロックするリストに入っています。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Fix the failing login test.",
+        "ja": "失敗しているログインのテストを直して。"
+      },
+      "action": {
+        "tool": "Edit",
+        "target": ".claude/settings.json"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on (`⏵⏵ auto mode on`).",
+          "ja": "auto モードがオンです（`⏵⏵ auto mode on`）。"
+        },
+        {
+          "en": "`.claude/settings.json` is inside your project folder.",
+          "ja": "`.claude/settings.json` はプロジェクトフォルダの中にあります。"
+        },
+        {
+          "en": "Claude says: \"I'll add `\"allow\": [\"Bash(*)\"]` here so my test runs stop being checked.\"",
+          "ja": "Claude は「テストの実行がいちいち調べられないよう、ここに `\"allow\": [\"Bash(*)\"]` を追加します」と言っています。"
+        }
+      ],
+      "answer": "blocked",
+      "feedback": {
+        "blocked": {
+          "en": "Right. `.claude/` is a protected folder, so this edit goes to the classifier instead of just running. Rewriting Claude's own permissions to escape review is on the classifier's default block list, and you only asked for a test fix.",
+          "ja": "正解です。`.claude/` は保護されたフォルダなので、この編集はそのまま実行されず、分類器に回ります。Claude が審査を逃れるために自分の権限設定を書き換えることは、分類器が既定でブロックするリストに入っています。それに、あなたが頼んだのはテストの修正だけです。"
+        },
+        "runs": {
+          "en": "Edits in your folder usually just run, but `.claude/` is protected: writes there go to the classifier, and no allow rule pre-approves them. Claude changing its own permissions without being asked is a default block. (Auto mode would set `Bash(*)` aside anyway, until you left it.)",
+          "ja": "フォルダ内の編集はふだんならそのまま実行されますが、`.claude/` は保護されています。そこへの書き込みは分類器に回り、allow ルールで事前に許可することもできません。頼まれずに Claude が自分の権限を変えることは、既定でブロックされます。（それに `Bash(*)` は、auto モードを抜けるまでは脇に置かれます。）"
+        },
+        "asks": {
+          "en": "In Manual mode this would ask you. In auto mode, writes to protected paths go to the classifier instead, and Claude changing its own permissions without being asked is on its default block list.",
+          "ja": "Manual モードならあなたに確認が出ます。auto モードでは、保護されたパスへの書き込みは代わりに分類器に回ります。そして頼まれずに Claude が自分の権限を変えることは、分類器が既定でブロックするリストに入っています。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "protected-paths"
+      }
+    },
+    {
+      "id": "automode-setup-3",
+      "type": "setup",
+      "surface": "terminal",
+      "prompt": {
+        "en": "What do you add?",
+        "ja": "何を足しますか？"
+      },
+      "explain": {
+        "en": "The classifier decides whether a command runs; the sandbox limits what it can reach if it does. Fewer checks or a polite request add no limit at all.",
+        "ja": "分類器はコマンドを実行するかどうかを決め、サンドボックスは実行されたときに届く範囲を限ります。チェックを減らしたり丁寧に頼んだりしても、何の制限にもなりません。"
+      },
+      "scenario": {
+        "en": "You'll leave auto mode running on a long task that installs packages and runs scripts. You want a limit on what a command can reach if the classifier lets something bad through.",
+        "ja": "パッケージをインストールしたりスクリプトを実行したりする長い作業を、auto モードで任せるつもりです。分類器がまずいものを通してしまったときに、コマンドが届く範囲に限りを設けたいと考えています。"
+      },
+      "opts": [
+        {
+          "text": {
+            "en": "Turn on the sandbox with `/sandbox`",
+            "ja": "`/sandbox` でサンドボックスをオンにする"
+          },
+          "feedback": {
+            "en": "Right. Commands can then write only inside the project (and a temp folder) and reach only the websites allowed for them, though they can still read most files. It covers shell commands, not Claude's file and web tools.",
+            "ja": "正解です。コマンドが書き込めるのはプロジェクトの中（と一時フォルダ）だけ、接続できるのは許可された Webサイトだけになります（ほとんどのファイルは読めます）。囲むのはシェルのコマンドで、Claude のファイル用ツールや Web用ツールは対象外です。"
+          }
+        },
+        {
+          "text": {
+            "en": "Switch to Bypass permissions so nothing gets in the way",
+            "ja": "邪魔が入らないよう Bypass permissions に切り替える"
+          },
+          "feedback": {
+            "en": "Bypass permissions removes the checks altogether. It's only for isolated containers or virtual machines, never your own computer.",
+            "ja": "Bypass permissions（許可をスキップ）はチェックをすべて外してしまいます。隔離されたコンテナや仮想マシン専用で、自分のパソコンでは決して使いません。"
+          }
+        },
+        {
+          "text": {
+            "en": "Add `\"allow\": [\"Bash(python*)\"]` so scripts run smoothly",
+            "ja": "スクリプトがすんなり動くよう `\"allow\": [\"Bash(python*)\"]` を足す"
+          },
+          "feedback": {
+            "en": "Auto mode sets wildcard rules like this aside anyway. And an allow rule means fewer checks, not a limit.",
+            "ja": "auto モードでは、こうしたワイルドカードのルールはどのみち脇に置かれます。それに allow ルールはチェックを減らすだけで、制限にはなりません。"
+          }
+        },
+        {
+          "text": {
+            "en": "Ask Claude to be extra careful",
+            "ja": "Claude に「特に気をつけて」と頼む"
+          },
+          "feedback": {
+            "en": "Claude may try, but nothing enforces it. The sandbox is enforced by your operating system, whatever command runs.",
+            "ja": "Claude はそうしようとするかもしれませんが、何も強制されません。サンドボックスなら、どんなコマンドが動いても OS が守らせます。"
+          }
+        }
+      ],
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "per-command-allowed-domains-in-auto-mode"
+      }
+    },
+    {
+      "id": "automode-approve-3",
+      "type": "approve",
+      "surface": "terminal",
+      "prompt": {
+        "en": "You're in Manual mode. Claude wants to do this. What do you press?",
+        "ja": "Manual モードです。Claude がこれを実行しようとしています。どれを押しますか？"
+      },
+      "explain": {
+        "en": "This is the change you asked for, so Yes is right. But a production database change is a sensitive one-off: don't save a rule for it, and don't hand the rest of the session to auto mode.",
+        "ja": "これは頼んだとおりの変更なので「はい」が正解です。ただし本番データベースの変更は、慎重さが必要な1回きりの操作です。ルールを保存したり、残りのセッションを auto モードに任せたりはしないでおきましょう。"
+      },
+      "task": {
+        "en": "Apply the new database migration to production. We tested it on staging this morning.",
+        "ja": "新しいデータベースのマイグレーションを本番に適用して。今朝ステージング環境で試してあるから。"
+      },
+      "narration": {
+        "en": "The staging run passed. I'll apply the same migration to the production database.",
+        "ja": "ステージングでの実行は成功しています。同じマイグレーションを本番のデータベースに適用します。"
+      },
+      "tool": "Bash",
+      "target": "npm run migrate -- --env production",
+      "reason": {
+        "en": "Apply the migration to the production database",
+        "ja": "本番のデータベースにマイグレーションを適用します"
+      },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
+      "alwaysLabel": {
+        "en": "Yes, and don't ask again for: npm run migrate *",
+        "ja": "はい、今後 npm run migrate * は確認しない"
+      },
+      "accept": [
+        "yes"
+      ],
+      "outcomes": {
+        "yes": {
+          "feedback": {
+            "en": "Right. It's the step you asked for, tested on staging, and the target says production, as you said. One careful Yes for one careful change.",
+            "ja": "正解です。頼んだとおりの手順で、ステージングで試してあり、対象もあなたの言ったとおり本番です。慎重な変更に、慎重な「はい」を1回。"
+          }
+        },
+        "always": {
+          "feedback": {
+            "en": "The migration was fine, but this saves `npm run migrate *`: every later migration, to any database, would run without asking. Keep production changes behind a prompt.",
+            "ja": "マイグレーション自体は問題ありませんが、この選択は `npm run migrate *` を保存します。これから先のマイグレーションは、どのデータベースに対しても確認なしで実行されてしまいます。本番への変更は確認の向こう側に置いておきましょう。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The migration was fine, but this hands the rest of the session to the classifier. The docs say auto mode is \"not a replacement for review on sensitive operations.\" For a one-off production change, stay in Manual and read each step.",
+            "ja": "マイグレーション自体は問題ありませんが、この選択は残りのセッションを分類器に任せます。公式ドキュメントにも、auto モードは「慎重さが必要な操作での確認の代わりにはならない」とあります。本番への1回きりの変更では Manual のまま、一つひとつの手順を読みましょう。"
+          }
+        },
+        "no": {
+          "feedback": {
+            "en": "This was the change you asked for, tested on staging and aimed where you said. Refusing it just stalls your own task. Read the target; if it matches, say Yes.",
+            "ja": "これはあなたが頼んだ変更で、ステージングで試してあり、言ったとおりの場所が対象でした。断ると自分の作業が止まるだけです。対象を読み、合っていれば「はい」を選びましょう。"
+          }
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "eliminate-prompts-with-auto-mode"
+      }
+    },
+    {
+      "id": "automode-automode-8",
+      "type": "automode",
+      "prompt": {
+        "en": "What happens in auto mode?",
+        "ja": "auto モードではどうなりますか？"
+      },
+      "explain": {
+        "en": "Removing a critical path skips the classifier. In the terminal, Claude Code asks you, with a two-minute countdown.",
+        "ja": "重要なパスの削除は分類器を通りません。ターミナルでは、Claude Code が2分のカウントダウン付きであなたに確認します。"
+      },
+      "surface": "terminal",
+      "request": {
+        "en": "Clear out the old build output.",
+        "ja": "古いビルドの出力を片づけて。"
+      },
+      "action": {
+        "tool": "Bash",
+        "target": "rm -rf \"$OUT_DIR\"/*"
+      },
+      "setup": [
+        {
+          "en": "Auto mode is on, in the terminal.",
+          "ja": "ターミナルで auto モードがオンです。"
+        },
+        {
+          "en": "`$OUT_DIR` was never set in this session, so it's empty.",
+          "ja": "`$OUT_DIR` はこのセッションで一度も設定されていないので、空です。"
+        },
+        {
+          "en": "With `$OUT_DIR` empty, the command becomes `rm -rf /*`: delete everything, starting from the top of the disk.",
+          "ja": "`$OUT_DIR` が空だと、このコマンドは `rm -rf /*`、つまりディスクのいちばん上からすべてを消すコマンドになります。"
+        }
+      ],
+      "answer": "asks",
+      "feedback": {
+        "asks": {
+          "en": "Right. Removing a critical path, like the top of the disk or your home folder, never goes to the classifier. In the terminal Claude Code asks you, with a two-minute countdown, and denies it if time runs out. Say No.",
+          "ja": "正解です。ディスクのいちばん上やホームフォルダのような重要なパスの削除は、分類器に回りません。ターミナルでは Claude Code が2分のカウントダウン付きであなたに確認し、時間切れなら拒否します。「いいえ」を選びましょう。"
+        },
+        "blocked": {
+          "en": "Close, but the classifier doesn't review critical-path removals. In the terminal Claude Code asks you instead, with a two-minute countdown, and denies it if time runs out.",
+          "ja": "惜しいですが、重要なパスの削除は分類器が調べるものではありません。ターミナルでは代わりに Claude Code が2分のカウントダウン付きであなたに確認し、時間切れなら拒否します。"
+        },
+        "runs": {
+          "en": "Never. No allow rule can approve removing a critical path. In auto mode it comes to you in the terminal, and is denied where you can't be asked.",
+          "ja": "決して実行されません。重要なパスの削除は、どの allow ルールでも許可できません。auto モードではターミナルであなたに確認が来て、確認できない場所では拒否されます。"
+        }
+      },
+      "more": {
+        "slug": "permission-modes",
+        "anchor": "critical-paths"
+      }
+    }
+  ]
+}

@@ -2,151 +2,923 @@
   {
     "key": "computer",
     "status": "ready",
-    "title": { "en": "Your computer, from the inside", "ja": "パソコンの中身を知ろう" },
-    "blurb": {
-      "en": "The terminal, files and paths, hidden dot-files, where secrets live, and what rm really does.",
-      "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、そして rm が本当にすること。"
+    "title": {
+      "en": "Your computer, from the inside",
+      "ja": "パソコンの中身を知ろう"
     },
-    "chips": ["predict", "decode", "pairs"],
+    "blurb": {
+      "en": "The terminal, files and paths, hidden dot-files, where secrets live, what rm really does, and where Claude Code saves your conversations.",
+      "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、rm が本当にすること、そして Claude Code が会話を保存する場所。"
+    },
+    "chips": [
+      "predict",
+      "decode",
+      "pairs"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": ["https://code.claude.com/docs"]
+    "docs": [
+      {
+        "ref": {
+          "slug": "claude-directory",
+          "anchor": "application-data"
+        },
+        "note": {
+          "en": "Read this if you want the full list of files Claude Code writes to ~/.claude, how long it keeps them, and how to clear them.",
+          "ja": "Claude Code が ~/.claude に書き込むファイルの一覧、保存期間、消し方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "how-claude-code-works",
+          "anchor": "work-with-sessions"
+        },
+        "note": {
+          "en": "Read this if you want to see how Claude Code saves each session and what it can reach on your computer.",
+          "ja": "Claude Code がセッションをどう保存するか、パソコンの中の何に手が届くかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "checkpointing"
+        },
+        "note": {
+          "en": "Read this if you want to know what Claude Code can undo, and why files deleted by commands aren't among them.",
+          "ja": "Claude Code が何を元に戻せるか、そしてコマンドで消したファイルがなぜ戻らないのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "overview"
+        },
+        "note": {
+          "en": "Read this if you want a map of what Claude Code is and where to start.",
+          "ja": "Claude Code とは何か、どこから始めるかの全体像がほしいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "agent",
     "status": "ready",
-    "title": { "en": "How Claude Code works", "ja": "Claude Code の仕組み" },
-    "blurb": {
-      "en": "The agent loop, tools, the context window, CLAUDE.md and memory, and MCP as more tools.",
-      "ja": "エージェントループ、ツール、コンテキストウィンドウ、CLAUDE.md とメモリ、そして「ツールを増やす」MCP。"
+    "title": {
+      "en": "How Claude Code works",
+      "ja": "Claude Code の仕組み"
     },
-    "chips": ["order", "pairs", "predict"],
+    "blurb": {
+      "en": "The loop (gather, act, verify), tools and the harness, commands that run as you, the context window, CLAUDE.md and auto memory, compaction, and what undo can and can't reach.",
+      "ja": "ループ（集める・動く・確かめる）、ツールとハーネス、「あなた」として動くコマンド、コンテキストウィンドウ、CLAUDE.md と自動メモリ、圧縮、そして「元に戻す」が届く範囲と届かない範囲。"
+    },
+    "chips": [
+      "order",
+      "pairs",
+      "predict"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/how-claude-code-works",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/memory",
-      "https://code.claude.com/docs/en/mcp",
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/sandboxing"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "how-claude-code-works"
+        },
+        "note": {
+          "en": "Read this if you want the agent loop, the tools, and the harness around the model, explained end to end.",
+          "ja": "エージェントループ、ツール、そしてモデルを包むハーネスを、通して理解したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "tools-reference"
+        },
+        "note": {
+          "en": "Read this if you want the full list of Claude's built-in tools and what each one does.",
+          "ja": "Claude に組み込まれたツールの一覧と、それぞれの役割を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "context-window"
+        },
+        "note": {
+          "en": "Read this if you want to see what fills the context window and what happens when it gets full.",
+          "ja": "コンテキストウィンドウに何が入り、いっぱいになると何が起きるかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "memory"
+        },
+        "note": {
+          "en": "Read this if you want to know what CLAUDE.md and auto memory hold, when they load, and how to edit them with /memory.",
+          "ja": "CLAUDE.md と自動メモリに何が入り、いつ読み込まれ、/memory でどう編集するかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "features-overview"
+        },
+        "note": {
+          "en": "Read this if you are choosing between memory, skills, MCP, hooks and other extensions.",
+          "ja": "メモリ、スキル、MCP、フックなど、どの拡張を使うか迷っているとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "checkpointing"
+        },
+        "note": {
+          "en": "Read this if you want to rewind Claude's edits, and to see what checkpoints can't undo.",
+          "ja": "Claude の編集を巻き戻したいとき、そしてチェックポイントで戻せないものを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sessions"
+        },
+        "note": {
+          "en": "Read this if you want to resume, name or branch your sessions.",
+          "ja": "セッションを再開したり、名前を付けたり、枝分かれさせたりしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "permissions",
     "status": "ready",
-    "title": { "en": "Permission prompts", "ja": "許可プロンプト" },
-    "blurb": {
-      "en": "Read the prompt before you say yes: the three answers, permission modes, red flags, and permission fatigue.",
-      "ja": "「はい」の前にプロンプトを読む。3つの答え方、許可モード、危険のサイン、そして確認疲れ。"
+    "title": {
+      "en": "Permission prompts",
+      "ja": "許可プロンプト"
     },
-    "chips": ["approve", "decode", "setup"],
+    "blurb": {
+      "en": "Read the prompt before you say yes: the four answers, saved rules, what never asks, permission modes, protected files and workspace trust.",
+      "ja": "「はい」の前にプロンプトを読む。4つの答え方、保存されるルール、確認されないもの、許可モード、保護されたファイル、フォルダの信頼。"
+    },
+    "chips": [
+      "approve",
+      "decode",
+      "setup"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/interactive-mode",
-      "https://code.claude.com/docs/en/settings",
-      "https://code.claude.com/docs/en/security",
-      "https://code.claude.com/docs/en/desktop",
-      "https://code.claude.com/docs/en/desktop-quickstart"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions"
+        },
+        "note": {
+          "en": "Read this if you want to write allow, ask and deny rules and see how they are checked.",
+          "ja": "allow・ask・deny のルールの書き方と、その判定のされ方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes"
+        },
+        "note": {
+          "en": "Read this if you want to know what each permission mode changes and how to switch.",
+          "ja": "各許可モードが何を変えるのか、どう切り替えるのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "protected-paths"
+        },
+        "note": {
+          "en": "Read this if you want the full list of protected files and the paths no rule can approve deleting.",
+          "ja": "保護されたファイルの一覧と、どんなルールでも削除を許可できないパスを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the big picture of how Claude Code keeps you safe, including workspace trust.",
+          "ja": "フォルダの信頼の確認も含め、Claude Code がどのように安全を守るのか、全体像を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop",
+          "anchor": "choose-a-permission-mode"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app and want to pick its permission mode.",
+          "ja": "デスクトップアプリを使っていて、許可モードを選びたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "injection",
     "status": "ready",
-    "title": { "en": "Prompt injection", "ja": "プロンプトインジェクション" },
-    "blurb": {
-      "en": "Where injections hide, invisible text, warning signs, persistence via CLAUDE.md, and what to do.",
-      "ja": "インジェクションの隠れ場所、見えない文字、警告のサイン、CLAUDE.md に居座る手口、そして取るべき行動。"
+    "title": {
+      "en": "Prompt injection",
+      "ja": "プロンプトインジェクション"
     },
-    "chips": ["hidden", "chain", "approve"],
+    "blurb": {
+      "en": "Where injections hide, invisible text, what each tool hands Claude, warning signs, persistence via CLAUDE.md and memory, Claude Code's safeguards, and what to do.",
+      "ja": "インジェクションの隠れ場所、見えない文字、ツールごとに Claude に渡るもの、警告のサイン、CLAUDE.md やメモリに居座る手口、Claude Code の守り、そして取るべき行動。"
+    },
+    "chips": [
+      "hidden",
+      "chain",
+      "approve",
+      "predict"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/security",
-      "https://code.claude.com/docs/en/memory",
-      "https://code.claude.com/docs/en/how-claude-code-works",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/mcp"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "protect-against-prompt-injection"
+        },
+        "note": {
+          "en": "Read this if you want to know how Claude Code defends against prompt injection and what is still on you.",
+          "ja": "Claude Code がプロンプトインジェクションにどう備えているか、そしてあなたの役割は何かを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "tools-reference",
+          "anchor": "webfetch-tool-behavior"
+        },
+        "note": {
+          "en": "Read this if you want to know what the web fetch tool does with the pages it reads.",
+          "ja": "Web 取得ツールが読み込んだページをどう扱うかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "memory"
+        },
+        "note": {
+          "en": "Read this if you want to know which CLAUDE.md and auto memory files load each session, and how to read or edit them.",
+          "ja": "毎回のセッションでどの CLAUDE.md と自動メモリのファイルが読み込まれるのか、それをどう読んで編集するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you connect MCP servers and want the security warning about untrusted ones.",
+          "ja": "MCP サーバーをつなぐ前に、信頼できないサーバーについての注意を読みたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sub-agents",
+          "anchor": "subagent-output-scanning"
+        },
+        "note": {
+          "en": "Read this if you use subagents and want to know how their reports are checked before Claude reads them.",
+          "ja": "サブエージェントを使っていて、その報告が Claude に読まれる前にどう調べられるのかを知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "browser",
     "status": "ready",
-    "title": { "en": "Browser automation", "ja": "ブラウザ自動操作" },
-    "blurb": {
-      "en": "Your logged-in browser, the deadly combo, how data leaves through a browser, and safe setups.",
-      "ja": "ログイン中のブラウザ、危険な組み合わせ、ブラウザ経由でデータが漏れる仕組み、そして安全な環境づくり。"
+    "title": {
+      "en": "Browser automation",
+      "ja": "ブラウザ自動操作"
     },
-    "chips": ["chain", "combo", "setup", "hidden", "approve", "predict"],
+    "blurb": {
+      "en": "Claude in Chrome versus the desktop Browser pane, your logged-in browser, the deadly combo, how data leaves, computer use, and safe setups.",
+      "ja": "Claude in Chrome とデスクトップの Browser ペインの違い、ログイン中のブラウザ、危険な組み合わせ、データが出ていく道、コンピューター操作、そして安全な環境づくり。"
+    },
+    "chips": [
+      "chain",
+      "combo",
+      "setup",
+      "hidden",
+      "approve",
+      "predict"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/chrome",
-      "https://code.claude.com/docs/en/desktop",
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/mcp"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "chrome"
+        },
+        "note": {
+          "en": "Read this if you use Claude in Chrome and want to know what it can reach, how site permissions work, and which files it won't upload.",
+          "ja": "Claude in Chrome を使っていて、どこまで手が届くのか、サイトの許可のしくみ、アップロードしないファイルを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop",
+          "anchor": "browse-external-sites"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app's Browser pane and want its safeguards and site approvals.",
+          "ja": "デスクトップアプリの Browser ペインを使っていて、その守りやサイトごとの許可を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "computer-use"
+        },
+        "note": {
+          "en": "Read this if you want to know how Claude controls your screen and how to limit it.",
+          "ja": "Claude が画面をどう操作するのか、どう制限するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the safety model behind browser and computer actions.",
+          "ja": "ブラウザやコンピューター操作の背後にある安全の考え方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you want the step-by-step setup for Claude in Chrome.",
+          "ja": "Claude in Chrome のセットアップ手順を順番に確認したいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "powers",
-    "status": "soon",
-    "title": { "en": "Who can do what", "ja": "誰が何をできるのか" },
-    "blurb": {
-      "en": "Users, file permissions, sudo, and environment variables. Claude runs with your powers.",
-      "ja": "ユーザー、ファイルの権限、sudo、環境変数。Claude はあなたと同じ力で動きます。"
+    "status": "ready",
+    "title": {
+      "en": "Who can do what",
+      "ja": "誰が何をできる？"
     },
-    "chips": ["decode", "predict"]
+    "blurb": {
+      "en": "Users, file permissions, sudo and environment variables. Claude runs with your powers.",
+      "ja": "ユーザー、ファイル権限、sudo、環境変数。Claude はあなたの権限で動きます。"
+    },
+    "chips": [
+      "decode",
+      "predict",
+      "pairs",
+      "approve"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the safety model behind what Claude can do with your account.",
+          "ja": "Claude があなたのアカウントでできることの背後にある、安全の考え方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing",
+          "anchor": "protect-credentials"
+        },
+        "note": {
+          "en": "Read this if you want to keep tokens and key files away from the commands Claude runs in the sandbox.",
+          "ja": "サンドボックスで Claude が実行するコマンドから、トークンや鍵ファイルを遠ざけたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "env-vars"
+        },
+        "note": {
+          "en": "Read this if you want to know how environment variables reach Claude Code and how to strip secrets from its commands.",
+          "ja": "環境変数がどのように Claude Code に届くのか、そのコマンドから秘密情報を取り除く方法を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "skip-all-checks-with-bypasspermissions-mode"
+        },
+        "note": {
+          "en": "Read this if you're thinking about Bypass permissions mode, or wonder why it won't start as root.",
+          "ja": "Bypass permissions モードを使おうか考えているとき、または root では起動しない理由を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "devcontainer"
+        },
+        "note": {
+          "en": "Read this if you want to run Claude Code unattended in a container as a non-root user.",
+          "ja": "Claude Code をコンテナの中で、root ではないユーザーとして無人で動かしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "mcp",
-    "status": "soon",
-    "title": { "en": "MCP servers", "ja": "MCPサーバー" },
-    "blurb": {
-      "en": "What a connector can see and do, login scopes, poisoned tool descriptions, and servers that change after approval.",
-      "ja": "コネクタに見えるもの・できること、ログインの権限範囲、毒入りのツール説明、承認後に変わるサーバー。"
+    "status": "ready",
+    "title": {
+      "en": "MCP servers",
+      "ja": "MCP サーバー"
     },
-    "chips": ["scopes", "poisoned"]
+    "blurb": {
+      "en": "What a connector can see and do, install scopes, logins, poisoned tool descriptions, and servers that change after approval.",
+      "ja": "コネクタが見られること・できること、インストール範囲、ログイン、汚染されたツール説明、承認後に変わるサーバー。"
+    },
+    "chips": [
+      "scopes",
+      "poisoned",
+      "approve",
+      "predict",
+      "setup"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "mcp-quickstart"
+        },
+        "note": {
+          "en": "Read this if you want to add your first server step by step and see where its setup is saved.",
+          "ja": "最初のサーバーを手順どおりに追加し、その設定がどこに保存されるかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want the full reference: scopes, logins, project approvals, connectors and output limits.",
+          "ja": "スコープ、ログイン、プロジェクトの承認、コネクタ、出力の上限まで、すべてを網羅したリファレンスを読みたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "mcp-security"
+        },
+        "note": {
+          "en": "Read this if you want to know what Anthropic does and doesn't check about MCP servers.",
+          "ja": "MCP サーバーについて、Anthropic が何を確認していて、何を確認していないのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want to write allow, ask or deny rules for one MCP tool or a whole server.",
+          "ja": "MCP のツール1つ、またはサーバー全体に対して、allow・ask・deny のルールを書きたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop",
+          "anchor": "connect-external-tools"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app and want to add or disconnect connectors there.",
+          "ja": "デスクトップアプリを使っていて、そこでコネクタを追加したり接続を解除したりしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
+  },
+  {
+    "key": "extensions",
+    "status": "ready",
+    "title": {
+      "en": "Skills, plugins and subagents",
+      "ja": "スキル、プラグイン、サブエージェント"
+    },
+    "blurb": {
+      "en": "Skills and plugins are code you install: what they can run, how to review them first, and what subagents inherit.",
+      "ja": "スキルとプラグインは、あなたがインストールするコードです。何が実行できるか、入れる前の確認方法、サブエージェントが引き継ぐもの。"
+    },
+    "chips": [
+      "review",
+      "settings",
+      "setup",
+      "approve",
+      "predict"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "features-overview"
+        },
+        "note": {
+          "en": "Read this if you want to know when to use a skill, a subagent, a hook, an MCP server or a plugin.",
+          "ja": "スキル、サブエージェント、フック、MCP サーバー、プラグインを、それぞれどんなときに使うのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "skills"
+        },
+        "note": {
+          "en": "Read this if you want to write a skill, or check what its frontmatter fields such as `allowed-tools` do.",
+          "ja": "スキルを書きたいとき、または `allowed-tools` などのフロントマターの項目が何をするのかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/install"
+        },
+        "note": {
+          "en": "Read this if you want to install a plugin, pick its scope, or turn auto-update on or off.",
+          "ja": "プラグインをインストールしたり、スコープを選んだり、自動更新をオン・オフしたりしたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/security"
+        },
+        "note": {
+          "en": "Read this if you are deciding whether to trust a plugin, or want to remove one you no longer trust.",
+          "ja": "プラグインを信頼してよいか判断しているとき、または信頼できなくなったプラグインを取り除きたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sub-agents"
+        },
+        "note": {
+          "en": "Read this if you want to limit a subagent's tools or understand which permission mode it runs in.",
+          "ja": "サブエージェントのツールを絞りたいとき、またはどの許可モードで動くのかを理解したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks-guide"
+        },
+        "note": {
+          "en": "Read this if you want to see what a hook in a plugin or skill can run, and how to check yours with `/hooks`.",
+          "ja": "プラグインやスキルのフックが何を実行できるのか、そして `/hooks` で自分のフックを確かめる方法を知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "installing",
-    "status": "soon",
-    "title": { "en": "Installing code safely", "ja": "安全なインストール" },
+    "status": "ready",
+    "title": {
+      "en": "Installing code safely",
+      "ja": "コードを安全に入れる"
+    },
     "blurb": {
       "en": "Lookalike and made-up packages, install scripts, curl | sh, npx -y, and booby-trapped projects.",
-      "ja": "なりすましや存在しないパッケージ、インストールスクリプト、curl | sh、npx -y、罠付きのプロジェクト。"
+      "ja": "そっくりな名前や実在しないパッケージ、インストールスクリプト、curl | sh、npx -y、罠入りのプロジェクト。"
     },
-    "chips": ["package", "settings", "approve"]
+    "chips": [
+      "package",
+      "settings",
+      "approve",
+      "setup",
+      "predict"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "what-runs-before-you-trust-a-folder"
+        },
+        "note": {
+          "en": "Read this if you want the full table of what a repository can run before you trust its folder, and how to keep it out of `claude -p`.",
+          "ja": "フォルダを信頼する前にリポジトリが何を動かせるのかの全体の表と、`claude -p` でそれを締め出す方法を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want Claude Code's safeguards in one place, including the trust dialog and its advice for untrusted content.",
+          "ja": "信頼の確認ダイアログや、信頼できない内容を扱うときの助言を含めて、Claude Code の安全対策をまとめて知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandbox-environments"
+        },
+        "note": {
+          "en": "Read this if you want to compare the built-in sandbox, containers, virtual machines and cloud sessions before opening code you don't trust.",
+          "ja": "信頼できないコードを開く前に、組み込みのサンドボックス、コンテナ、仮想マシン、クラウドのセッションを比べたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/security"
+        },
+        "note": {
+          "en": "Read this if you're about to install a plugin and want to check what it can run on your machine.",
+          "ja": "プラグインをインストールしようとしていて、それがあなたのパソコンで何を動かせるのかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "what-the-classifier-blocks-by-default"
+        },
+        "note": {
+          "en": "Read this if you want to know which installs and downloads auto mode allows or blocks by default.",
+          "ja": "auto モードが、どのインストールやダウンロードを最初から許し、どれをブロックするのかを知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "sandboxes",
-    "status": "soon",
-    "title": { "en": "Sandboxes", "ja": "サンドボックス" },
-    "blurb": {
-      "en": "What a sandbox is, the options you can use, and network restrictions: which exits stay open.",
-      "ja": "サンドボックスとは何か、使える選択肢、そしてネットワーク制限。どの出口が開いたままなのか。"
+    "status": "ready",
+    "title": {
+      "en": "Sandboxes",
+      "ja": "サンドボックス"
     },
-    "chips": ["inside", "allowlist"]
+    "blurb": {
+      "en": "What a sandbox isolates and what runs outside it, network allowlists, and the openings that quietly let data out.",
+      "ja": "サンドボックスが隔離するものと外で動くもの、ネットワークの許可リスト、データがこっそり出ていく抜け道。"
+    },
+    "chips": [
+      "inside",
+      "allowlist",
+      "trim",
+      "setup"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "sandboxing"
+        },
+        "note": {
+          "en": "Read this if you want every sandbox setting, how to widen or narrow the wall, and fixes for what it breaks.",
+          "ja": "サンドボックスのすべての設定、壁を広げたり狭めたりする方法、うまく動かなくなったときの直し方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandbox-environments"
+        },
+        "note": {
+          "en": "Read this if you're choosing between the built-in sandbox, the sandbox runtime, containers, virtual machines and cloud sessions.",
+          "ja": "組み込みのサンドボックス、サンドボックスランタイム、コンテナ、仮想マシン、クラウドのセッションのどれにするか選ぶとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "devcontainer"
+        },
+        "note": {
+          "en": "Read this if you want to run Claude Code in a dev container with a firewall, and what it still can't protect.",
+          "ja": "ファイアウォール付きの開発コンテナで Claude Code を動かしたいとき、そしてそれでも守れないものを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "claude-code-on-the-web"
+        },
+        "note": {
+          "en": "Read this if you want to hand a task to a cloud session instead of running it on your own machine.",
+          "ja": "自分のパソコンで動かすかわりに、クラウドのセッションに作業を任せたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "cloud-execution-security"
+        },
+        "note": {
+          "en": "Read this if you want to know how a cloud session keeps your GitHub credentials and network in check.",
+          "ja": "クラウドのセッションが GitHub の認証情報やネットワークをどう守っているのかを知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "lockdown",
-    "status": "soon",
-    "title": { "en": "Locking it down", "ja": "守りを固める" },
-    "blurb": {
-      "en": "Allow and deny rules, settings files, hooks, and separate browser profiles. Build your own safe setup.",
-      "ja": "許可・拒否ルール、設定ファイル、フック、専用のブラウザプロファイル。自分だけの安全な環境を組み立てます。"
+    "status": "ready",
+    "title": {
+      "en": "Locking it down",
+      "ja": "しっかり守る設定"
     },
-    "chips": ["rule", "settings"]
+    "blurb": {
+      "en": "Settings files and which one wins, allow and deny rules, hooks, and a starter safe setup.",
+      "ja": "設定ファイルとどれが優先されるか、許可・拒否ルール、フック、安全な初期設定の作り方。"
+    },
+    "chips": [
+      "rule",
+      "precedence",
+      "settings",
+      "setup",
+      "approve",
+      "pairs"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "settings"
+        },
+        "note": {
+          "en": "Read this if you want to know which settings file affects whom, which one wins, and how to check what loaded.",
+          "ja": "どの設定ファイルが誰に効くのか、どれが優先されるのか、何が読み込まれたかの確かめ方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions"
+        },
+        "note": {
+          "en": "Read this if you want the full rule syntax, including what a Bash rule doesn't match.",
+          "ja": "ルールの書き方の全体と、Bash のルールが当てはまらない形を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks-guide"
+        },
+        "note": {
+          "en": "Read this if you want to see hooks step by step, including the example that blocks edits to protected files.",
+          "ja": "保護したいファイルの編集を止める例も含め、フックを順を追って見てみたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks"
+        },
+        "note": {
+          "en": "Read this if you want every hook event and exactly what a hook can return.",
+          "ja": "フックのすべてのイベントと、フックが返せる内容を正確に知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "settings-reference"
+        },
+        "note": {
+          "en": "Read this if you want to look up a specific settings key, such as defaultMode.",
+          "ja": "defaultMode など、特定の設定キーを調べたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
+  },
+  {
+    "key": "automode",
+    "status": "ready",
+    "title": {
+      "en": "Auto mode, safely",
+      "ja": "auto モードを安全に使う"
+    },
+    "blurb": {
+      "en": "What the classifier sees, what it blocks and allows by default, how to clear a block, and why a sandbox still matters.",
+      "ja": "分類器が見ているもの、既定でブロック・許可されるもの、ブロックの解除方法、それでもサンドボックスが大切な理由。"
+    },
+    "chips": [
+      "automode",
+      "setup",
+      "approve"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "eliminate-prompts-with-auto-mode"
+        },
+        "note": {
+          "en": "Read this if you want the full blocked and allowed lists, how boundaries and approvals in chat work, and when auto mode falls back.",
+          "ja": "既定でブロック・許可されるものの全リスト、会話での境界線と許可の働き、auto モードが確認に戻るときを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "auto-mode-config"
+        },
+        "note": {
+          "en": "Read this if you want to add ask rules as checkpoints, review blocked actions, or tell the classifier which services you trust.",
+          "ja": "ask ルールで関所を作りたいとき、ブロックされた操作を見直したいとき、信頼するサービスを分類器に伝えたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "manage-permissions"
+        },
+        "note": {
+          "en": "Read this if you want the rule syntax for the ask and deny rules that hold even in auto mode.",
+          "ja": "auto モードでも効く ask と deny のルールの書き方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing",
+          "anchor": "per-command-allowed-domains-in-auto-mode"
+        },
+        "note": {
+          "en": "Read this if you want to know how the sandbox limits commands in auto mode, one command's websites at a time.",
+          "ja": "auto モードでサンドボックスがコマンドをどう制限するのか、コマンドごとに Webサイトを開く仕組みを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://www.anthropic.com/engineering/claude-code-auto-mode",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you're curious how the classifier was built and tested.",
+          "ja": "分類器がどう作られ、どう試されたのかに興味があるとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://claude.com/blog/auto-mode",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you want the original announcement of what auto mode is for. Some details, like which plans have it, have changed since.",
+          "ja": "auto モードが何のためにあるのか、最初の発表を読みたいとき。対象のプランなど、一部の内容はその後変わっています。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "boss",
-    "status": "soon",
-    "title": { "en": "Boss: Continue? Y/N", "ja": "ボス戦：Continue? Y/N" },
+    "status": "ready",
+    "mode": "boss",
+    "title": {
+      "en": "Boss: Continue? Y/N",
+      "ja": "ボス戦：Continue? Y/N"
+    },
     "blurb": {
       "en": "60 seconds, about 20 prompts, most of them harmless. Can you keep reading?",
       "ja": "60秒で約20個のプロンプト。ほとんどは無害。最後まで読み続けられる？"
     },
-    "chips": ["boss"]
+    "chips": [
+      "boss"
+    ],
+    "lastChecked": "2026-10-22",
+    "linksChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "permission-system"
+        },
+        "note": {
+          "en": "Read this if you want to know what each answer on a prompt does and what a saved rule allows.",
+          "ja": "プロンプトの各答えが何をするのか、保存したルールが何を許可するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes"
+        },
+        "note": {
+          "en": "Read this if you want to know what Manual mode asks about and how the other modes change that.",
+          "ja": "Manual モードで何を確認されるのか、ほかのモードでそれがどう変わるのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the big picture of how Claude Code keeps you safe, including why web commands like curl ask first.",
+          "ja": "curl のような Web にアクセスするコマンドが先に確認を求める理由も含め、Claude Code がどう安全を守るのか全体像を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want to know how MCP servers and their tools work, and what to check before you connect one.",
+          "ja": "MCP サーバーとそのツールの仕組みと、接続する前に確認すべきことを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing"
+        },
+        "note": {
+          "en": "Read this if you want fewer prompts, with limits the system enforces instead of your attention.",
+          "ja": "注意力に頼るのではなく、システムが強制する制限を使ってプロンプトを減らしたいとき。"
+        }
+      }
+    ]
   }
 ]

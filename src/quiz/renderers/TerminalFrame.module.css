@@ -1,5 +1,5 @@
 .frame { background: var(--ink); border-radius: var(--radius-hero); overflow: hidden; min-width: 0; }
-.bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #34313f; }
+.bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--code-rule); }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink-muted); }
 .title { margin-left: 8px; font-family: var(--font-code); font-size: 12px; color: var(--code-html); overflow-wrap: anywhere; }
 .body { padding: 18px; display: flex; flex-direction: column; gap: 14px; font-family: var(--font-code); font-size: 14px; line-height: 1.6; color: var(--code-punct); overflow-wrap: anywhere; }

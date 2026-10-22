@@ -156,6 +156,16 @@ describe('move and togglePick', () => {
     expect(on.answer.picked).toEqual([2]);
     expect(run(on, { type: 'togglePick', line: 2 }).answer.picked).toEqual([]);
   });
+  it('togglePick also works on settings items, and they are graded by check', () => {
+    const h = startSession('demo', [get('settings')]);
+    const on = run(h, { type: 'togglePick', line: 2 });
+    expect(on.answer.picked).toEqual([2]);
+    expect(run(on, { type: 'check' }).answer.ok).toBe(true);
+    expect(run(h, { type: 'togglePick', line: 1 }, { type: 'check' }).answer.ok).toBe(false);
+  });
+  it('togglePick is ignored on a precedence item', () => {
+    expect(run(startSession('demo', [get('precedence')]), { type: 'togglePick', line: 0 }).answer.picked).toEqual([]);
+  });
   it('the hidden item is graded by check', () => {
     const s = run(startSession('demo', [get('hidden')]), { type: 'togglePick', line: 2 }, { type: 'check' });
     expect(s.answer.ok).toBe(true);
@@ -167,5 +177,34 @@ describe('start', () => {
     const s = run(three(), ...sel(0), { type: 'start' });
     expect(s).toMatchObject({ hearts: 5, idx: 0, xp: 0, total: 3 });
     expect(s.queue).toHaveLength(3);
+  });
+});
+
+describe('rule items', () => {
+  const rule = () => startSession('demo', [get('rule')]); // answer: deny (list 2) + Bash(curl *) (sel 1)
+  const pick = (list: number, sel: number): SessionAction[] => [{ type: 'selectList', list }, { type: 'select', sel }];
+
+  it('starts with no list picked', () => {
+    expect(rule().answer.list).toBeNull();
+  });
+  it('needs both a list and a pattern before check', () => {
+    expect(run(rule(), { type: 'select', sel: 1 }, { type: 'check' }).answer.checked).toBe(false);
+    expect(run(rule(), { type: 'selectList', list: 2 }, { type: 'check' }).answer.checked).toBe(false);
+  });
+  it('grades the chosen rule through outcomeOf', () => {
+    const ok = run(rule(), ...pick(2, 1), { type: 'check' });
+    expect(ok.answer).toMatchObject({ list: 2, sel: 1, checked: true, ok: true });
+    expect(ok.xp).toBe(10);
+    // deny Bash(curl) is exact: `curl https://example.com` still asks.
+    expect(run(rule(), ...pick(2, 0), { type: 'check' }).answer.ok).toBe(false);
+    // deny Bash(*) also blocks npm test.
+    expect(run(rule(), ...pick(2, 2), { type: 'check' }).answer.ok).toBe(false);
+    // allow Bash(curl *) lets curl run.
+    expect(run(rule(), ...pick(0, 1), { type: 'check' }).answer.ok).toBe(false);
+  });
+  it('ignores selectList after check and on other items', () => {
+    const s = run(rule(), ...pick(2, 1), { type: 'check' }, { type: 'selectList', list: 0 });
+    expect(s.answer.list).toBe(2);
+    expect(run(startSession('demo', [get('predict')]), { type: 'selectList', list: 0 }).answer.list).toBeNull();
   });
 });

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { ChoiceItem, PredictItem } from '../../content/types';
 import { RichText } from '../../components/RichText';
 import { useLang } from '../../i18n/LangContext';
@@ -7,6 +8,8 @@ import styles from './Choice.module.css';
 
 export function Choice({ item, answer, act }: RendererProps<PredictItem | ChoiceItem>) {
   const { ui, t } = useLang();
+  const panelId = useId();
+  const panel = item.type === 'predict' ? undefined : item.panel;
   const intro = item.type === 'predict' ? item.situation : item.scenario;
   const code = item.type === 'predict' ? item.code : [];
   const ingredients = item.type === 'combo' ? item.ingredients : undefined;
@@ -46,6 +49,18 @@ export function Choice({ item, answer, act }: RendererProps<PredictItem | Choice
             </li>
           ))}
         </ul>
+      )}
+      {panel && (
+        <div className={styles.panel} role="group" aria-labelledby={panelId} data-panel>
+          <code id={panelId} className={styles.panelTitle}>
+            {panel.title}
+          </code>
+          <div className={styles.panelLines}>
+            {panel.lines.map((line, i) => (
+              <div key={i}>{line === '' ? ' ' : line}</div>
+            ))}
+          </div>
+        </div>
       )}
       <div className={styles.opts}>
         {item.opts.map((o, i) => (

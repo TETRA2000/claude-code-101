@@ -7,6 +7,7 @@ import type { AnswerState, Session } from './types';
 export type SessionAction =
   | { type: 'start' }
   | { type: 'select'; sel: number }
+  | { type: 'selectList'; list: number }
   | { type: 'togglePick'; line: number }
   | { type: 'move'; from: number; to: number }
   | { type: 'pickPair'; side: 'left' | 'right'; id: string }
@@ -14,6 +15,9 @@ export type SessionAction =
   | { type: 'useHint' }
   | { type: 'check' }
   | { type: 'next' };
+
+/** Items answered by tapping lines. */
+const PICK_TYPES: readonly Item['type'][] = ['hidden', 'poisoned', 'settings', 'review', 'trim'];
 
 export { canCheck, freshAnswer, isAutoGraded, isCorrect };
 
@@ -89,8 +93,11 @@ export function sessionReducer(s: Session, action: SessionAction): Session {
     case 'select':
       return a.checked || isAutoGraded(item) ? s : withAnswer(s, { sel: action.sel });
 
+    case 'selectList':
+      return item.type !== 'rule' || a.checked ? s : withAnswer(s, { list: action.list });
+
     case 'togglePick': {
-      if (item.type !== 'hidden' || a.checked) return s;
+      if (!PICK_TYPES.includes(item.type) || a.checked) return s;
       const picked = a.picked.includes(action.line) ? a.picked.filter((l) => l !== action.line) : [...a.picked, action.line];
       return withAnswer(s, { picked });
     }
