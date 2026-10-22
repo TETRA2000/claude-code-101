@@ -7,8 +7,8 @@
       "ja": "パソコンの中身を知ろう"
     },
     "blurb": {
-      "en": "The terminal, files and paths, hidden dot-files, where secrets live, and what rm really does.",
-      "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、そして rm が本当にすること。"
+      "en": "The terminal, files and paths, hidden dot-files, where secrets live, what rm really does, and where Claude Code saves your conversations.",
+      "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、rm が本当にすること、そして Claude Code が会話を保存する場所。"
     },
     "chips": [
       "predict",
@@ -19,11 +19,12 @@
     "docs": [
       {
         "ref": {
-          "slug": "claude-directory"
+          "slug": "claude-directory",
+          "anchor": "application-data"
         },
         "note": {
-          "en": "Read this if you want to know which files and folders Claude Code reads and writes (CLAUDE.md, settings, .claude).",
-          "ja": "Claude Code がどのファイルやフォルダを読み書きするか（CLAUDE.md、設定、.claude）を知りたいとき。"
+          "en": "Read this if you want the full list of files Claude Code writes to ~/.claude, how long it keeps them, and how to clear them.",
+          "ja": "Claude Code が ~/.claude に書き込むファイルの一覧、保存期間、消し方を知りたいとき。"
         }
       },
       {
@@ -32,8 +33,17 @@
           "anchor": "work-with-sessions"
         },
         "note": {
-          "en": "Read this if you want to see how Claude Code works in your folders and sessions.",
-          "ja": "Claude Code がフォルダやセッションの中でどう動くかを知りたいとき。"
+          "en": "Read this if you want to see how Claude Code saves each session and what it can reach on your computer.",
+          "ja": "Claude Code がセッションをどう保存するか、パソコンの中の何に手が届くかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "checkpointing"
+        },
+        "note": {
+          "en": "Read this if you want to know what Claude Code can undo, and why files deleted by commands aren't among them.",
+          "ja": "Claude Code が何を元に戻せるか、そしてコマンドで消したファイルがなぜ戻らないのかを知りたいとき。"
         }
       },
       {

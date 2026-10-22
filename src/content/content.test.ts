@@ -42,6 +42,26 @@ describe('unit 1: computer', () => {
     expect([...types].every((ty) => ['predict', 'decode', 'pairs'].includes(ty))).toBe(true);
     expect(body?.cards.some((c) => c.demo?.kind === 'terminal')).toBe(true);
   });
+
+  it('has 4–7 cards and 10–14 items, and teaches where Claude Code keeps its files', () => {
+    const body = content.bodyOf('computer');
+    const nc = body?.cards.length ?? 0;
+    const ni = body?.items.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(4);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(ni).toBeGreaterThanOrEqual(10);
+    expect(ni).toBeLessThanOrEqual(14);
+    const pairs = (body?.items ?? []).filter((it) => it.type === 'pairs');
+    expect(pairs.some((it) => it.items.some((p) => p.left.en.includes('~/.claude/projects')))).toBe(true);
+    const transcriptDemo = body?.cards.some(
+      (c) =>
+        c.demo?.kind === 'terminal' &&
+        c.demo.commands.some(
+          (cmd) => cmd.cmd.includes('~/.claude/projects') && cmd.output.some((o) => o.text.includes('.jsonl')),
+        ),
+    );
+    expect(transcriptDemo).toBe(true);
+  });
 });
 
 describe('unit 2: agent', () => {
