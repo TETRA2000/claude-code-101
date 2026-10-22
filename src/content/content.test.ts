@@ -27,7 +27,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['extensions', 'powers', 'mcp', 'installing', 'sandboxes', 'boss']) {
+    for (const key of ['extensions', 'mcp', 'installing', 'sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -219,6 +219,24 @@ describe('unit 5: browser', () => {
     });
     expect(targets.length).toBeGreaterThan(0);
     for (const t of targets) expect(t, t).not.toMatch(guarded);
+  });
+});
+
+describe('unit 6: powers', () => {
+  it('is ready, with at least 3 decode, 3 predict and 2 pairs items', () => {
+    expect(content.unitByKey('powers')?.status).toBe('ready');
+    const items = content.bodyOf('powers')?.items ?? [];
+    expect(items.filter((it) => it.type === 'decode').length).toBeGreaterThanOrEqual(3);
+    expect(items.filter((it) => it.type === 'predict').length).toBeGreaterThanOrEqual(3);
+    expect(items.filter((it) => it.type === 'pairs').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('mentions sudo, chmod 777 and an environment variable in its cards or items', () => {
+    const body = content.bodyOf('powers');
+    const texts = [...(body?.cards ?? []), ...(body?.items ?? [])].map((x) => JSON.stringify(x));
+    expect(texts.some((t) => t.includes('sudo'))).toBe(true);
+    expect(texts.some((t) => t.includes('chmod 777'))).toBe(true);
+    expect(texts.some((t) => /\benv\b|\$[A-Z_]+/.test(t))).toBe(true);
   });
 });
 

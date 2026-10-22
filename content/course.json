@@ -353,7 +353,7 @@
   },
   {
     "key": "powers",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Who can do what",
       "ja": "誰が何をできる？"
@@ -364,8 +364,61 @@
     },
     "chips": [
       "decode",
-      "predict"
-    ]
+      "predict",
+      "pairs",
+      "approve"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the safety model behind what Claude can do with your account.",
+          "ja": "Claude があなたのアカウントでできることの背後にある、安全の考え方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing",
+          "anchor": "protect-credentials"
+        },
+        "note": {
+          "en": "Read this if you want to keep tokens and key files away from the commands Claude runs in the sandbox.",
+          "ja": "サンドボックスで Claude が実行するコマンドから、トークンや鍵ファイルを遠ざけたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "env-vars"
+        },
+        "note": {
+          "en": "Read this if you want to know how environment variables reach Claude Code and how to strip secrets from its commands.",
+          "ja": "環境変数がどのように Claude Code に届くのか、そのコマンドから秘密情報を取り除く方法を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "skip-all-checks-with-bypasspermissions-mode"
+        },
+        "note": {
+          "en": "Read this if you're thinking about Bypass permissions mode, or wonder why it won't start as root.",
+          "ja": "Bypass permissions モードを使おうか考えているとき、または root では起動しない理由を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "devcontainer"
+        },
+        "note": {
+          "en": "Read this if you want to run Claude Code unattended in a container as a non-root user.",
+          "ja": "Claude Code をコンテナの中で、root ではないユーザーとして無人で動かしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "mcp",
