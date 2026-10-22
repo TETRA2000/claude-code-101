@@ -28,7 +28,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['sandboxes', 'boss']) {
+    for (const key of ['boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -337,6 +337,36 @@ describe('unit 9: installing', () => {
     const all = JSON.stringify([...(body?.cards ?? []), ...(body?.items ?? [])]);
     expect(/--setting-sources|--bare/.test(all)).toBe(true);
     expect(/postinstall|install script/.test(all)).toBe(true);
+  });
+});
+
+describe('unit 10: sandboxes', () => {
+  it('is ready, with at least 3 inside, 3 allowlist, 2 trim and 2 setup items', () => {
+    expect(content.unitByKey('sandboxes')?.status).toBe('ready');
+    const items = content.bodyOf('sandboxes')?.items ?? [];
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('inside')).toBeGreaterThanOrEqual(3);
+    expect(count('allowlist')).toBeGreaterThanOrEqual(3);
+    expect(count('trim')).toBeGreaterThanOrEqual(2);
+    expect(count('setup')).toBeGreaterThanOrEqual(2);
+    const allowlists = items.filter((it): it is ChoiceItem => it.type === 'allowlist');
+    expect(allowlists.every((it) => it.panel?.title.includes('allowedDomains'))).toBe(true);
+  });
+
+  it('has a Try it card with /sandbox and an uncopyable touch ~/sandbox-probe', () => {
+    const cards = content.bodyOf('sandboxes')?.cards ?? [];
+    const tryCard = cards.find((c) => c.try);
+    expect(tryCard).toBeDefined();
+    const steps = tryCard?.try?.terminal ?? [];
+    expect(steps.some((st) => st.code === '/sandbox')).toBe(true);
+    const probe = steps.find((st) => st.code === 'touch ~/sandbox-probe');
+    expect(probe).toBeDefined();
+    expect(probe?.copy).toBeUndefined();
+  });
+
+  it('teaches allowUnsandboxedCommands', () => {
+    const body = content.bodyOf('sandboxes');
+    expect(JSON.stringify([...(body?.cards ?? []), ...(body?.items ?? [])])).toContain('allowUnsandboxedCommands');
   });
 });
 

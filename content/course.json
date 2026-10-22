@@ -640,7 +640,7 @@
   },
   {
     "key": "sandboxes",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Sandboxes",
       "ja": "サンドボックス"
@@ -652,8 +652,59 @@
     "chips": [
       "inside",
       "allowlist",
-      "trim"
-    ]
+      "trim",
+      "setup"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "sandboxing"
+        },
+        "note": {
+          "en": "Read this if you want every sandbox setting, how to widen or narrow the wall, and fixes for what it breaks.",
+          "ja": "サンドボックスのすべての設定、壁を広げたり狭めたりする方法、うまく動かなくなったときの直し方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandbox-environments"
+        },
+        "note": {
+          "en": "Read this if you're choosing between the built-in sandbox, the sandbox runtime, containers, virtual machines and cloud sessions.",
+          "ja": "組み込みのサンドボックス、サンドボックスランタイム、コンテナ、仮想マシン、クラウドのセッションのどれにするか選ぶとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "devcontainer"
+        },
+        "note": {
+          "en": "Read this if you want to run Claude Code in a dev container with a firewall, and what it still can't protect.",
+          "ja": "ファイアウォール付きの開発コンテナで Claude Code を動かしたいとき、そしてそれでも守れないものを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "claude-code-on-the-web"
+        },
+        "note": {
+          "en": "Read this if you want to hand a task to a cloud session instead of running it on your own machine.",
+          "ja": "自分のパソコンで動かすかわりに、クラウドのセッションに作業を任せたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "cloud-execution-security"
+        },
+        "note": {
+          "en": "Read this if you want to know how a cloud session keeps your GitHub credentials and network in check.",
+          "ja": "クラウドのセッションが GitHub の認証情報やネットワークをどう守っているのかを知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "lockdown",
