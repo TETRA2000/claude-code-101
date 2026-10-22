@@ -570,7 +570,7 @@
   },
   {
     "key": "installing",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Installing code safely",
       "ja": "コードを安全に入れる"
@@ -582,8 +582,61 @@
     "chips": [
       "package",
       "settings",
-      "approve"
-    ]
+      "approve",
+      "setup",
+      "predict"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "what-runs-before-you-trust-a-folder"
+        },
+        "note": {
+          "en": "Read this if you want the full table of what a repository can run before you trust its folder, and how to keep it out of `claude -p`.",
+          "ja": "フォルダを信頼する前にリポジトリが何を動かせるのかの全体の表と、`claude -p` でそれを締め出す方法を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want Claude Code's safeguards in one place, including the trust dialog and its advice for untrusted content.",
+          "ja": "信頼の確認ダイアログや、信頼できない内容を扱うときの助言を含めて、Claude Code の安全対策をまとめて知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandbox-environments"
+        },
+        "note": {
+          "en": "Read this if you want to compare the built-in sandbox, containers, virtual machines and cloud sessions before opening code you don't trust.",
+          "ja": "信頼できないコードを開く前に、組み込みのサンドボックス、コンテナ、仮想マシン、クラウドのセッションを比べたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/security"
+        },
+        "note": {
+          "en": "Read this if you're about to install a plugin and want to check what it can run on your machine.",
+          "ja": "プラグインをインストールしようとしていて、それがあなたのパソコンで何を動かせるのかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "what-the-classifier-blocks-by-default"
+        },
+        "note": {
+          "en": "Read this if you want to know which installs and downloads auto mode allows or blocks by default.",
+          "ja": "auto モードが、どのインストールやダウンロードを最初から許し、どれをブロックするのかを知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "sandboxes",

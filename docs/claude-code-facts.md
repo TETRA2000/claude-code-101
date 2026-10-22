@@ -285,22 +285,36 @@ Checked: 2026-10-21
 - Where trust is stored/keyed: in a repository, on the git repository root (worktrees: main checkout); outside a repository, on the start directory, covering its subdirectories. Recorded in `~/.claude.json` as `projects["<path>"].hasTrustDialogAccepted`.
 - Home folder: "When you start Claude Code directly in your home directory, trust acceptance is held for the current session only and is not written to disk, so the prompt reappears on each launch. There is no setting to persist it. Start Claude Code from a project subdirectory instead, where trust acceptance is saved per directory."
 - `claude -p` and SDK sessions never show the trust dialog (nor the `.mcp.json` prompt); a `-p` session treats the folder as trusted for hooks.
-- "What runs before you trust a folder" (rows the course uses):
+- "What runs before you trust a folder" (permissions#what-runs-before-you-trust-a-folder), the full table. "The columns are the two situations in which you haven't trusted the folder itself: you trusted only a parent folder, or you ran `claude -p` or the SDK there, which never shows the trust dialog."
 
 | What the repository supplies | You trusted only a parent folder | `claude -p` or the SDK, folder never trusted |
 |---|---|---|
-| Hooks in settings files, the `env` block and helpers such as `apiKeyHelper`, and a project skill's hooks and `allowed-tools` | Used | Used. "Workspace trust never gates a skill's `allowed-tools` in any session" |
-| `permissions.allow` rules and `additionalDirectories` in `.claude/settings.json` | Not used until you accept the trust dialog, which appears again listing them | Not used; a `this workspace has not been trusted` warning goes to stderr |
-| Servers in `.mcp.json` (including ones the repository approves in its own settings) | Claude Code asks you before connecting them; the repository's own approvals don't count | Connected without asking, approved or not |
+| Hooks in settings files, the `env` block and helper commands such as `apiKeyHelper`, and a project skill's hooks and `allowed-tools` | Used | Used. "Workspace trust never gates a skill's `allowed-tools` in any session" |
+| `permissions.allow` rules and `additionalDirectories` in `.claude/settings.json` | Not used until you accept the trust dialog, which appears again listing them | Not used. Claude Code prints a `this workspace has not been trusted` warning to stderr |
+| Frontmatter hooks in a project subagent, a project `@skills-dir` plugin, and `extraKnownMarketplaces` entries from the repository or an `--add-dir` directory | Not used, and no dialog is offered | Not used |
+| Inline `mcpServers` in the frontmatter of a subagent from the repository or an `--add-dir` directory | Not used, and no dialog is offered | Not used |
+| Servers in `.mcp.json`, including ones the repository approves in its own settings | Claude Code asks you before connecting them. The repository's own approvals don't count | Connected without asking, approved or not. The SDK loads them only when `settingSources` includes project settings. `claude mcp list` in the same folder still reports such a server as pending |
+| A `headersHelper` on a server in `.mcp.json` | Not run until you accept the trust dialog, which appears again naming where the helper is declared; the server connects with its static `headers` alone until then | Not run; the server connects with its static `headers` alone and a `headersHelper not run` line per server goes to stderr |
 
-- Before `claude -p` in a repository you didn't write: `--setting-sources user` (reads neither project settings nor `.mcp.json`), `--bare` (no project hooks, skills, commands, subagents, plugins or `.mcp.json` servers; the project's `env` block still applies), or `--settings '{"disableAllHooks": true}'`.
-- Other project limits: a project or local settings file can't make `defaultMode` `auto` or `bypassPermissions` (F11), and can't turn on Claude in Chrome (F8).
+- Nested repositories: "The parent-folder column doesn't apply inside a nested repository: in an interactive session Claude Code shows the trust dialog for it, and a `claude -p` or SDK run there follows the `claude -p` column." Outside a repository, trust "covers any subdirectory of that directory apart from a git repository nested inside it, such as a clone. Each covered subdirectory then counts as a folder whose parent you trusted." So the parent-folder column is about a non-git subfolder (e.g. an unpacked download) inside a folder you trusted; a `git clone` inside it gets its own trust dialog.
+- Trust a folder by hand: set `projects["<path>"].hasTrustDialogAccepted` to `true` in `~/.claude.json`.
+- "Before you run `claude -p` in a repository you didn't write, decide what it may run on your machine" (permissions#what-runs-before-you-trust-a-folder):
+  - "Pass `--setting-sources user`, or set the SDK's `settingSources` without project settings, so Claude Code reads neither the project's settings files nor its `.mcp.json`". (`--setting-sources`: "Comma-separated list of setting sources to load (`user`, `project`, `local`)", cli-reference.)
+  - "Start with `--bare` so Claude Code reads no hooks, skills, custom commands, subagents, plugins, or `.mcp.json` servers from the project. The project's `env` block and helpers such as `awsAuthRefresh` in its settings files still apply, and Claude Code reads `apiKeyHelper` only from `--settings`".
+  - "Pass `--settings '{"disableAllHooks": true}'` to turn hooks off for that run. Setting it in your user settings alone isn't enough, because the repository's project settings take precedence over yours and can set it back to `false`".
+  - "Add a `disabledMcpjsonServers` entry to reject a `.mcp.json` server by name in every session type".
+- `--bare` details (headless#start-faster-with-bare-mode): skips "auto-discovery of hooks, skills, custom commands, subagents, installed plugins, MCP servers, auto memory, and CLAUDE.md"; "Without `--bare`, a `-p` session runs the hooks in a project's `.claude/settings.json` and connects the servers in its `.mcp.json`, even in a folder you've never trusted. A `-p` session shows no workspace trust dialog and no per-server approval prompt." Bare mode "doesn't use your subscription login": "Claude Code never reads OAuth credentials or the system keychain"; set `ANTHROPIC_API_KEY` or an `apiKeyHelper` in `--settings`. In bare mode Claude has Bash, file read and file edit tools. "`--bare` is the recommended mode for scripted and SDK calls, and will become the default for `-p` in a future release."
+- Other project limits: a project or local settings file can't make `defaultMode` `auto` or `bypassPermissions` (F11), and can't turn on Claude in Chrome (F8). Chrome: a project's `env` block setting `CLAUDE_CODE_ENABLE_CFC` to `1` is ignored with the warning `Claude Code ignored CLAUDE_CODE_ENABLE_CFC in this project's settings: a project can't turn on Claude in Chrome. To turn it on yourself, run /chrome or start with --chrome.` ("a repository you check out must not be able to connect Claude to your browser", chrome#project-settings-cant-turn-on-chrome).
+- Security page best practices for untrusted content include "Use virtual machines (VMs) to run scripts and make tool calls, especially when interacting with external web services". Sandbox environments page, "Choose an approach": "Work on an untrusted repository" → "A dedicated virtual machine, or a cloud session if you have a Claude subscription". A VM is for "when you are evaluating untrusted code"; a cloud session "runs in an isolated, Anthropic-managed virtual machine". The built-in sandboxed Bash tool restricts only Bash (and PowerShell, Monitor) commands: "Built-in file tools, MCP servers, and hooks still run directly on your host."
 Source: https://code.claude.com/docs/en/permissions
 Source: https://code.claude.com/docs/en/security
 Source: https://code.claude.com/docs/en/hooks
 Source: https://code.claude.com/docs/en/settings
 Source: https://code.claude.com/docs/en/chrome
-Checked: 2026-10-21
+Source: https://code.claude.com/docs/en/headless
+Source: https://code.claude.com/docs/en/cli-reference
+Source: https://code.claude.com/docs/en/sandbox-environments
+Checked: 2026-10-22 (table and `-p` guidance re-read in full; first checked 2026-10-21)
 
 ## F16 Auto mode, in more detail (extends F4)
 
@@ -480,4 +494,26 @@ Checked: 2026-10-22
 - Plugin subagents: "For security reasons, plugin subagents don't support the `hooks`, `mcpServers`, or `permissionMode` frontmatter fields."
 - Output scanning (sub-agents#subagent-output-scanning): "Claude Code scans each subagent's final report before Claude reads it." It inserts a backslash into text imitating Claude Code's own output (e.g. a `<system-reminder>` tag, a line starting `Human:`), and prepends a marker line `[harness: subagent output matched instruction-shaped pattern(s):` when the report imitates such a tag or mentions permission settings such as `bypassPermissions`. "The scan doesn't judge whether content is malicious, and it doesn't change what an instruction in a report can do: a tool call the report leads Claude to make still goes through the session's permission checks and sandboxing. It isn't a substitute for restricting what a subagent can reach."
 Source: https://code.claude.com/docs/en/sub-agents
+Checked: 2026-10-22
+
+## F24 Installing packages and running downloaded code
+
+What the official Claude Code docs say (searched permissions, permission-modes, security, setup, mcp, mcp-quickstart, plugins/loading, plugins/security, sandbox-environments, headless, auto-mode-config on 2026-10-22). The docs have no page on choosing packages: they don't mention lookalike ("typosquatted") or made-up package names, and don't explain npm's `postinstall` scripts or `npx -y` for your own project. Content teaches those as general software safety, never as a Claude Code feature.
+
+- Auto mode, by default (permission-modes#what-the-classifier-blocks-by-default, also F4/F16): blocked: "Downloading and executing code, like `curl | bash`"; allowed: "Installing dependencies declared in your lock files or manifests". auto-mode-config lists `curl | bash` among the built-in `soft_deny` rules.
+- UNVERIFIED: how auto mode treats installing a package that is not yet in your manifest (e.g. `npm install <new-name>`), or `npx -y <package>`. The docs list neither as blocked or allowed; content must not say auto mode catches (or allows) them.
+- Manual mode (security#core-protections): "Commands that fetch content from the web such as `curl` and `wget` are not auto-approved by default. In Manual mode they prompt like any other non-read-only Bash command". `npm install` isn't in the read-only set (F14), so it prompts in Manual mode; `Bash(npm run *)` doesn't match `npm install` (permissions, rule examples table).
+- Claude Code's own installer uses the download-and-run shape: `curl -fsSL https://claude.ai/install.sh | bash` (setup). Its npm install is `npm install -g @anthropic-ai/claude-code`, with the warning "Do NOT use `sudo npm install -g` as this can lead to permission issues and security risks." Releases publish a signed `manifest.json` of SHA256 checksums to verify binaries (setup#binary-integrity-and-code-signing).
+- `npx -y` in the docs: MCP stdio servers are often launched with it, e.g. `claude mcp add playwright -- npx -y @playwright/mcp@latest` (mcp-quickstart), and "A launch command such as `npx -y @example/mcp-server`: the server runs on your machine" (mcp#add-a-server-from-setup-instructions-written-for-another-client). See F20.
+- Plugin dependency installs (plugins/loading#limits-on-the-dependency-install): when Claude Code caches a plugin it installs the plugin's Node.js dependencies itself, constrained "so that no code from the plugin or its packages executes during it": registry packages pinned to exact versions only, `https` downloads, a separate install folder (npm/Bun don't read the plugin's `.npmrc` or `.env`), frozen resolution, and "**No lifecycle scripts**: `--ignore-scripts` keeps `preinstall`, `install`, and `postinstall` scripts from running". This applies only to that plugin install, not to `npm install` commands Claude runs in your project.
+- Protected files (F14) include `.npmrc`, `.yarnrc`, `.pnpmfile.cjs`, `bunfig.toml`: writes to them are never auto-approved (except in `bypassPermissions`).
+- General software safety (not Claude Code docs; taught as such): an npm package can declare `preinstall`/`install`/`postinstall` scripts that npm runs automatically during `npm install`, with your user's powers; a lookalike package copies a popular name with a small change (an extra or swapped letter, a different scope); an AI model can suggest a package name that doesn't exist, and anyone can later publish a package under that name; `curl <url> | sh` runs a downloaded script without saving it for you to read first; `npx -y <package>` downloads a package if it isn't installed and runs it, `-y` (`--yes`) skipping npx's "Ok to proceed?" question.
+Source: https://code.claude.com/docs/en/permission-modes
+Source: https://code.claude.com/docs/en/auto-mode-config
+Source: https://code.claude.com/docs/en/security
+Source: https://code.claude.com/docs/en/permissions
+Source: https://code.claude.com/docs/en/setup
+Source: https://code.claude.com/docs/en/mcp
+Source: https://code.claude.com/docs/en/mcp-quickstart
+Source: https://code.claude.com/docs/en/plugins/loading
 Checked: 2026-10-22

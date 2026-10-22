@@ -28,7 +28,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['installing', 'sandboxes', 'boss']) {
+    for (const key of ['sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -313,6 +313,30 @@ describe('unit 8: extensions', () => {
     const all = JSON.stringify([...(body?.cards ?? []), ...(body?.items ?? [])]);
     expect(all).toContain('allowed-tools');
     expect(all).toContain('disable-model-invocation');
+  });
+});
+
+describe('unit 9: installing', () => {
+  it('is ready, with at least 3 package, 3 settings and 2 approve items', () => {
+    expect(content.unitByKey('installing')?.status).toBe('ready');
+    const items = content.bodyOf('installing')?.items ?? [];
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('package')).toBeGreaterThanOrEqual(3);
+    expect(count('settings')).toBeGreaterThanOrEqual(3);
+    expect(count('approve')).toBeGreaterThanOrEqual(2);
+    const packages = items.filter((it): it is ChoiceItem => it.type === 'package');
+    expect(packages.every((it) => (it.panel?.lines.length ?? 0) > 0)).toBe(true);
+    const files = items.filter((it): it is SettingsItem => it.type === 'settings').map((it) => it.file);
+    expect(files).toContain('.claude/settings.json');
+    expect(files).toContain('.mcp.json');
+    expect(files.some((f) => f.endsWith('SKILL.md'))).toBe(true);
+  });
+
+  it('teaches --setting-sources or --bare, and install scripts', () => {
+    const body = content.bodyOf('installing');
+    const all = JSON.stringify([...(body?.cards ?? []), ...(body?.items ?? [])]);
+    expect(/--setting-sources|--bare/.test(all)).toBe(true);
+    expect(/postinstall|install script/.test(all)).toBe(true);
   });
 });
 
