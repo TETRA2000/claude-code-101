@@ -109,12 +109,13 @@ Checked: 2026-10-21
 
 - File operations: read files (`Read`), make targeted edits (`Edit`), create or overwrite files (`Write`), edit notebooks (`NotebookEdit`).
 - Search: find files by pattern (`Glob`), search inside files (`Grep`).
-- UNVERIFIED: that `Glob`/`Grep` are absent by default on macOS/Linux, with Claude searching through shell commands instead.
+- `Glob` and `Grep` are "Absent by default on macOS, Linux, and WSL": there Claude searches with `find` and `grep` through `Bash`, and those searches reach hooks and permission rules as `Bash` calls (tools-reference#glob-tool-behavior; checked 2026-10-22). On Windows they're in the default tool set.
 - Execution: run shell commands as you (`Bash`; `PowerShell` on Windows), watch a command in the background (`Monitor`). "Any command you could run… Claude can too."
 - Web: fetch a page (`WebFetch`; a separate model call summarizes the page for Claude) and search the web (`WebSearch`).
 - Other: start a helper agent (`Agent`), ask you multiple-choice questions (`AskUserQuestion`), run a skill (`Skill`), task lists, plan mode, code intelligence (`LSP`).
 - MCP servers add more tools; skills, hooks and subagents extend Claude on top of the built-in tools.
 - Agentic loop (docs): gather context → take action → verify results, repeated; each tool result feeds back into Claude's next decision; you can interrupt anytime.
+- Harness (docs): "The agentic loop is powered by two components: models that reason and tools that act. Claude Code is the layer around the model that provides the tools and manages the context the model sees. This surrounding layer is what the term agentic harness refers to." "Without tools, Claude can only respond with text." Claude Code also adds its own context alongside your messages (system reminders): your CLAUDE.md files, output-style instructions, a note when a file Claude read earlier changes on disk, commit/PR attribution lines. (Checked 2026-10-22.)
 Source: https://code.claude.com/docs/en/how-claude-code-works
 Source: https://code.claude.com/docs/en/tools-reference
 Checked: 2026-10-21
@@ -322,6 +323,9 @@ Checked: 2026-10-21
 - Context window holds "your conversation history, file contents, command outputs, CLAUDE.md, auto memory, loaded skills, and system instructions." "Run `/context` to see what's using space."
 - Compaction: "It clears older tool outputs first, then summarizes the conversation if needed. Your requests and key code snippets are preserved; detailed instructions from early in the conversation may be lost. Put persistent rules in CLAUDE.md rather than relying on conversation history." Project-root CLAUDE.md is re-read after `/compact` (F6). `/compact <focus>` or a "Compact Instructions" section in CLAUDE.md steer it.
 - `/memory`: lists CLAUDE.md, CLAUDE.local.md and other memory files across user and project scopes, toggles auto memory on/off (saves `autoMemoryEnabled` to `~/.claude/settings.json`), and opens the auto memory folder. Auto memory files are plain markdown you can edit or delete.
+- What survives compaction (context-window#what-survives-compaction): project-root CLAUDE.md and unscoped rules, and auto memory, are re-injected from disk; nested CLAUDE.md and path-scoped rules reload on demand; up to five recently read/edited files are re-read; instructions given only in conversation are summarized with everything else. (Checked 2026-10-22.)
+- Desktop app: "type `/context` in the prompt box to print a per-category breakdown of this session's context window in the chat"; the session details panel's **Context** card (current layout) or the usage ring next to the model picker (earlier layout) shows how full it is. Desktop and CLI share CLAUDE.md and CLAUDE.local.md. (desktop#check-usage, desktop#shared-configuration; checked 2026-10-22.)
+- UNVERIFIED: whether `/memory` works in the desktop app's prompt box. The desktop page doesn't mention it; searched desktop, memory, commands.
 - `/init`: generates a starting CLAUDE.md from your codebase (build commands, test instructions, conventions); if one exists it suggests improvements instead of overwriting.
 - Auto memory: `~/.claude/projects/<project>/memory/` (`<project>` derived from the git repository, so worktrees and subdirectories share one). "The first 200 lines of `MEMORY.md`, or the first 25KB, whichever comes first, are loaded at the start of every conversation." Messages like "Saved 2 memories" / "Recalled 2 memories" show Claude using it.
 Source: https://code.claude.com/docs/en/how-claude-code-works
@@ -329,6 +333,8 @@ Source: https://code.claude.com/docs/en/sessions
 Source: https://code.claude.com/docs/en/claude-directory
 Source: https://code.claude.com/docs/en/checkpointing
 Source: https://code.claude.com/docs/en/memory
+Source: https://code.claude.com/docs/en/context-window
+Source: https://code.claude.com/docs/en/desktop
 Checked: 2026-10-21
 
 ## F18 Prompt-injection safeguards (Security page)

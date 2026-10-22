@@ -72,6 +72,19 @@ describe('unit 2: agent', () => {
     expect(body?.cards.some((c) => c.demo?.kind === 'context')).toBe(true);
     expect(body?.items.some((it) => it.type === 'order')).toBe(true);
   });
+
+  it('has 4–7 cards and 10–14 items, a Try it card, and at least two predict items', () => {
+    const body = content.bodyOf('agent');
+    const nc = body?.cards.length ?? 0;
+    const ni = body?.items.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(4);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(ni).toBeGreaterThanOrEqual(10);
+    expect(ni).toBeLessThanOrEqual(14);
+    expect(body?.cards.some((c) => c.try)).toBe(true);
+    expect(body?.cards.some((c) => c.deep)).toBe(true);
+    expect((body?.items ?? []).filter((it) => it.type === 'predict').length).toBeGreaterThanOrEqual(2);
+  });
 });
 
 describe('unit 3: permissions', () => {

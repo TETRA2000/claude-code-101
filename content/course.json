@@ -66,8 +66,8 @@
       "ja": "Claude Code の仕組み"
     },
     "blurb": {
-      "en": "The agent loop, tools, the context window, CLAUDE.md and memory, and MCP as more tools.",
-      "ja": "エージェントループ、ツール、コンテキストウィンドウ、CLAUDE.md とメモリ、そして「ツールを増やす」MCP。"
+      "en": "The loop (gather, act, verify), tools and the harness, commands that run as you, the context window, CLAUDE.md and auto memory, compaction, and what undo can and can't reach.",
+      "ja": "ループ（集める・動く・確かめる）、ツールとハーネス、「あなた」として動くコマンド、コンテキストウィンドウ、CLAUDE.md と自動メモリ、圧縮、そして「元に戻す」が届く範囲と届かない範囲。"
     },
     "chips": [
       "order",
@@ -81,8 +81,17 @@
           "slug": "how-claude-code-works"
         },
         "note": {
-          "en": "Read this if you want the agent loop and the tools Claude uses, explained end to end.",
-          "ja": "エージェントループと Claude が使うツールを、通して理解したいとき。"
+          "en": "Read this if you want the agent loop, the tools, and the harness around the model, explained end to end.",
+          "ja": "エージェントループ、ツール、そしてモデルを包むハーネスを、通して理解したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "tools-reference"
+        },
+        "note": {
+          "en": "Read this if you want the full list of Claude's built-in tools and what each one does.",
+          "ja": "Claude に組み込まれたツールの一覧と、それぞれの役割を知りたいとき。"
         }
       },
       {
@@ -99,8 +108,8 @@
           "slug": "memory"
         },
         "note": {
-          "en": "Read this if you want Claude to remember your project rules with CLAUDE.md.",
-          "ja": "CLAUDE.md でプロジェクトのルールを Claude に覚えさせたいとき。"
+          "en": "Read this if you want to know what CLAUDE.md and auto memory hold, when they load, and how to edit them with /memory.",
+          "ja": "CLAUDE.md と自動メモリに何が入り、いつ読み込まれ、/memory でどう編集するかを知りたいとき。"
         }
       },
       {
@@ -117,8 +126,8 @@
           "slug": "checkpointing"
         },
         "note": {
-          "en": "Read this if you want to rewind Claude's edits to an earlier point.",
-          "ja": "Claude の編集を以前の状態まで巻き戻したいとき。"
+          "en": "Read this if you want to rewind Claude's edits, and to see what checkpoints can't undo.",
+          "ja": "Claude の編集を巻き戻したいとき、そしてチェックポイントで戻せないものを知りたいとき。"
         }
       },
       {

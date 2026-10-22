@@ -38,7 +38,12 @@ function Steps({ steps }: { steps: TryStep[] }) {
             <div className={styles.codeRow}>
               <code className={styles.code}>{st.code}</code>
               {st.copy && (
-                <button type="button" className={styles.copy} onClick={() => void copy(i, st.code!)}>
+                <button
+                  type="button"
+                  className={styles.copy}
+                  aria-label={`${ui.copy}: ${st.code}`}
+                  onClick={() => void copy(i, st.code!)}
+                >
                   {ui.copy}
                 </button>
               )}
@@ -98,7 +103,7 @@ export function TryIt({ data }: { data: TryItData }) {
           </button>
         ))}
       </div>
-      <div role="tabpanel" id={`${base}-panel-${tab}`} aria-labelledby={`${base}-tab-${tab}`} className={styles.panel}>
+      <div role="tabpanel" tabIndex={0} id={`${base}-panel-${tab}`} aria-labelledby={`${base}-tab-${tab}`} className={styles.panel}>
         {tab === 'terminal' && <Steps steps={data.terminal} />}
         {tab === 'desktop' &&
           (data.desktop && data.desktop.length > 0 ? (

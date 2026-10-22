@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { UI } from '../src/i18n/ui';
-import { answerItem, expectNoCopyButtons, bodyOf, expectNoOverflow, LANGS, openUnit, READY, setLang, SOON, UNITS } from './helpers';
+import { answerItem, expectCopyOnlyInTryIt, expectNoCopyButtons, bodyOf, expectNoOverflow, LANGS, openUnit, READY, setLang, SOON, UNITS } from './helpers';
 
 test.describe('layout and safety', () => {
   for (const lang of LANGS) {
@@ -32,6 +32,7 @@ test.describe('layout and safety', () => {
           await expect(page.getByRole('heading', { level: 1 })).toHaveText(bodyOf(unit.key).cards[i]!.title[lang]);
           await expectNoOverflow(page, `${unit.key} card ${i + 1} ${lang}`);
           await expectNoCopyButtons(page);
+          await expectCopyOnlyInTryIt(page);
           if (i < n - 1) await page.getByRole('button', { name: ui.next, exact: true }).click();
         }
       });

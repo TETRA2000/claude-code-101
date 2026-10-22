@@ -27,7 +27,7 @@ function setup(d: TryItData = data) {
 async function clickCopy(clipboard: unknown) {
   const user = userEvent.setup();
   setClipboard(clipboard);
-  await user.click(screen.getByRole('button', { name: ui.copy }));
+  await user.click(screen.getByRole('button', { name: `${ui.copy}: cd ~/project` }));
 }
 function setClipboard(value: unknown) {
   Object.defineProperty(navigator, 'clipboard', { value, configurable: true });
@@ -58,7 +58,7 @@ describe('TryIt', () => {
     setup();
     await userEvent.click(screen.getByRole('tab', { name: ui.tabDesktop }));
     expect(screen.getByText('No desktop steps here.')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: ui.copy })).toBeNull();
+    expect(screen.queryByRole('button', { name: new RegExp(`^${ui.copy}`) })).toBeNull();
   });
 
   it('shows the check line', () => {
@@ -69,7 +69,26 @@ describe('TryIt', () => {
 
   it('copy buttons appear only on steps with copy', () => {
     setup();
-    expect(screen.getAllByRole('button', { name: ui.copy })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: new RegExp(`^${ui.copy}`) })).toHaveLength(1);
+  });
+
+  it('names each copy button after its snippet, and keeps the visible label short', () => {
+    setup({
+      ...data,
+      terminal: [
+        { text: { en: 'One.', ja: '一。' }, code: '/context', copy: true },
+        { text: { en: 'Two.', ja: '二。' }, code: '/memory', copy: true },
+      ],
+    });
+    const a = screen.getByRole('button', { name: `${ui.copy}: /context` });
+    const b = screen.getByRole('button', { name: `${ui.copy}: /memory` });
+    expect(a).toHaveTextContent(ui.copy);
+    expect(b).toHaveTextContent(ui.copy);
+  });
+
+  it('makes the tab panel focusable', () => {
+    setup();
+    expect(screen.getByRole('tabpanel')).toHaveAttribute('tabindex', '0');
   });
 
   it('copies and says Copied', async () => {
