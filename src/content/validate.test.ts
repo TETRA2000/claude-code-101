@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, RuleItem, UnitBody } from './types';
-import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, validateContent } from './validate';
+import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -467,6 +467,43 @@ describe('validateContent', () => {
       expectOne(mutated((p) => void (rule(p).tests = [])), 'rule.tests is empty');
       expectOne(mutated((p) => void (rule(p).lists = [])), 'rule.lists is empty');
       expectOne(mutated((p) => void (rule(p).patterns = [])), 'rule.patterns is empty');
+    });
+    it('usesUnmodeledShell catches the forms the matcher does not model', () => {
+      for (const cmd of [
+        'echo $(curl x)',
+        'echo `curl x`',
+        '(rm -rf y)',
+        'diff <(ls a) <(ls b)',
+        'echo hi > out.txt',
+        'sort < in.txt',
+        '{ rm -rf y; }',
+        'timeout 5 rm -rf x',
+        'ls && nohup make',
+        'xargs rm',
+        'FOO=1 npm test',
+        'git status',
+        'cd x && git push',
+      ]) {
+        expect(usesUnmodeledShell(cmd), cmd).toBe(true);
+      }
+      for (const cmd of ['curl https://example.com', '/usr/bin/curl https://example.com', "sh -c 'curl https://example.com'", 'npm run build && npm test', 'ls -la | wc -l', 'timeouts']) {
+        expect(usesUnmodeledShell(cmd), cmd).toBe(false);
+      }
+    });
+    it('flags a rule test call that uses an unmodeled shell form', () => {
+      const problems = mutated((p) => void rule(p).tests.push({ call: { tool: 'Bash', target: 'echo $(curl x)' }, want: 'asks' }));
+      expect(problems).toEqual(["demo/demo-rule: call uses a shell form this model doesn't cover: echo $(curl x)"]);
+    });
+    it('ignores shell forms in non-Bash calls', () => {
+      expect(mutated((p) => void rule(p).tests.push({ call: { tool: 'Read', target: './(x)' }, want: 'runs' }))).toEqual([]);
+    });
+    it('flags a rules demo call that uses an unmodeled shell form', () => {
+      const problems = mutated((p) => {
+        const demo = p.bodies.demo!.cards.find((c) => c.demo?.kind === 'rules')!.demo;
+        if (demo?.kind !== 'rules') throw new Error('expected rules demo');
+        demo.calls.push({ tool: 'Bash', target: 'git status' });
+      });
+      expect(problems).toEqual(["demo/demo-card-rules: call uses a shell form this model doesn't cover: git status"]);
     });
     it('flags a pattern or existing rule that does not parse', () => {
       expect(mutated((p) => void rule(p).patterns.push('Bash('))).toEqual(['demo/demo-rule: rule pattern "Bash(" does not parse']);

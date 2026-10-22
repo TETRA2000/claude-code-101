@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import type { Demo } from '../../content/types';
 import { useLang } from '../../i18n/LangContext';
-import { outcomeOf, parseRule, type Rule, type RuleList } from '../../rules/match';
+import { outcomeOf, parseRule, type Outcome, type Rule, type RuleList } from '../../rules/match';
 import { OutcomeTag } from '../../rules/OutcomeTag';
 import styles from './RulesDemo.module.css';
 
@@ -17,6 +17,10 @@ export function RulesDemo({ demo }: Props) {
   const typed = text.trim() !== '';
   const understood = typed && parseRule(text) !== null;
   const rules: Rule[] = understood ? [...demo.rules, { list, text }] : demo.rules;
+  const outcomes = demo.calls.map((c) => outcomeOf(rules, c));
+  const count = (o: Outcome) => outcomes.filter((x) => x === o).length;
+  // One polite summary line: it changes only when the counts change, so typing does not chatter.
+  const summary = `${ui.outcomeRuns}: ${count('runs')} · ${ui.outcomeAsks}: ${count('asks')} · ${ui.outcomeBlocked}: ${count('blocked')}`;
   return (
     <div className={styles.root}>
       <p className={styles.hint}>{ui.rulesHint}</p>
@@ -65,6 +69,9 @@ export function RulesDemo({ demo }: Props) {
       </p>
       <div className={styles.block}>
         <h3 className={styles.heading}>{ui.rulesCalls}</h3>
+        <p className={styles.summary} aria-live="polite" data-testid="rules-summary">
+          {summary}
+        </p>
         <ul className={styles.calls}>
           {demo.calls.map((c, i) => (
             <li key={i} className={styles.call} data-testid={`call-${c.target}`}>
@@ -72,7 +79,7 @@ export function RulesDemo({ demo }: Props) {
                 {c.tool === 'Bash' ? '$ ' : `${c.tool} `}
                 {c.target}
               </code>
-              <OutcomeTag outcome={outcomeOf(rules, c)} />
+              <OutcomeTag outcome={outcomes[i] ?? 'asks'} />
             </li>
           ))}
         </ul>

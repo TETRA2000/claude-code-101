@@ -31,6 +31,16 @@ describe('wildcard table (F12)', () => {
     expect(matchesPattern('git:* push', 'git:x push')).toBe(true);
   });
 
+  it('stays linear with many wildcards (no backtracking blow-up)', () => {
+    const pattern = Array.from({ length: 20 }, () => 'a').join('*') + 'b';
+    const s = 'a'.repeat(5000);
+    const t0 = performance.now();
+    expect(matchesPattern(pattern, s)).toBe(false);
+    expect(matchesPattern(`${'*'.repeat(20)}x`, 'y'.repeat(5000))).toBe(false);
+    expect(performance.now() - t0).toBeLessThan(50);
+    expect(matchesPattern(`${'*a'.repeat(20)}*`, 'a'.repeat(5000))).toBe(true);
+  });
+
   it('treats regex characters literally', () => {
     expect(matchesPattern('echo a.b', 'echo axb')).toBe(false);
     expect(matchesPattern('echo (x)+', 'echo (x)+')).toBe(true);
@@ -70,6 +80,7 @@ describe('limits: what a Bash rule does not match (F12)', () => {
     expect(outcomeOf(push, bash('git push origin main'))).toBe('asks');
     expect(outcomeOf(push, bash('git -C . push origin main'))).toBe('runs');
     expect(outcomeOf(push, bash("git 'push' origin main"))).toBe('runs');
+    expect(outcomeOf(push, bash('git -c push.default=current push origin main'))).toBe('runs');
   });
 });
 
@@ -149,6 +160,11 @@ describe('malformed rules (Review Focus 5)', () => {
     for (const s of ['', '   ', 'Bash(', 'Bash(npm *) extra', '(x)', 'Bash()', 'Bsh(ls)', 'bash(ls)', 'WebFetch(example.com)', 'WebFetch(domain:)', 'Bash)(']) {
       expect(parseRule(s), JSON.stringify(s)).toBeNull();
     }
+  });
+  it('a command with an unclosed quote cannot be parsed, so it asks (F14) unless a part is denied', () => {
+    expect(outcomeOf([], bash("echo 'x && rm -rf y"))).toBe('asks');
+    expect(outcomeOf([{ list: 'allow', text: 'Bash(*)' }], bash('echo "x'))).toBe('asks');
+    expect(outcomeOf([{ list: 'deny', text: 'Bash(echo *)' }], bash("echo 'x && rm -rf y"))).toBe('blocked');
   });
   it('a rule it cannot parse matches nothing', () => {
     expect(outcomeOf([{ list: 'deny', text: 'Bash(' }], bash('rm -rf x'))).toBe('asks');

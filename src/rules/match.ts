@@ -10,7 +10,8 @@
  *   (`Read`, `Grep`, `Glob`, inside the working folder, F1) run; anything else asks;
  * - `WebFetch(domain:h)` matches the URL's host (case-insensitive, `*` allowed);
  * - other tools' specs match the call target with the same `*` rules (exact when there is no `*`).
- * Not modeled: wrapper stripping (`timeout`, `nice`, …), gitignore path semantics, a Read deny also
+ * A command with an unclosed quote can't be parsed, so it asks unless a part is denied (F14).
+ * Not modeled (the validator keeps these out of content, see UNMODELED_SHELL in content/validate.ts): wrapper stripping (`timeout`, `nice`, …), gitignore path semantics, a Read deny also
  * covering Edit/Write, read-only `git` forms, subshells and `$(…)`, the F14 exceptions that still
  * prompt, paths outside the working folder, other modes, MCP tools and tool-name globs.
  */
@@ -58,18 +59,45 @@ export function parseRule(text: string): { tool: string; spec: string | null } |
   return { tool, spec };
 }
 
-const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
 /** Whether `s` matches a rule spec: `*` is any text; a lone trailing ` *` (or `:*`) also matches the bare command. */
 export function matchesPattern(pattern: string, s: string): boolean {
   const p = pattern.endsWith(':*') ? `${pattern.slice(0, -2)} *` : pattern;
   const stars = p.split('*').length - 1;
   if (stars === 1 && p.endsWith(' *') && s === p.slice(0, -2)) return true;
-  return new RegExp(`^${p.split('*').map(escapeRe).join('[\\s\\S]*')}$`).test(s);
+  return glob(p, s);
+}
+
+/** `*` = any text. Greedy two-pointer with one backtrack point: O(pattern × text) worst case, never exponential. */
+function glob(p: string, s: string): boolean {
+  let pi = 0;
+  let si = 0;
+  let star = -1;
+  let mark = 0;
+  while (si < s.length) {
+    if (pi < p.length && p[pi] === '*') {
+      star = pi++;
+      mark = si;
+    } else if (pi < p.length && p[pi] === s[si]) {
+      pi++;
+      si++;
+    } else if (star !== -1) {
+      pi = star + 1;
+      si = ++mark;
+    } else {
+      return false;
+    }
+  }
+  while (p[pi] === '*') pi++;
+  return pi === p.length;
 }
 
 /** Splits a command on `&&` `||` `;` `|` `|&` `&` and newlines, outside quotes. Parts are trimmed; empty parts dropped. */
 export function splitCompound(cmd: string): string[] {
+  return scan(cmd).parts;
+}
+
+/** Splits like splitCompound and reports whether every quote was closed. */
+function scan(cmd: string): { parts: string[]; closed: boolean } {
   const parts: string[] = [];
   let cur = '';
   let quote: '"' | "'" | null = null;
@@ -107,7 +135,7 @@ export function splitCompound(cmd: string): string[] {
     }
   }
   parts.push(cur);
-  return parts.map((p) => p.trim()).filter((p) => p !== '');
+  return { parts: parts.map((p) => p.trim()).filter((p) => p !== ''), closed: quote === null };
 }
 
 function hostOf(url: string): string {
@@ -138,10 +166,12 @@ export function outcomeOf(rules: Rule[], call: Call): Outcome {
     const p = parseRule(r.text);
     return p && p.tool === call.tool ? [{ list: r.list, ...p }] : [];
   });
-  const split = call.tool === 'Bash' ? splitCompound(call.target) : [call.target];
-  const parts = split.length ? split : [call.target];
+  const scanned = call.tool === 'Bash' ? scan(call.target) : { parts: [call.target], closed: true };
+  const parts = scanned.parts.length ? scanned.parts : [call.target];
   const hit = (list: RuleList, part: string) => parsed.some((r) => r.list === list && specMatches(r, part));
   if (parts.some((p) => hit('deny', p))) return 'blocked';
+  // A command it can't parse (an unclosed quote) always asks (F14).
+  if (!scanned.closed) return 'asks';
   if (parts.some((p) => hit('ask', p))) return 'asks';
   return parts.every((p) => hit('allow', p) || readOnly(call.tool, p)) ? 'runs' : 'asks';
 }

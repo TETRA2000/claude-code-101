@@ -66,6 +66,9 @@ describe('RulesDemo', () => {
     expect(within(row('curl https://example.com')).getByText('Asks you')).toBeInTheDocument();
     expect(within(row('./.env')).getByText('Runs')).toBeInTheDocument();
     expect(screen.getByText('Bash(npm test)')).toBeInTheDocument();
+    const summary = screen.getByTestId('rules-summary');
+    expect(summary).toHaveAttribute('aria-live', 'polite');
+    expect(summary).toHaveTextContent('Runs: 2 · Asks you: 1 · Blocked: 0');
   });
 
   it('adding deny Read(./.env) turns the .env call to blocked', async () => {
@@ -74,6 +77,7 @@ describe('RulesDemo', () => {
     await userEvent.type(input(), 'Read(./.env)');
     expect(within(row('./.env')).getByText('Blocked')).toBeInTheDocument();
     expect(within(row('npm test')).getByText('Runs')).toBeInTheDocument();
+    expect(screen.getByTestId('rules-summary')).toHaveTextContent('Runs: 1 · Asks you: 1 · Blocked: 1');
     expect(screen.queryByText(UI.en.ruleNotUnderstood)).toBeNull();
   });
 

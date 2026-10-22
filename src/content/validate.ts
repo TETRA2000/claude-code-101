@@ -2,7 +2,7 @@ import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
-import { outcomeOf, parseRule } from '../rules/match';
+import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
 import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type RuleItem, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
@@ -155,6 +155,29 @@ function checkApprove(it: ApproveItem, unitKey: string): string[] {
   return p;
 }
 
+/** Wrappers Claude Code strips before matching (F12); the matcher does not. */
+const WRAPPERS: readonly string[] = ['timeout', 'time', 'nice', 'nohup', 'stdbuf', 'command', 'builtin', 'noglob', 'xargs'];
+/** Substitution, subshells, process substitution, groups and redirects: not modeled by src/rules/match.ts. */
+export const UNMODELED_SHELL = /\$\(|`|[()<>{}]/;
+
+/**
+ * Whether a Bash command uses a form the rule matcher does not model, so its outcome could be wrong:
+ * UNMODELED_SHELL, or a part whose first word is a wrapper, an `X=y` assignment, or `git` (read-only git, F14).
+ */
+export function usesUnmodeledShell(cmd: string): boolean {
+  if (UNMODELED_SHELL.test(cmd)) return true;
+  return splitCompound(cmd).some((part) => {
+    const w = part.split(/\s+/)[0] ?? '';
+    return WRAPPERS.includes(w) || w === 'git' || /^[A-Za-z_][A-Za-z0-9_]*=/.test(w);
+  });
+}
+
+function checkCalls(calls: Call[]): string[] {
+  return calls
+    .filter((c) => c.tool === 'Bash' && usesUnmodeledShell(c.target))
+    .map((c) => `call uses a shell form this model doesn't cover: ${c.target}`);
+}
+
 /** Build the rule: parts present and parseable, at least one right and one wrong (list, pattern) pair. */
 function checkRule(it: RuleItem): string[] {
   const p: string[] = [];
@@ -163,6 +186,7 @@ function checkRule(it: RuleItem): string[] {
   if (it.patterns.length === 0) p.push('rule.patterns is empty');
   for (const pat of it.patterns) if (!parseRule(pat)) p.push(`rule pattern "${pat}" does not parse`);
   for (const r of it.existing ?? []) if (!parseRule(r.text)) p.push(`existing rule "${r.text}" does not parse`);
+  p.push(...checkCalls(it.tests.map((t) => t.call)));
   if (p.length) return p;
   let right = 0;
   let wrong = 0;
@@ -273,6 +297,7 @@ export function validateContent(c: Content): string[] {
       checkText(`${u.key}/${card.id}`, card, [], out);
       if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
       for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
+      if (card.demo?.kind === 'rules') for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
     }
     for (const it of body.items) {
       const where = `${u.key}/${it.id}`;
