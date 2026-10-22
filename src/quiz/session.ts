@@ -7,6 +7,7 @@ import type { AnswerState, Session } from './types';
 export type SessionAction =
   | { type: 'start' }
   | { type: 'select'; sel: number }
+  | { type: 'selectList'; list: number }
   | { type: 'togglePick'; line: number }
   | { type: 'move'; from: number; to: number }
   | { type: 'pickPair'; side: 'left' | 'right'; id: string }
@@ -88,6 +89,9 @@ export function sessionReducer(s: Session, action: SessionAction): Session {
   switch (action.type) {
     case 'select':
       return a.checked || isAutoGraded(item) ? s : withAnswer(s, { sel: action.sel });
+
+    case 'selectList':
+      return item.type !== 'rule' || a.checked ? s : withAnswer(s, { list: action.list });
 
     case 'togglePick': {
       if (item.type !== 'hidden' || a.checked) return s;

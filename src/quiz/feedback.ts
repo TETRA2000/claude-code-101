@@ -2,6 +2,7 @@ import type { DocRef, Item } from '../content/types';
 import { choicesOf } from '../content/approve';
 import { t, type Lang } from '../i18n/lang';
 import { UI } from '../i18n/ui';
+import { ruleOutcomes } from './grade';
 import type { AnswerState } from './types';
 
 export interface FeedbackText {
@@ -12,6 +13,8 @@ export interface FeedbackText {
   body: string | null;
   explain: string;
   more?: DocRef;
+  /** rule: one per test call, whether it got the wanted outcome. */
+  checks?: { label: string; ok: boolean }[];
 }
 
 export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lang): FeedbackText {
@@ -21,6 +24,7 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
 
   let body: string | null = null;
   let headline: string | null = null;
+  let checks: FeedbackText['checks'];
 
   switch (item.type) {
     case 'approve': {
@@ -40,10 +44,20 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
     case 'chain':
       if (sel !== null && sel !== item.answer) body = t(sel < item.answer ? item.early : item.late, lang);
       break;
+    case 'rule': {
+      const got = ruleOutcomes(item, a);
+      if (got) {
+        checks = item.tests.map((tc, i) => ({
+          label: tc.call.tool === 'Bash' ? tc.call.target : `${tc.call.tool} ${tc.call.target}`,
+          ok: got[i] === tc.want,
+        }));
+      }
+      break;
+    }
     default:
       break;
   }
 
   const title = a.ok ? (ui.praise[index % ui.praise.length] ?? '') : headline ? ui.breaking : ui.notQuite;
-  return { ok: a.ok, title, headline, body, explain, more: item.more };
+  return { ok: a.ok, title, headline, body, explain, more: item.more, ...(checks ? { checks } : {}) };
 }

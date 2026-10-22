@@ -95,6 +95,22 @@ export interface UiStrings {
   partReason: string;
   partOptions: string;
   notesTitle: string;
+  ruleNotUnderstood: string;
+  ruleListLabel: string;
+  ruleTextLabel: string;
+  rulesHint: string;
+  rulesInSettings: string;
+  rulesCalls: string;
+  outcomeRuns: string;
+  outcomeAsks: string;
+  outcomeBlocked: string;
+  ruleGoal: string;
+  rulePickList: string;
+  rulePickPattern: string;
+  yourRule: string;
+  ruleTestOk: string;
+  ruleTestMiss: string;
+  ruleTestsTitle: string;
 }
 
 /** Keys whose Japanese value is intentionally identical to English. */
@@ -193,6 +209,22 @@ const en: UiStrings = {
   partReason: 'Reason',
   partOptions: 'Options',
   notesTitle: 'What each part tells you',
+  ruleNotUnderstood: "Claude Code wouldn't understand this rule. Write Tool or Tool(pattern), like Bash(npm run *).",
+  ruleListLabel: 'List',
+  ruleTextLabel: 'Rule',
+  rulesHint: 'Pick a list and type a rule. The calls below update as you type. Nothing here runs.',
+  rulesInSettings: 'Already in your settings',
+  rulesCalls: 'What Claude tries',
+  outcomeRuns: 'Runs',
+  outcomeAsks: 'Asks you',
+  outcomeBlocked: 'Blocked',
+  ruleGoal: 'Goal',
+  rulePickList: '1. Pick a list',
+  rulePickPattern: '2. Pick a pattern',
+  yourRule: 'Your rule',
+  ruleTestOk: 'As the goal wants',
+  ruleTestMiss: 'Not what the goal wants',
+  ruleTestsTitle: 'Test calls',
 };
 
 const ja: UiStrings = {
@@ -288,6 +320,22 @@ const ja: UiStrings = {
   partReason: '理由',
   partOptions: '選択肢',
   notesTitle: '各部分の意味',
+  ruleNotUnderstood: 'このルールは Claude Code に理解されません。Bash(npm run *) のように、ツール名 または ツール名(パターン) の形で書きます。',
+  ruleListLabel: 'リスト',
+  ruleTextLabel: 'ルール',
+  rulesHint: 'リストを選び、ルールを入力しましょう。入力に合わせて下の呼び出しが更新されます。ここでは何も実行されません。',
+  rulesInSettings: '設定にすでにあるルール',
+  rulesCalls: 'Claude が試すこと',
+  outcomeRuns: '実行される',
+  outcomeAsks: '確認される',
+  outcomeBlocked: 'ブロックされる',
+  ruleGoal: '目標',
+  rulePickList: '1. リストを選ぶ',
+  rulePickPattern: '2. パターンを選ぶ',
+  yourRule: 'あなたのルール',
+  ruleTestOk: '目標どおり',
+  ruleTestMiss: '目標と違う',
+  ruleTestsTitle: 'テストの呼び出し',
 };
 
 export const UI: Record<Lang, UiStrings> = { en, ja };

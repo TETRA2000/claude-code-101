@@ -93,3 +93,19 @@ describe('feedbackFor', () => {
     expect(f.body).toBe('鍵が送られてしまいます。');
   });
 });
+
+describe('rule feedback', () => {
+  const rule = byType('rule');
+  it('lists each test call with ok / not ok', () => {
+    const fb = feedbackFor(rule, answered(rule, { list: 2, sel: 0, ok: false }), 0, 'en');
+    expect(fb.checks).toEqual([
+      { label: 'curl https://example.com', ok: false },
+      { label: 'npm test', ok: true },
+      { label: 'ls -la', ok: true },
+    ]);
+  });
+  it('all ok for the right rule; no checks on other items', () => {
+    expect(feedbackFor(rule, answered(rule, { list: 2, sel: 1, ok: true }), 0, 'en').checks?.every((c) => c.ok)).toBe(true);
+    expect(feedbackFor(byType('predict'), answered(byType('predict'), { sel: 1, ok: true }), 0, 'en').checks).toBeUndefined();
+  });
+});

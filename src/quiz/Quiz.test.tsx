@@ -63,6 +63,10 @@ async function answerRight(user: ReturnType<typeof userEvent.setup>, id: string)
       await user.click(btn('Move down: The result goes into context'));
       await user.click(btn('Move down: The result goes into context'));
       break;
+    case 'demo-rule':
+      await user.click(btn('deny'));
+      await user.click(btn('Bash(curl *)'));
+      break;
     case 'demo-pairs':
       autoGraded = true;
       await pairUp('~/.ssh', 'SSH keys');

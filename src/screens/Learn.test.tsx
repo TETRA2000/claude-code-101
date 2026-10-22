@@ -7,6 +7,7 @@ import { Learn } from './Learn';
 
 const unit = fixtureParts.units.find((u) => u.key === 'demo')!;
 const cards = fixtureParts.bodies.demo!.cards;
+const last = cards.length - 1;
 
 function setup(card: number) {
   const dispatch = vi.fn();
@@ -29,7 +30,7 @@ describe('Learn docs links', () => {
     setup(0);
     expect(screen.queryByRole('heading', { name: 'Official docs' })).toBeNull();
     cleanup();
-    setup(2);
+    setup(last);
     expect(screen.getByRole('heading', { name: 'Official docs' })).toBeInTheDocument();
     expect(screen.getAllByRole('link')).toHaveLength(unit.docs!.length);
     expect(screen.getByText('Read this for the safety model.')).toBeInTheDocument();
@@ -37,6 +38,10 @@ describe('Learn docs links', () => {
 });
 
 describe('Learn new card kinds', () => {
+  it('renders a rules demo with a labeled rule input', () => {
+    setup(cards.findIndex((c) => c.demo?.kind === 'rules'));
+    expect(screen.getByRole('textbox', { name: 'Rule' })).toBeInTheDocument();
+  });
   it('renders a closed details for a deep section', () => {
     setup(1);
     const summary = screen.getByText('Under the hood');
@@ -57,7 +62,7 @@ describe('Learn', () => {
     const dispatch = setup(0);
     expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
     expect(screen.getByText('Key idea')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', String(Math.round(100 / cards.length)));
     await userEvent.click(screen.getByRole('button', { name: 'Next' }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 1 });
   });
@@ -67,7 +72,7 @@ describe('Learn', () => {
     expect(dispatch).toHaveBeenCalledWith({ type: 'gotoCard', card: 0 });
   });
   it('last card finishes with practice or done', async () => {
-    const dispatch = setup(2);
+    const dispatch = setup(last);
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
     await userEvent.click(screen.getByRole('button', { name: 'Practice this' }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'finishLearn', practice: true });

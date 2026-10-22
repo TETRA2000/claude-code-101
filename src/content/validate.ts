@@ -2,7 +2,8 @@ import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
-import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type UnitBody } from './types';
+import { outcomeOf, parseRule } from '../rules/match';
+import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type RuleItem, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -154,6 +155,29 @@ function checkApprove(it: ApproveItem, unitKey: string): string[] {
   return p;
 }
 
+/** Build the rule: parts present and parseable, at least one right and one wrong (list, pattern) pair. */
+function checkRule(it: RuleItem): string[] {
+  const p: string[] = [];
+  if (it.tests.length === 0) p.push('rule.tests is empty');
+  if (it.lists.length === 0) p.push('rule.lists is empty');
+  if (it.patterns.length === 0) p.push('rule.patterns is empty');
+  for (const pat of it.patterns) if (!parseRule(pat)) p.push(`rule pattern "${pat}" does not parse`);
+  for (const r of it.existing ?? []) if (!parseRule(r.text)) p.push(`existing rule "${r.text}" does not parse`);
+  if (p.length) return p;
+  let right = 0;
+  let wrong = 0;
+  for (const list of it.lists) {
+    for (const text of it.patterns) {
+      const rules = [...(it.existing ?? []), { list, text }];
+      if (it.tests.every((t) => outcomeOf(rules, t.call) === t.want)) right++;
+      else wrong++;
+    }
+  }
+  if (right === 0) p.push('rule item has no solution');
+  if (wrong === 0) p.push('rule item has no wrong answer');
+  return p;
+}
+
 /** Rules 3–11 and 18: type-specific checks. */
 function checkItem(it: Item, unitKey: string): string[] {
   const p: string[] = [];
@@ -198,6 +222,9 @@ function checkItem(it: Item, unitKey: string): string[] {
       if (!isPermutation(it.order, it.parts.map((x) => x.id))) p.push('decode.order is not a permutation of ids');
       break;
     case 'setup':
+      break;
+    case 'rule':
+      p.push(...checkRule(it));
       break;
   }
   return p;

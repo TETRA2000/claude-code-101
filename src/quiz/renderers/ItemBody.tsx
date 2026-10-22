@@ -6,6 +6,7 @@ import { Choice } from './Choice';
 import { HiddenDoc } from './HiddenDoc';
 import { OrderList } from './OrderList';
 import { PairBoard } from './PairBoard';
+import { RuleBuilder } from './RuleBuilder';
 
 /** Picks the renderer for an item. Exhaustive: a new item type fails tsc here. */
 export function ItemBody(p: RendererProps<Item>): ReactElement {
@@ -26,5 +27,7 @@ export function ItemBody(p: RendererProps<Item>): ReactElement {
       return <HiddenDoc item={item} answer={answer} act={act} />;
     case 'chain':
       return <Chain item={item} answer={answer} act={act} />;
+    case 'rule':
+      return <RuleBuilder item={item} answer={answer} act={act} />;
   }
 }

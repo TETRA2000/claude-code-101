@@ -1,9 +1,10 @@
 import type { Lang, Localized } from '../i18n/lang';
+import type { Call, Outcome, Rule, RuleList } from '../rules/match';
 
 type L = Localized;
 
 export type Surface = 'terminal' | 'desktop';
-export type ItemType = 'approve' | 'decode' | 'predict' | 'pairs' | 'order' | 'hidden' | 'chain' | 'combo' | 'setup';
+export type ItemType = 'approve' | 'decode' | 'predict' | 'pairs' | 'order' | 'hidden' | 'chain' | 'combo' | 'setup' | 'rule';
 export const ITEM_TYPES: readonly ItemType[] = [
   'approve',
   'decode',
@@ -14,6 +15,7 @@ export const ITEM_TYPES: readonly ItemType[] = [
   'chain',
   'combo',
   'setup',
+  'rule',
 ];
 /** Every answer an approve item can offer, in the order Claude Code lists them (F1). */
 export const APPROVE_CHOICES = ['yes', 'always', 'auto', 'no'] as const;
@@ -126,7 +128,18 @@ export interface ChainItem extends Base {
   early: L;
   late: L;
 }
-export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem;
+/** Build the rule: pick a list and a pattern so every test call gets its wanted outcome (F12, F14). */
+export interface RuleItem extends Base {
+  type: 'rule';
+  goal: L;
+  /** Rules already in the settings; the learner's rule is added to these. */
+  existing?: Rule[];
+  lists: RuleList[];
+  /** Full rule texts, e.g. `Bash(curl *)`. */
+  patterns: string[];
+  tests: { call: Call; want: Outcome }[];
+}
+export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem | RuleItem;
 
 export type Demo =
   | { kind: 'terminal'; cwd: string; commands: { cmd: string; output: { text: string; note?: L; secret?: boolean }[] }[] }
@@ -138,7 +151,8 @@ export type Demo =
       reason: L;
       alwaysLabel: L;
       notes: { part: 'tool' | 'target' | 'reason' | 'options'; text: L }[];
-    };
+    }
+  | { kind: 'rules'; rules: Rule[]; calls: Call[] };
 export interface TryStep {
   text: L;
   code?: string;

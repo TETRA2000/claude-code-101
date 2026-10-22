@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
-import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, UnitBody } from './types';
+import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, RuleItem, UnitBody } from './types';
 import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
@@ -448,5 +448,31 @@ describe('validateContent', () => {
 
   it('18: flags a wrong predict option without feedback', () => {
     expectOne(mutated((p) => void delete item<PredictItem>(p, 'demo-predict').opts[2]!.feedback), 'demo-predict');
+  });
+
+  describe('rule items', () => {
+    const rule = (p: Parts) => item<RuleItem>(p, 'demo-rule');
+    it('flags a rule item with no solution', () => {
+      const problems = mutated((p) => void (rule(p).patterns = ['Bash(curl)', 'Bash(*)']));
+      expect(problems).toEqual(['demo/demo-rule: rule item has no solution']);
+    });
+    it('flags a rule item with no wrong answer', () => {
+      const problems = mutated((p) => {
+        rule(p).lists = ['deny'];
+        rule(p).patterns = ['Bash(curl *)'];
+      });
+      expect(problems).toEqual(['demo/demo-rule: rule item has no wrong answer']);
+    });
+    it('flags empty tests, lists or patterns', () => {
+      expectOne(mutated((p) => void (rule(p).tests = [])), 'rule.tests is empty');
+      expectOne(mutated((p) => void (rule(p).lists = [])), 'rule.lists is empty');
+      expectOne(mutated((p) => void (rule(p).patterns = [])), 'rule.patterns is empty');
+    });
+    it('flags a pattern or existing rule that does not parse', () => {
+      expect(mutated((p) => void rule(p).patterns.push('Bash('))).toEqual(['demo/demo-rule: rule pattern "Bash(" does not parse']);
+      expect(mutated((p) => void rule(p).existing!.push({ list: 'deny', text: 'nope(' }))).toEqual([
+        'demo/demo-rule: existing rule "nope(" does not parse',
+      ]);
+    });
   });
 });

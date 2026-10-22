@@ -169,3 +169,32 @@ describe('start', () => {
     expect(s.queue).toHaveLength(3);
   });
 });
+
+describe('rule items', () => {
+  const rule = () => startSession('demo', [get('rule')]); // answer: deny (list 2) + Bash(curl *) (sel 1)
+  const pick = (list: number, sel: number): SessionAction[] => [{ type: 'selectList', list }, { type: 'select', sel }];
+
+  it('starts with no list picked', () => {
+    expect(rule().answer.list).toBeNull();
+  });
+  it('needs both a list and a pattern before check', () => {
+    expect(run(rule(), { type: 'select', sel: 1 }, { type: 'check' }).answer.checked).toBe(false);
+    expect(run(rule(), { type: 'selectList', list: 2 }, { type: 'check' }).answer.checked).toBe(false);
+  });
+  it('grades the chosen rule through outcomeOf', () => {
+    const ok = run(rule(), ...pick(2, 1), { type: 'check' });
+    expect(ok.answer).toMatchObject({ list: 2, sel: 1, checked: true, ok: true });
+    expect(ok.xp).toBe(10);
+    // deny Bash(curl) is exact: `curl https://example.com` still asks.
+    expect(run(rule(), ...pick(2, 0), { type: 'check' }).answer.ok).toBe(false);
+    // deny Bash(*) also blocks npm test.
+    expect(run(rule(), ...pick(2, 2), { type: 'check' }).answer.ok).toBe(false);
+    // allow Bash(curl *) lets curl run.
+    expect(run(rule(), ...pick(0, 1), { type: 'check' }).answer.ok).toBe(false);
+  });
+  it('ignores selectList after check and on other items', () => {
+    const s = run(rule(), ...pick(2, 1), { type: 'check' }, { type: 'selectList', list: 0 });
+    expect(s.answer.list).toBe(2);
+    expect(run(startSession('demo', [get('predict')]), { type: 'selectList', list: 0 }).answer.list).toBeNull();
+  });
+});

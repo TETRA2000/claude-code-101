@@ -164,3 +164,13 @@ export function ExternalIcon({ size = 14, ...rest }: IconProps) {
     </Svg>
   );
 }
+
+export function QuestionCircleIcon({ size = 22, ...rest }: IconProps) {
+  return (
+    <Svg size={size} data-icon="question" {...stroke} strokeWidth={2.5} {...rest}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6" />
+      <path d="M12 17.5h.01" />
+    </Svg>
+  );
+}

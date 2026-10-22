@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
 import { choiceLabels, choicesOf } from '../src/content/approve';
+import { outcomeOf } from '../src/rules/match';
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
 import { UI } from '../src/i18n/ui';
 import type { Lang } from '../src/i18n/lang';
@@ -109,6 +110,18 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
         await btn(p.left[lang]);
         await btn(p.right[lang]);
       }
+      return;
+    }
+    case 'rule': {
+      // Brute force over (list, pattern) with the same matcher the grader uses.
+      const pairs = item.lists.flatMap((list, l) => item.patterns.map((text, p) => ({ l, p, list, text })));
+      const pick = pairs.find(({ list, text }) => {
+        const rules = [...(item.existing ?? []), { list, text }];
+        return item.tests.every((t) => outcomeOf(rules, t.call) === t.want) !== wrong;
+      });
+      if (!pick) throw new Error(`${item.id}: no ${wrong ? 'wrong' : 'right'} rule`);
+      await btn(pick.list);
+      await btn(pick.text);
       return;
     }
     case 'decode': {

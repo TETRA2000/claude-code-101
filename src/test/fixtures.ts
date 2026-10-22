@@ -91,6 +91,20 @@ const demoBody: UnitBody = {
         ],
       },
     },
+    {
+      id: 'demo-card-rules',
+      title: { en: 'Try a rule', ja: 'ルールを試す' },
+      body: [{ en: 'Type a rule and see what it stops.', ja: 'ルールを入力して、何が止まるか見てみましょう。' }],
+      demo: {
+        kind: 'rules',
+        rules: [{ list: 'allow', text: 'Bash(npm test)' }],
+        calls: [
+          { tool: 'Bash', target: 'npm test' },
+          { tool: 'Bash', target: 'curl https://example.com' },
+          { tool: 'Read', target: './.env' },
+        ],
+      },
+    },
   ],
   items: [
     {
@@ -249,6 +263,21 @@ const demoBody: UnitBody = {
         { text: { en: 'Turn permissions off', ja: '許可の確認をオフにする' }, feedback: { en: 'Nothing would stop a bad command.', ja: '危険なコマンドを止めるものがなくなります。' } },
       ],
       accept: [0],
+    },
+    {
+      id: 'demo-rule',
+      type: 'rule',
+      prompt: { en: 'Build the rule.', ja: 'ルールを組み立てましょう。' },
+      explain: { en: 'A deny on curl * stops curl and leaves npm test alone.', ja: 'curl * の拒否ルールは curl を止め、npm test には影響しません。' },
+      goal: { en: 'Stop curl, keep npm test working.', ja: 'curl を止めて、npm test は使えるままにする。' },
+      existing: [{ list: 'allow', text: 'Bash(npm test)' }],
+      lists: ['allow', 'ask', 'deny'],
+      patterns: ['Bash(curl)', 'Bash(curl *)', 'Bash(*)'],
+      tests: [
+        { call: { tool: 'Bash', target: 'curl https://example.com' }, want: 'blocked' },
+        { call: { tool: 'Bash', target: 'npm test' }, want: 'runs' },
+        { call: { tool: 'Bash', target: 'ls -la' }, want: 'runs' },
+      ],
     },
   ],
 };

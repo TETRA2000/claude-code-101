@@ -2,8 +2,10 @@ import type { Item } from '../content/types';
 
 /** The learner's in-progress answer to the current item. Fields unused by a type keep their defaults. */
 export interface AnswerState {
-  /** approve: index into choicesOf(item) · predict/chain/setup/combo: option or step index. */
+  /** approve: index into choicesOf(item) · predict/chain/setup/combo: option or step index · rule: pattern index. */
   sel: number | null;
+  /** rule: index into item.lists. */
+  list: number | null;
   /** hidden: picked line indexes. */
   picked: number[];
   /** order: current arrangement of step ids. */

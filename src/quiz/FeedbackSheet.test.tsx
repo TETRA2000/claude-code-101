@@ -70,4 +70,17 @@ describe('FeedbackSheet', () => {
     expect(screen.getByText(UI.en.breaking)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Posts your .env' })).toBeInTheDocument();
   });
+
+  it('shows rule test checks with icon and text', () => {
+    const rule = items.find((i) => i.type === 'rule')!;
+    const a: AnswerState = { ...freshAnswer(rule), checked: true, list: 2, sel: 0, ok: false };
+    wrap(<FeedbackSheet item={rule} answer={a} index={0} guardMs={0} onContinue={vi.fn()} />);
+    const rows = screen.getAllByTestId('check');
+    expect(rows).toHaveLength(3);
+    expect(rows[0]).toHaveTextContent('curl https://example.com');
+    expect(rows[0]).toHaveTextContent(UI.en.ruleTestMiss);
+    expect(rows[1]).toHaveTextContent(UI.en.ruleTestOk);
+    expect(rows[0]!.querySelector('svg')).not.toBeNull();
+  });
 });
+
