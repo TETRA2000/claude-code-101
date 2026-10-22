@@ -145,10 +145,16 @@ export async function openUnit(page: Page, unit: UnitMeta, lang: Lang, which: 'l
 }
 
 /**
- * No copy buttons anywhere. Lines inside a mock document ([data-source]) are quoted lesson text
- * (e.g. "website copy"), not controls, so they are excluded.
+ * No copy buttons outside Try it cards. Lines inside a mock document ([data-source]) are quoted lesson
+ * text (e.g. "website copy"), not controls, and Try it cards ([data-try]) may have copy buttons.
  */
 export async function expectNoCopyButtons(page: Page) {
-  const chrome = page.locator(':not([data-source] *)');
+  const chrome = page.locator(':not([data-source] *):not([data-try] *)');
   await expect(page.getByRole('button', { name: /copy|コピー/i }).and(chrome)).toHaveCount(0);
+}
+
+/** Every copy button sits inside a Try it card. */
+export async function expectCopyOnlyInTryIt(page: Page) {
+  const outside = page.locator(':not([data-source] *):not([data-try] *)');
+  await expect(page.getByRole('button', { name: /copy|コピー/i }).and(outside)).toHaveCount(0);
 }

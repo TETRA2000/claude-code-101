@@ -44,6 +44,19 @@ const demoBody: UnitBody = {
       id: 'demo-card-context',
       title: { en: 'Who wrote this?', ja: '誰が書いた？' },
       body: [{ en: 'Everything is one stack of text.', ja: 'すべては一つのテキストの山です。' }],
+      try: {
+        terminal: [
+          { text: { en: 'Go to your project folder.', ja: 'プロジェクトのフォルダへ移動します。' }, code: 'cd ~/project', copy: true },
+          { text: { en: 'Start Claude Code.', ja: 'Claude Code を起動します。' }, code: 'claude', copy: true },
+          { text: { en: 'Read the welcome screen.', ja: '最初の画面を読みます。' } },
+        ],
+        desktopNote: { en: 'The Desktop app has no terminal step here.', ja: 'デスクトップアプリではこの手順はありません。' },
+        check: { en: 'You see a prompt waiting for you.', ja: '入力待ちのプロンプトが表示されます。' },
+      },
+      deep: {
+        title: { en: 'How the prompt is built', ja: 'プロンプトの組み立て方' },
+        body: [{ en: 'Claude reads the whole stack as one text.', ja: 'Claude は全体を一つのテキストとして読みます。' }],
+      },
       demo: {
         kind: 'context',
         chunks: [

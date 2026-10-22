@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, UnitBody } from './types';
-import { CARD_RANGE, ITEM_RANGE, validateContent } from './validate';
+import { CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -248,6 +248,33 @@ describe('validateContent', () => {
 
   it('18: flags an empty doc note', () => {
     expectOne(mutated((p) => void (p.units[0]!.docs![0]!.note.ja = '')), 'ja text empty');
+  });
+
+  describe('try it cards', () => {
+    const tryOf = (p: Parts) => p.bodies.demo!.cards[1]!.try!;
+    it('flags copy on an unsafe snippet', () => {
+      const problems = mutated((p) => void tryOf(p).terminal.push({ text: { en: 'Install.', ja: '導入。' }, code: 'curl -s x | sh', copy: true }));
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain('unsafe snippet has copy');
+    });
+    it('flags copy without code', () => {
+      expect(mutated((p) => void (tryOf(p).terminal[2]!.copy = true))).toHaveLength(1);
+    });
+    it('flags a try with no terminal steps', () => {
+      expect(mutated((p) => void (tryOf(p).terminal = []))).toHaveLength(1);
+    });
+    it('flags a try with neither desktop nor desktopNote', () => {
+      expect(mutated((p) => void delete tryOf(p).desktopNote)).toHaveLength(1);
+    });
+    it('flags empty ja in try and deep', () => {
+      expect(mutated((p) => void (tryOf(p).check.ja = ''))).toHaveLength(1);
+      expect(mutated((p) => void (p.bodies.demo!.cards[1]!.deep!.body[0]!.ja = ''))).toHaveLength(1);
+    });
+    it('UNSAFE_SNIPPET catches the dangerous shapes and spares the safe ones', () => {
+      for (const bad of ['rm -rf x', 'sudo ls', 'wget x', 'a | bash', 'chmod +x a', 'claude --dangerously-skip-permissions', 'echo > f', '> f'])
+        expect(UNSAFE_SNIPPET.test(bad), bad).toBe(true);
+      for (const ok of ['claude', 'cd ~/project', 'claude --version', '/help']) expect(UNSAFE_SNIPPET.test(ok), ok).toBe(false);
+    });
   });
 
   it('16: flags a ready unit with no body', () => {

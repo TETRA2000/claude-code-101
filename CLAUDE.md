@@ -12,7 +12,7 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
 - Content safety:
   - Fake secrets contain `FAKE`.
   - URLs use reserved hosts (`*.example`, `example.com|net|org` and subdomains, `*.test`, `*.invalid`, `localhost`) or the real-host allowlist in `src/content/hosts.ts`.
-  - There are no copy buttons anywhere.
+  - Copy buttons appear only on safe snippets in Try it cards (`copy: true`; the validator rejects unsafe code).
 - Rules: `HEARTS_PER_RUN = 5`, `XP_FIRST_TRY = 10`, `XP_RETRY = 5`, `XP_HINT_COST = 5` (taken off that item's award, never below 0), `ACTIVATION_GUARD_MS = 350`.
 - Ready units have 3–5 Learn cards and 8–12 practice items. Every ready unit has `lastChecked` (`YYYY-MM-DD`), `linksChecked` (`YYYY-MM-DD`) and 3–8 `docs` entries (slug + note, in both languages).
 - Design tokens are copied from cascade-learn's `src/styles/tokens.css`. Accessibility:
@@ -45,7 +45,7 @@ src/state/                      rules.ts (hearts, XP, guard), app.ts (reducer)
 src/storage/progress.ts         localStorage progress, never throws
 src/quiz/                       types.ts (session/answer state), session.ts (pure reducer), grade.ts, feedback.ts, useArmed.ts, Quiz.tsx, FeedbackSheet.tsx, QuizEnd.tsx
 src/quiz/renderers/             one per item type: Approve, PermissionPrompt, Choice, PairBoard, OrderList, HiddenDoc, Chain, BrowserFrame, TerminalFrame, ItemBody
-src/screens/                    Home.tsx, Learn.tsx, cards/DocsList.tsx, demos/ (TerminalDemo, ContextDemo, AnatomyDemo)
+src/screens/                    Home.tsx, Learn.tsx, cards/ (DocsList, TryIt, Deep), demos/ (TerminalDemo, ContextDemo, AnatomyDemo)
 src/components/                 Button, DocLink, ProgressBar, HeartCount, RichText, LangSwitch, icons
 src/test/                       setup.ts (vitest setup), fixtures.ts (a demo unit with every card/item shape)
 e2e/                            Playwright specs + helpers.ts (reads every content/units/*.json)
@@ -58,5 +58,5 @@ Each `.tsx` with styles has a sibling `.module.css`; tests sit next to their fil
 - Write `content/units/<key>.json`, set the unit's `status` to `ready` in `content/course.json` (plus `lastChecked` and `linksChecked` as `YYYY-MM-DD`, and 3–8 `docs` entries, each a slug from `src/content/docs.ts` or an allowed full URL plus a "read this if…" note), then run `npm test`. Ready units need 3-5 cards and 8-12 items.
 - Every Claude Code claim (tool names, modes, prompts, settings) must match `docs/claude-code-facts.md`; add a sourced entry there first if a fact is missing.
 - Unit contents are discovered by a Vite glob at test time. After adding or renaming a unit file, clear `node_modules/.vitest-cache` (and any `.vitest-cache`) if tests do not see it.
-- Planted attack text (injection lessons: hidden instructions, fake "pre-approved" notes, poisoned CLAUDE.md lines) is inert teaching material. It may only ask for harmless, obviously fake actions on reserved hosts (`*.example`, `example.com|net|org`, `*.test`, `*.invalid`, `localhost`) with fake secrets containing `FAKE`. Never use real hosts outside the `src/content/hosts.ts` allowlist, real credentials, or text that would work as an attack against a real tool. There are no copy buttons anywhere, so nobody can copy it out.
+- Planted attack text (injection lessons: hidden instructions, fake "pre-approved" notes, poisoned CLAUDE.md lines) is inert teaching material. It may only ask for harmless, obviously fake actions on reserved hosts (`*.example`, `example.com|net|org`, `*.test`, `*.invalid`, `localhost`) with fake secrets containing `FAKE`. Never use real hosts outside the `src/content/hosts.ts` allowlist, real credentials, or text that would work as an attack against a real tool. Planted text never gets a copy button, so nobody can copy it out.
 - No E2E edit is needed per unit: `e2e/helpers.ts` reads every `content/units/*.json`, and `e2e/layout.spec.ts` walks every ready unit in both languages. Long commands and URLs must wrap (`overflow-wrap: anywhere`).

@@ -123,6 +123,19 @@ export type Demo =
       alwaysLabel: L;
       notes: { part: 'tool' | 'target' | 'reason' | 'options'; text: L }[];
     };
+export interface TryStep {
+  text: L;
+  code?: string;
+  /** Show a copy button. Only for safe snippets (the validator rejects UNSAFE_SNIPPET). */
+  copy?: true;
+}
+export interface TryIt {
+  terminal: TryStep[];
+  desktop?: TryStep[];
+  /** Shown on the Desktop tab when `desktop` is absent. */
+  desktopNote?: L;
+  check: L;
+}
 export interface Card {
   id: string;
   title: L;
@@ -130,6 +143,8 @@ export interface Card {
   key?: L;
   demo?: Demo;
   more?: DocRef;
+  try?: TryIt;
+  deep?: { title: L; body: L[] };
 }
 
 export type UnitStatus = 'ready' | 'soon';

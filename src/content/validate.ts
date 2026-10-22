@@ -1,7 +1,7 @@
 import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
-import type { DocRef, Item, UnitBody } from './types';
+import type { Card, DocRef, Item, UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -93,6 +93,26 @@ function structuredUrls(it: Item): string[] {
   const urls = it.steps.filter((s) => s.tool.includes('navigate')).map((s) => s.target);
   if (it.scene.kind === 'browser') urls.push(it.scene.url);
   return urls;
+}
+
+/** Code that must never get a copy button. */
+export const UNSAFE_SNIPPET = /\brm\b|\bsudo\b|\bcurl\b|\bwget\b|\|\s*(ba)?sh\b|\bchmod\b|--dangerously|bypassPermissions|(^|\s)>/;
+
+/** Try it card rules: terminal steps present, Desktop covered, copy only on safe code. */
+function checkTry(card: Card): string[] {
+  const t = card.try;
+  if (!t) return [];
+  const p: string[] = [];
+  if (!t.terminal || t.terminal.length === 0) p.push('try needs terminal steps');
+  if (!t.desktop?.length && !t.desktopNote) p.push('try needs desktop steps or desktopNote');
+  for (const [tab, steps] of [['terminal', t.terminal], ['desktop', t.desktop]] as const) {
+    (steps ?? []).forEach((st, i) => {
+      if (!st.copy) return;
+      if (!st.code) p.push(`try.${tab}.${i}: copy without code`);
+      else if (UNSAFE_SNIPPET.test(st.code)) p.push(`try.${tab}.${i}: unsafe snippet has copy`);
+    });
+  }
+  return p;
 }
 
 /** Rules 3–11 and 18: type-specific checks. */
@@ -196,6 +216,7 @@ export function validateContent(c: Content): string[] {
     for (const card of body.cards) {
       checkText(`${u.key}/${card.id}`, card, [], out);
       if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
+      for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
     }
     for (const it of body.items) {
       const where = `${u.key}/${it.id}`;

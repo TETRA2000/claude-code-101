@@ -63,6 +63,14 @@ export interface UiStrings {
   keyIdea: string;
   learnMore: string;
   officialDocs: string;
+  tryIt: string;
+  tabTerminal: string;
+  tabDesktop: string;
+  checkItWorked: string;
+  copy: string;
+  copied: string;
+  copyFailed: string;
+  underTheHood: string;
   opensNewTab: string;
   englishPage: string;
   colorByAuthor: string;
@@ -149,6 +157,14 @@ const en: UiStrings = {
   keyIdea: 'Key idea',
   learnMore: 'Learn more',
   officialDocs: 'Official docs',
+  tryIt: 'Try it',
+  tabTerminal: 'Terminal',
+  tabDesktop: 'Desktop',
+  checkItWorked: 'Check it worked',
+  copy: 'Copy',
+  copied: 'Copied',
+  copyFailed: "Couldn't copy. Select the text instead.",
+  underTheHood: 'Under the hood',
   opensNewTab: '(opens in a new tab)',
   englishPage: 'English page',
   colorByAuthor: 'Color by who wrote it',
@@ -232,6 +248,14 @@ const ja: UiStrings = {
   keyIdea: 'ポイント',
   learnMore: 'もっと詳しく',
   officialDocs: '公式ドキュメント',
+  tryIt: '試してみよう',
+  tabTerminal: 'ターミナル',
+  tabDesktop: 'デスクトップ',
+  checkItWorked:'うまくいったか確認',
+  copy: 'コピー',
+  copied: 'コピーしました',
+  copyFailed: 'コピーできませんでした。文字を選択してコピーしてください。',
+  underTheHood: '仕組みをのぞく',
   opensNewTab: '（新しいタブで開きます）',
   englishPage: '英語ページ',
   colorByAuthor: '書いた人で色分け',

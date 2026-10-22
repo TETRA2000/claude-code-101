@@ -36,6 +36,22 @@ describe('Learn docs links', () => {
   });
 });
 
+describe('Learn new card kinds', () => {
+  it('renders a closed details for a deep section', () => {
+    setup(1);
+    const summary = screen.getByText('Under the hood');
+    expect(summary.tagName).toBe('SUMMARY');
+    const details = summary.closest('details')!;
+    expect(details).not.toHaveAttribute('open');
+    expect(details).toHaveTextContent('How the prompt is built');
+  });
+  it('renders the Try it card with data-try', () => {
+    setup(1);
+    expect(screen.getByRole('heading', { name: 'Try it' })).toBeInTheDocument();
+    expect(document.querySelector('[data-try]')).not.toBeNull();
+  });
+});
+
 describe('Learn', () => {
   it('first card: no Back, shows key idea, Next goes to card 1', async () => {
     const dispatch = setup(0);
