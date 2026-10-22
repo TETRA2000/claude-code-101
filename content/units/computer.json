@@ -12,8 +12,8 @@
           "ja": "ターミナルは、アイコンをクリックする代わりにコマンドを入力して操作するウィンドウです。コマンドとは `ls`（「このフォルダの中身を一覧表示して」）のような短い命令のこと。多くのコマンドにはフラグを付けられます。フラグとは、ダッシュと文字の組み合わせで、コマンドの動きを変えるものです。`ls -a` は「すべて表示」で、隠れているものも含めて一覧にします。"
         },
         {
-          "en": "Claude Code works through a terminal too. It can run any command you could, as you, reaching every file you own.",
-          "ja": "Claude Code もターミナルを通して作業します。あなたが実行できるコマンドなら何でも、あなたとして実行でき、あなたが持つすべてのファイルにアクセスできます。"
+          "en": "Claude Code works through a terminal too. It can run any command you could, as you, so it can reach any file you can (with your OK).",
+          "ja": "Claude Code もターミナルを通して作業します。あなたが実行できるコマンドなら何でも、あなたとして実行できるので、（あなたが許可すれば）あなたが開けるファイルにはどれでも手が届きます。"
         }
       ],
       "key": {
@@ -218,8 +218,8 @@
           "ja": "秘密情報の中には、ホームフォルダにあって、どのプロジェクトでも使えるものがあります。`~/.ssh` には SSH キー（ほかのコンピュータにログインするための鍵）が入っていて、あなたのサーバーや GitHub に入れます。`~/.aws` には、お金を使えてしまうクラウドのログイン情報が入っています。"
         },
         {
-          "en": "`~/.zshrc` (your terminal settings) often has tokens pasted into it. `~/.npmrc` and `~/.config` keep logins for developer tools. `~/Library/Application Support/Google/Chrome` holds your browser's cookies, which keep you signed in to sites.",
-          "ja": "`~/.zshrc`（ターミナルの設定）には、トークンが貼り付けられていることがよくあります。`~/.npmrc` や `~/.config` には、開発ツールのログイン情報が保存されています。`~/Library/Application Support/Google/Chrome` には、サイトにログインしたままにしておくためのブラウザの Cookie が入っています。"
+          "en": "`~/.zshrc` (your terminal settings) often has tokens pasted into it, as environment variables: named settings that every command you start, Claude's included, can read. `~/.npmrc` and `~/.config` keep logins for developer tools. `~/Library/Application Support/Google/Chrome` holds your browser's cookies, which keep you signed in to sites.",
+          "ja": "`~/.zshrc`（ターミナルの設定）には、トークンが環境変数として貼り付けられていることがよくあります。環境変数とは、あなたが起動するどのコマンドからも（Claude のものも含めて）読める名前付きの設定です。`~/.npmrc` や `~/.config` には、開発ツールのログイン情報が保存されています。`~/Library/Application Support/Google/Chrome` には、サイトにログインしたままにしておくためのブラウザの Cookie が入っています。"
         }
       ],
       "key": {
@@ -249,8 +249,8 @@
               {
                 "text": "export PATH=\"$HOME/bin:$PATH\"",
                 "note": {
-                  "en": "A normal setting",
-                  "ja": "ふつうの設定"
+                  "en": "export sets an environment variable: a named setting every program you start can read",
+                  "ja": "export は環境変数を設定する。環境変数とは、起動したどのプログラムからも読める名前付きの設定"
                 }
               },
               {
@@ -269,8 +269,8 @@
               {
                 "text": "GITHUB_TOKEN=ghp_FAKE_7d2e90...",
                 "note": {
-                  "en": "The same key, now in every terminal you open",
-                  "ja": "同じキーが、開いたすべてのターミナルに入っている"
+                  "en": "env lists every environment variable; | (pipe) hands that list to grep TOKEN, which keeps only lines with TOKEN. The key is in every terminal you open",
+                  "ja": "env はすべての環境変数を表示し、|（パイプ）がその一覧を grep TOKEN に渡し、TOKEN を含む行だけが残る。キーは開いたすべてのターミナルに入っている"
                 },
                 "secret": true
               }
@@ -347,8 +347,8 @@
           "ja": "Claude Code は、自分のファイルをホームの隠しフォルダ `~/.claude/` に置いています。設定、スキル（作業ごとに保存された手順）、メモリ、そしてすべての会話です。会話は1つずつ、`~/.claude/projects/` の下にプレーンテキスト（暗号化されていない、ただの文字）のファイルとして保存されます。中身は、すべてのメッセージ、Claude が読んだすべてのファイル、すべてのコマンドの出力です。"
         },
         {
-          "en": "`~/.claude.json` holds your sign-in, MCP servers (add-ons that connect Claude to other apps), and the folders you trusted. A project's own `.claude/` folder holds settings and skills shared with its team.",
-          "ja": "`~/.claude.json` には、ログイン情報、MCP サーバー（Claude をほかのアプリにつなぐ追加機能）、信頼したフォルダの記録が入っています。プロジェクトの中の `.claude/` フォルダには、そのプロジェクトのチームで共有する設定やスキルが入っています。"
+          "en": "`~/.claude.json` holds your sign-in, MCP servers (add-ons that connect Claude to other apps), and the folders you trusted. A project's own `.claude/` folder holds settings, skills and helper agents shared with its team.",
+          "ja": "`~/.claude.json` には、ログイン情報、MCP サーバー（Claude をほかのアプリにつなぐ追加機能）、信頼したフォルダの記録が入っています。プロジェクトの中の `.claude/` フォルダには、そのプロジェクトのチームで共有する設定、スキル、補助エージェントが入っています。"
         }
       ],
       "key": {
@@ -389,8 +389,8 @@
               {
                 "text": "-Users-you-portfolio  -Users-you-recipes",
                 "note": {
-                  "en": "One folder per project: the project's path, with each / turned into -",
-                  "ja": "プロジェクトごとに1フォルダ。名前はパスの / を - に変えたもの"
+                  "en": "One folder per project: the project's path, with each / (and other symbols) turned into -",
+                  "ja": "プロジェクトごとに1フォルダ。名前はパスの / などの記号を - に変えたもの"
                 }
               }
             ]
@@ -443,12 +443,12 @@
         },
         "body": [
           {
-            "en": "By default, Claude Code deletes conversation files after 30 days (the `cleanupPeriodDays` setting). Conversations from the desktop app are kept until you delete them. The files aren't encrypted: your Mac's file permissions are the only lock, so any program running as you can read them.",
-            "ja": "Claude Code は、標準では30日たった会話ファイルを削除します（`cleanupPeriodDays` という設定）。デスクトップアプリの会話は、あなたが削除するまで残ります。ファイルは暗号化されていません。守っているのは Mac のファイルのアクセス権だけなので、あなたとして動くプログラムなら何でも読めます。"
+            "en": "By default, Claude Code deletes conversation files after 30 days (the `cleanupPeriodDays` setting). By default, conversations from the desktop app are kept until you delete them. The files aren't encrypted: your Mac's file permissions are the only lock, so any program running as you can read them.",
+            "ja": "Claude Code は、標準では30日たった会話ファイルを削除します（`cleanupPeriodDays` という設定）。デスクトップアプリの会話は、標準ではあなたが削除するまで残ります。ファイルは暗号化されていません。守っているのは Mac のファイルのアクセス権だけなので、あなたとして動くプログラムなら何でも読めます。"
           },
           {
-            "en": "`claude purge` deletes what Claude Code keeps for one project. Better still, never paste a secret into the chat. If one got in, treat it as leaked: replace the key.",
-            "ja": "`claude purge` を使うと、1つのプロジェクトについて Claude Code が保存しているものを削除できます。それよりも、秘密情報をチャットに貼り付けないことがいちばんです。入ってしまったら、漏れたものとして扱い、キーを新しいものに取り替えましょう。"
+            "en": "`claude purge` deletes most of what Claude Code keeps for one project, including its saved conversations. Better still, never paste a secret into the chat. If one got in, treat it as leaked: replace the key.",
+            "ja": "`claude purge` を使うと、1つのプロジェクトについて Claude Code が保存しているもののほとんど（保存された会話を含む）を削除できます。それよりも、秘密情報をチャットに貼り付けないことがいちばんです。入ってしまったら、漏れたものとして扱い、キーを新しいものに取り替えましょう。"
           }
         ]
       },
@@ -1058,8 +1058,8 @@
           },
           "leftMono": true,
           "right": {
-            "en": "Settings and skills shared with everyone on the project",
-            "ja": "プロジェクトのメンバー全員で共有する設定やスキル"
+            "en": "Settings, skills and agents shared with everyone on the project",
+            "ja": "プロジェクトのメンバー全員で共有する設定、スキル、エージェント"
           }
         }
       ],
@@ -1094,12 +1094,12 @@
       "opts": [
         {
           "text": {
-            "en": "The name of last week's conversation file",
-            "ja": "先週の会話のファイル名"
+            "en": "The path of last week's conversation file",
+            "ja": "先週の会話のファイルのパス"
           },
           "feedback": {
-            "en": "Right. The conversation, your key included, is still on disk in plain text. `-l` makes `grep` print only the names of the files that match.",
-            "ja": "正解です。会話はキーも含めて、プレーンテキストのままディスクに残っています。`-l` を付けると、`grep` は一致したファイルの名前だけを表示します。"
+            "en": "Right. The conversation, your key included, is still on disk in plain text. `-l` makes `grep` print only the paths of the files that match.",
+            "ja": "正解です。会話はキーも含めて、プレーンテキストのままディスクに残っています。`-l` を付けると、`grep` は一致したファイルのパスだけを表示します。"
           }
         },
         {
