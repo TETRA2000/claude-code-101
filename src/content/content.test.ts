@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { content } from './index';
 import { validateContent } from './validate';
+import { choicesOf } from './approve';
 import type { ApproveItem, AutoModeItem, ChainItem, ChoiceItem, HiddenItem, RuleItem } from './types';
 
 describe('content', () => {
@@ -27,7 +28,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['extensions', 'mcp', 'installing', 'sandboxes', 'boss']) {
+    for (const key of ['extensions', 'installing', 'sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -247,6 +248,40 @@ describe('unit 6: powers', () => {
       ),
     ];
     expect(envText.some((t) => /\$[A-Z_]+|`env`|^env\b/.test(t))).toBe(true);
+  });
+});
+
+describe('unit 7: mcp', () => {
+  it('is ready, with at least 3 scopes, 2 poisoned and 3 approve items', () => {
+    expect(content.unitByKey('mcp')?.status).toBe('ready');
+    const items = content.bodyOf('mcp')?.items ?? [];
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('scopes')).toBeGreaterThanOrEqual(3);
+    expect(count('poisoned')).toBeGreaterThanOrEqual(2);
+    expect(count('approve')).toBeGreaterThanOrEqual(3);
+    const scopes = items.filter((it): it is ChoiceItem => it.type === 'scopes');
+    expect(scopes.every((it) => (it.panel?.lines.length ?? 0) > 0)).toBe(true);
+    const poisoned = items.filter((it): it is HiddenItem => it.type === 'poisoned');
+    expect(poisoned.every((it) => it.source === 'tools')).toBe(true);
+  });
+
+  it('never offers or accepts auto on its MCP tool prompts', () => {
+    const approves = (content.bodyOf('mcp')?.items ?? []).filter((it): it is ApproveItem => it.type === 'approve');
+    for (const it of approves) {
+      expect(choicesOf(it), it.id).not.toContain('auto');
+      expect(it.accept, it.id).not.toContain('auto');
+      expect(it.tool, it.id).toMatch(/^mcp__/);
+    }
+  });
+
+  it('has a Try it card whose steps mention claude mcp list and /mcp', () => {
+    const cards = content.bodyOf('mcp')?.cards ?? [];
+    const tryCard = cards.find((c) => {
+      const steps = [...(c.try?.terminal ?? []), ...(c.try?.desktop ?? [])];
+      const text = steps.map((s) => `${s.code ?? ''} ${s.text.en}`).join('\n');
+      return text.includes('claude mcp list') && text.includes('/mcp');
+    });
+    expect(tryCard).toBeDefined();
   });
 });
 

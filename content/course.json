@@ -422,7 +422,7 @@
   },
   {
     "key": "mcp",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "MCP servers",
       "ja": "MCP サーバー"
@@ -433,8 +433,63 @@
     },
     "chips": [
       "scopes",
-      "poisoned"
-    ]
+      "poisoned",
+      "approve",
+      "predict",
+      "setup"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "mcp-quickstart"
+        },
+        "note": {
+          "en": "Read this if you want to add your first server step by step and see where its setup is saved.",
+          "ja": "最初のサーバーを手順どおりに追加し、その設定がどこに保存されるかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want the full reference: scopes, logins, project approvals, connectors and output limits.",
+          "ja": "スコープ、ログイン、プロジェクトの承認、コネクタ、出力の上限まで、すべてを網羅したリファレンスを読みたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "mcp-security"
+        },
+        "note": {
+          "en": "Read this if you want to know what Anthropic does and doesn't check about MCP servers.",
+          "ja": "MCP サーバーについて、Anthropic が何を確認していて、何を確認していないのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want to write allow, ask or deny rules for one MCP tool or a whole server.",
+          "ja": "MCP のツール1つ、またはサーバー全体に対して、allow・ask・deny のルールを書きたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop",
+          "anchor": "connect-external-tools"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app and want to add or disconnect connectors there.",
+          "ja": "デスクトップアプリを使っていて、そこでコネクタを追加したり接続を解除したりしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "extensions",
