@@ -12,7 +12,8 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 /**
  * A bare hostname with no scheme (`collect.example`, `*.evil.example`, `api.example.com:443`): 2+ lowercase labels
  * ending in a 2+ letter label. Not matched: part of a longer word or path label, a dotted key followed by `:`
- * (`"sandbox.network": …`, `scripts.postinstall: …`), and file names (see FILE_EXTS).
+ * (`"sandbox.network": …`, `scripts.postinstall: …`), file names (see FILE_EXTS), and names whose last label is
+ * not a known top-level domain (see HOST_TLDS), so settings keys like `sandbox.credentials` pass.
  */
 const BARE_HOST = /(?<![\w.-])(?:\*\.)?((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,})(?![\w-]|\.[\w-]|["']?\s*:(?!\d))/g;
 /** Last labels that mean a file name, not a host (`settings.json`, `CLAUDE.md`, `history.jsonl`). */
@@ -22,9 +23,18 @@ export const FILE_EXTS: ReadonlySet<string> = new Set(
     'xlsx xls docx pptx wasm exe dmg pkg deb rpm whl map').split(' '),
 );
 
+/** Last labels treated as a host's top-level domain: the reserved ones plus common real ones. */
+export const HOST_TLDS: ReadonlySet<string> = new Set(
+  ('example test invalid localhost com net org io dev app ai co me info biz xyz site online tech cloud page ' +
+    'us uk jp de fr cn ru in br au ca eu nl se no es it ch kr tw hk sg nz ly gg to tv cc').split(' '),
+);
+
 /** Hosts written without a scheme in `s`, wildcards stripped (`*.collect.example` → `collect.example`). */
 export function bareHosts(s: string): string[] {
-  return [...s.matchAll(BARE_HOST)].map((m) => m[1] ?? '').filter((h) => !FILE_EXTS.has(h.slice(h.lastIndexOf('.') + 1)));
+  return [...s.matchAll(BARE_HOST)].map((m) => m[1] ?? '').filter((h) => {
+    const tld = h.slice(h.lastIndexOf('.') + 1);
+    return HOST_TLDS.has(tld) && !FILE_EXTS.has(tld);
+  });
 }
 
 /** Calls `fn` for every string reachable from `v`, with its dotted path. */

@@ -695,6 +695,7 @@ describe('validateContent', () => {
         'scripts.postinstall: node setup.js',
         '"sandbox.network": { "allowedDomains": [] }',
         'sandbox.network.allowedDomains',
+        '`sandbox.credentials` and permissions.defaultMode',
         'Node.js 22 and v2.1.283',
       ])('allows %j', (line) => {
         expect(panelLine(line)).toEqual([]);
