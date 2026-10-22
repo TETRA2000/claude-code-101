@@ -218,13 +218,14 @@
       "ja": "プロンプトインジェクション"
     },
     "blurb": {
-      "en": "Where injections hide, invisible text, warning signs, persistence via CLAUDE.md, and what to do.",
-      "ja": "インジェクションの隠れ場所、見えない文字、警告のサイン、CLAUDE.md に居座る手口、そして取るべき行動。"
+      "en": "Where injections hide, invisible text, what each tool hands Claude, warning signs, persistence via CLAUDE.md and memory, Claude Code's safeguards, and what to do.",
+      "ja": "インジェクションの隠れ場所、見えない文字、ツールごとに Claude に渡るもの、警告のサイン、CLAUDE.md やメモリに居座る手口、Claude Code の守り、そして取るべき行動。"
     },
     "chips": [
       "hidden",
       "chain",
-      "approve"
+      "approve",
+      "predict"
     ],
     "lastChecked": "2026-10-22",
     "docs": [
@@ -253,8 +254,8 @@
           "slug": "memory"
         },
         "note": {
-          "en": "Read this if you want to know which memory files Claude trusts and loads at startup.",
-          "ja": "Claude がどのメモリファイルを読み込み、信頼するのかを知りたいとき。"
+          "en": "Read this if you want to know which CLAUDE.md and auto memory files load each session, and how to read or edit them.",
+          "ja": "毎回のセッションでどの CLAUDE.md と自動メモリのファイルが読み込まれるのか、それをどう読んで編集するのかを知りたいとき。"
         }
       },
       {
@@ -264,6 +265,16 @@
         "note": {
           "en": "Read this if you connect MCP servers and want the security warning about untrusted ones.",
           "ja": "MCP サーバーをつなぐ前に、信頼できないサーバーについての注意を読みたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sub-agents",
+          "anchor": "subagent-output-scanning"
+        },
+        "note": {
+          "en": "Read this if you use subagents and want to know how their reports are checked before Claude reads them.",
+          "ja": "サブエージェントを使っていて、その報告が Claude に読まれる前にどう調べられるのかを知りたいとき。"
         }
       }
     ],

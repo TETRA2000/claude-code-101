@@ -139,6 +139,20 @@ describe('unit 4: injection', () => {
     expect(chains.some((it) => it.steps.at(-1)?.target.endsWith('CLAUDE.md'))).toBe(true);
     expect(items.filter((it) => it.type === 'approve').length).toBeGreaterThanOrEqual(2);
   });
+
+  it('has 5–7 cards and 11–14 items, the context demo, and a Try it card for /memory', () => {
+    const body = content.bodyOf('injection');
+    const nc = body?.cards.length ?? 0;
+    const ni = body?.items.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(5);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(ni).toBeGreaterThanOrEqual(11);
+    expect(ni).toBeLessThanOrEqual(14);
+    expect(body?.cards.some((c) => c.demo?.kind === 'context')).toBe(true);
+    expect(body?.cards.some((c) => c.try?.terminal.some((s) => s.code === '/memory'))).toBe(true);
+    const hidden = (body?.items ?? []).filter((it): it is HiddenItem => it.type === 'hidden');
+    expect(hidden.some((it) => it.location.startsWith('mcp__'))).toBe(true);
+  });
 });
 
 describe('unit 5: browser', () => {
