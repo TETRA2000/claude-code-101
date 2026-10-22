@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, AutoModeItem, RuleItem, SettingsItem, UnitBody } from './types';
-import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
+import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -341,6 +341,36 @@ describe('validateContent', () => {
 
   it('13: allows a fake secret', () => {
     expect(mutated((p) => void (item<DecodeItem>(p, 'demo-decode').command = 'export KEY=ghp_FAKE_abc123'))).toEqual([]);
+  });
+
+  it('14: pins the revision 2 size rules', () => {
+    expect([CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS]).toEqual([[4, 7], [10, 14], 100]);
+  });
+
+  it('14: flags a ready unit with 3 cards', () => {
+    expect(mutated((p) => void p.bodies.demo!.cards.splice(3))).toEqual(['demo: ready unit needs 4–7 cards, has 3']);
+  });
+
+  it('14: flags a ready unit with 9 items', () => {
+    expect(mutated((p) => void p.bodies.demo!.items.splice(9))).toEqual(['demo: ready unit needs 10–14 items, has 9']);
+  });
+
+  it('14: flags a card whose English body and key run over the word cap', () => {
+    const words = (n: number) => Array.from({ length: n }, () => 'word').join(' ');
+    const card = (p: Parts) => p.bodies.demo!.cards[0]!;
+    const at = (n: number) =>
+      mutated((p) => {
+        const c = card(p);
+        c.body = [{ en: words(n - 3), ja: '本文' }];
+        c.key = { en: words(3), ja: '要点' };
+      });
+    expect(at(MAX_CARD_WORDS)).toEqual([]);
+    expectOne(at(MAX_CARD_WORDS + 1), 'card over 100 words');
+  });
+
+  it('14: does not count try or deep text toward the word cap', () => {
+    const words = Array.from({ length: 150 }, () => 'word').join(' ');
+    expect(mutated((p) => void (p.bodies.demo!.cards[0]!.deep = { title: { en: 'More', ja: 'もっと' }, body: [{ en: words, ja: '深掘り' }] }))).toEqual([]);
   });
 
   it('14: flags a ready unit with too few cards', () => {

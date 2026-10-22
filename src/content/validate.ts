@@ -343,9 +343,14 @@ function checkItem(it: Item, unitKey: string): string[] {
 
 export const DOCS_RANGE = [3, 8] as const;
 
-/** Transitional size ranges for ready units. */
-export const CARD_RANGE = [3, 7] as const;
-export const ITEM_RANGE = [8, 14] as const;
+/** Size rules for ready units (revision 2). */
+export const CARD_RANGE = [4, 7] as const;
+export const ITEM_RANGE = [10, 14] as const;
+/** Most English words in a card's `body` plus `key` (`try` and `deep` are not counted). */
+export const MAX_CARD_WORDS = 100;
+
+const wordCount = (s: string) => s.split(/\s+/).filter(Boolean).length;
+const cardWords = (c: Card) => [...c.body, ...(c.key ? [c.key] : [])].reduce((n, l) => n + wordCount(l.en ?? ''), 0);
 
 /** Returns every problem found; an empty array means the content is valid. */
 export function validateContent(c: Content): string[] {
@@ -382,6 +387,8 @@ export function validateContent(c: Content): string[] {
 
     for (const card of body.cards) {
       checkText(`${u.key}/${card.id}`, card, [], out);
+      const words = cardWords(card);
+      if (words > MAX_CARD_WORDS) out.push(`${u.key}/${card.id}: card over ${MAX_CARD_WORDS} words, has ${words}`);
       if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
       for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'modes') for (const msg of checkModesDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
