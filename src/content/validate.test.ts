@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, UnitBody } from './types';
-import { ITEM_RANGE, validateContent } from './validate';
+import { CARD_RANGE, ITEM_RANGE, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -187,7 +187,10 @@ describe('validateContent', () => {
   });
 
   it('14: flags a ready unit with too few cards', () => {
-    expectOne(mutated((p) => void p.bodies.demo!.cards.pop()), 'demo');
+    expectOne(
+      mutated((p) => void p.bodies.demo!.cards.splice(CARD_RANGE[0] - 1)),
+      'demo',
+    );
   });
 
   it('14: flags a ready unit with too many items', () => {

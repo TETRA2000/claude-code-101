@@ -103,13 +103,16 @@ describe('suggestedUnit', () => {
   });
 
   it('old progress keys still apply', () => {
-    const keys = ['computer', 'lockdown'];
+    const keys = ['computer', 'agent', 'lockdown'];
     const units: UnitMeta[] = keys.map((k) => ({ ...demoUnit, key: k, status: 'ready' }));
     const c = createContent(units, fixtureParts.types, {});
-    const p: Progress = { ...empty, practiced: { computer: true, lockdown: true } };
-    expect(suggestedUnit(c, p)).toBeNull();
-    const soonLock = createContent([units[0]!, { ...units[1]!, status: 'soon' }], fixtureParts.types, {});
-    expect(suggestedUnit(soonLock, p)).toBeNull();
-    expect(p.practiced.lockdown).toBe(true);
+    const old: Progress = { ...empty, practiced: { computer: true, lockdown: true } };
+    // computer is treated as done: the suggestion skips it
+    expect(suggestedUnit(c, old)?.key).toBe('agent');
+    // lockdown's flag survives a reducer round-trip
+    const r = appReducer(c);
+    const after = r(initState(old, ['en-US']), { type: 'completePractice', unitKey: 'agent', xp: 10 });
+    expect(after.progress.practiced).toEqual({ computer: true, lockdown: true, agent: true });
+    expect(suggestedUnit(c, after.progress)).toBeNull();
   });
 });
