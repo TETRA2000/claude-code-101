@@ -67,6 +67,8 @@ export interface UiStrings {
   perfectRun: string;
   retriedNote: string;
   backToHome: string;
+  loadingUnit: string;
+  loadFailed: string;
   keyIdea: string;
   learnMore: string;
   officialDocs: string;
@@ -227,6 +229,8 @@ const en: UiStrings = {
   perfectRun: 'Perfect run: every answer right on the first try.',
   retriedNote: 'Missed questions came back until you got them. That is the point.',
   backToHome: 'Back to home',
+  loadingUnit: 'Loading the unit…',
+  loadFailed: 'This unit did not load. Check your connection and try again.',
   keyIdea: 'Key idea',
   learnMore: 'Learn more',
   officialDocs: 'Official docs',
@@ -391,6 +395,8 @@ const ja: UiStrings = {
   perfectRun: 'パーフェクト！すべて一回で正解しました。',
   retriedNote: '間違えた問題は、正解するまで戻ってきます。それが狙いです。',
   backToHome: 'ホームへ戻る',
+  loadingUnit: 'ユニットを読み込んでいます…',
+  loadFailed: 'ユニットを読み込めませんでした。接続を確認して、もう一度お試しください。',
   keyIdea: 'ポイント',
   learnMore: 'もっと詳しく',
   officialDocs: '公式ドキュメント',
