@@ -102,6 +102,27 @@ describe('unit 3: permissions', () => {
     expect(approves.some((it) => it.accept.join() === 'yes,always')).toBe(true);
     expect(approves.some((it) => it.accept.join() === 'yes')).toBe(true);
   });
+
+  it('has 4–7 cards and 10–14 items, a modes demo, two Try it cards, and a one-time-only prompt', () => {
+    const body = content.bodyOf('permissions');
+    const nc = body?.cards.length ?? 0;
+    const ni = body?.items.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(4);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(ni).toBeGreaterThanOrEqual(10);
+    expect(ni).toBeLessThanOrEqual(14);
+    expect(body?.cards.some((c) => c.demo?.kind === 'modes')).toBe(true);
+    expect(body?.cards.some((c) => c.demo?.kind === 'anatomy')).toBe(true);
+    const tries = (body?.cards ?? []).filter((c) => c.try);
+    expect(tries.length).toBeGreaterThanOrEqual(2);
+    expect(tries.some((c) => c.try?.terminal.some((s) => s.code?.includes('"defaultMode": "manual"') && s.copy))).toBe(true);
+    expect(tries.some((c) => c.try?.terminal.some((s) => s.code === '/permissions'))).toBe(true);
+    const approves = (body?.items ?? []).filter((it): it is ApproveItem => it.type === 'approve');
+    expect(approves.some((it) => it.choices?.join() === 'yes,no')).toBe(true);
+    expect(approves.some((it) => /\.zshrc|\.mcp\.json/.test(it.target))).toBe(true);
+    expect(body?.items.some((it) => it.type === 'decode')).toBe(true);
+    expect(body?.items.some((it) => it.type === 'setup')).toBe(true);
+  });
 });
 
 describe('unit 4: injection', () => {

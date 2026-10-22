@@ -150,8 +150,8 @@
       "ja": "許可プロンプト"
     },
     "blurb": {
-      "en": "Read the prompt before you say yes: the three answers, permission modes, red flags, and permission fatigue.",
-      "ja": "「はい」の前にプロンプトを読む。3つの答え方、許可モード、危険のサイン、そして確認疲れ。"
+      "en": "Read the prompt before you say yes: the four answers, saved rules, what never asks, permission modes, protected files and workspace trust.",
+      "ja": "「はい」の前にプロンプトを読む。4つの答え方、保存されるルール、確認されないもの、許可モード、保護されたファイル、フォルダの信頼。"
     },
     "chips": [
       "approve",
@@ -184,8 +184,8 @@
           "anchor": "protected-paths"
         },
         "note": {
-          "en": "Read this if you want to know which folders and files stay protected in every mode.",
-          "ja": "どのモードでも守られるフォルダやファイルを知りたいとき。"
+          "en": "Read this if you want the full list of protected files and the paths no rule can approve deleting.",
+          "ja": "保護されたファイルの一覧と、どんなルールでも削除を許可できないパスを知りたいとき。"
         }
       },
       {
@@ -193,8 +193,8 @@
           "slug": "security"
         },
         "note": {
-          "en": "Read this if you want the big picture of how Claude Code keeps you safe.",
-          "ja": "Claude Code がどのように安全を守るのか、全体像を知りたいとき。"
+          "en": "Read this if you want the big picture of how Claude Code keeps you safe, including workspace trust.",
+          "ja": "フォルダの信頼の確認も含め、Claude Code がどのように安全を守るのか、全体像を知りたいとき。"
         }
       },
       {
