@@ -236,7 +236,17 @@ describe('unit 6: powers', () => {
     const texts = [...(body?.cards ?? []), ...(body?.items ?? [])].map((x) => JSON.stringify(x));
     expect(texts.some((t) => t.includes('sudo'))).toBe(true);
     expect(texts.some((t) => t.includes('chmod 777'))).toBe(true);
-    expect(texts.some((t) => /\benv\b|\$[A-Z_]+/.test(t))).toBe(true);
+    // Learner-facing text and code only (card bodies, demo commands, item commands/code), not doc links like `env-vars`.
+    const envText = [
+      ...(body?.cards ?? []).flatMap((c) => [
+        ...c.body.map((b) => b.en),
+        ...(c.demo?.kind === 'terminal' ? c.demo.commands.map((cmd) => cmd.cmd) : []),
+      ]),
+      ...(body?.items ?? []).flatMap((it) =>
+        it.type === 'decode' ? [it.command] : it.type === 'predict' ? it.code : it.type === 'approve' ? [it.target] : [],
+      ),
+    ];
+    expect(envText.some((t) => /\$[A-Z_]+|`env`|^env\b/.test(t))).toBe(true);
   });
 });
 

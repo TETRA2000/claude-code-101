@@ -85,7 +85,7 @@
         },
         {
           "en": "`chmod 777` means everyone may read, write and run it. That \"fixes\" every permission error by switching the lock off. On `~/.ssh` (your login keys) or a secrets file, it lets every account and service on the machine read them.",
-          "ja": "`chmod 777` は「全員が読み書き・実行できる」という意味です。鍵そのものを外してしまうことで、どんな権限エラーも「直して」しまいます。`~/.ssh`（ログイン用の鍵）や秘密情報のファイルに使うと、そのマシン上のすべてのアカウントやサービスが読めるようになります。"
+          "ja": "`chmod 777` は「全員が読み書き・実行できる」という意味です。ロックそのものを外してしまうことで、どんな権限エラーも「直して」しまいます。`~/.ssh`（ログイン用の鍵）や秘密情報のファイルに使うと、そのマシン上のすべてのアカウントやサービスが読めるようになります。"
         }
       ],
       "key": {
@@ -180,8 +180,8 @@
           "ja": "Claude Code のサンドボックス（Claude が実行するコマンドを囲む柵）は、ファイルとネットワークを制限します。それでも、そこで動くコマンドは、あなたが取り除かない限り、秘密情報も含めて環境変数を引き継ぎます。"
         },
         {
-          "en": "`sandbox.credentials.envVars` lists the ones to remove: a `deny` entry unsets that variable before each sandboxed command. Nothing is removed unless you list it. To strip secrets from every command Claude Code starts, sandboxed or not, set `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1`.",
-          "ja": "`sandbox.credentials.envVars` に、取り除く変数を並べます。`deny` の項目は、サンドボックス内のコマンドを実行するたびに、その前にその変数を消します。書いていないものは何も消されません。サンドボックスの中か外かに関係なく、Claude Code が起動するすべてのコマンドから秘密情報を取り除くには、`CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` を設定します。"
+          "en": "`sandbox.credentials.envVars` lists the ones to remove: a `deny` entry unsets that variable before each sandboxed command. Nothing is removed unless you list it. `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` strips most credentials from every command Claude Code starts, sandboxed or not. It keeps GitHub tokens, so list `GITHUB_TOKEN` yourself.",
+          "ja": "`sandbox.credentials.envVars` に、取り除く変数を並べます。`deny` の項目は、サンドボックス内のコマンドを実行するたびに、その前にその変数を消します。書いていないものは何も消されません。`CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` を設定すると、サンドボックスの中か外かに関係なく、Claude Code が起動するすべてのコマンドから、ほとんどの認証情報が取り除かれます。ただし GitHub のトークンは残るので、`GITHUB_TOKEN` は自分で書き出しましょう。"
         }
       ],
       "key": {
@@ -423,7 +423,7 @@
       "answer": 0,
       "explain": {
         "en": "`chmod 777` gives everyone everything. It silences permission errors by removing the lock, which is why it's a red flag in any suggested fix.",
-        "ja": "`chmod 777` は全員にすべての権限を与えます。鍵を外すことで権限エラーを黙らせるので、提案された修正にこれが入っていたら危険信号です。"
+        "ja": "`chmod 777` は全員にすべての権限を与えます。ロックを外すことで権限エラーを黙らせるので、提案された修正にこれが入っていたら危険信号です。"
       }
     },
     {
@@ -724,7 +724,7 @@
         "no": {
           "feedback": {
             "en": "Right. 777 removes the lock instead of finding the problem. Ask Claude to check which key is loaded and whether the server knows it; private keys should stay `600`.",
-            "ja": "その通りです。777 は問題を探す代わりに鍵を外してしまいます。どの鍵が読み込まれているか、サーバーがその鍵を知っているかを Claude に確認してもらいましょう。秘密鍵は `600` のままにしておくべきです。"
+            "ja": "その通りです。777 は問題を探す代わりにロックを外してしまいます。どの鍵が読み込まれているか、サーバーがその鍵を知っているかを Claude に確認してもらいましょう。秘密鍵は `600` のままにしておくべきです。"
           }
         }
       }
