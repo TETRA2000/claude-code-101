@@ -37,8 +37,8 @@
           "ja": "`SKILL.md` の先頭の数行（フロントマター）は、説明を書くだけの場所ではありません。"
         },
         {
-          "en": "`allowed-tools` pre-approves tools: while the skill runs, Claude uses them without asking you, until you send your next message. A line like `` !`git diff HEAD` `` runs a command before Claude even sees the skill and pastes in its output. A `hooks` field registers hooks that keep running for the rest of the session.",
-          "ja": "`allowed-tools` はツールを事前に許可します。スキルが動いている間、あなたが次のメッセージを送るまで、Claude はそのツールを確認なしで使えます。`` !`git diff HEAD` `` のような行は、Claude がスキルを読むより前にコマンドを実行し、その出力を貼り込みます。`hooks` の項目はフックを登録し、そのフックはセッションが終わるまで動き続けます。"
+          "en": "`allowed-tools` pre-approves tools: while the skill runs, Claude uses them without asking you, until you send your next message. A line like `` !`git diff HEAD` `` runs a command before Claude even sees the skill. A `hooks` field registers hooks that keep running for the rest of the session.",
+          "ja": "`allowed-tools` はツールを事前に許可します。スキルが動いている間、あなたが次のメッセージを送るまで、Claude はそのツールを確認なしで使えます。`` !`git diff HEAD` `` のような行は、Claude がスキルを読むより前にコマンドを実行します。`hooks` の項目はフックを登録し、そのフックはセッションが終わるまで動き続けます。"
         }
       ],
       "key": {
@@ -56,8 +56,8 @@
             "ja": "`!` のコマンドは、あなたに確認を表示しません。代わりに Claude Code がまず許可ルールと照らし合わせ、deny ルールに当たればスキル全体が止まります。"
           },
           {
-            "en": "Outside auto mode, a command that would need your approval also stops the skill, unless the skill's own `allowed-tools` pre-approves it. So `allowed-tools` plus a `!` line means a command that runs without anyone asking you.",
-            "ja": "auto モード以外では、あなたの承認が必要なコマンドもスキルを止めます。ただし、そのスキル自身の `allowed-tools` が事前に許可していれば別です。つまり `allowed-tools` と `!` の行がそろうと、誰にも確認されずに動くコマンドになります。"
+            "en": "Outside auto mode, a command that would need your approval also stops the skill, unless the skill's own `allowed-tools` pre-approves it (deny and ask rules still beat `allowed-tools`). So `allowed-tools` plus a `!` line means a command that runs without anyone asking you.",
+            "ja": "auto モード以外では、あなたの承認が必要なコマンドもスキルを止めます。ただし、そのスキル自身の `allowed-tools` が事前に許可していれば別です（deny と ask のルールは `allowed-tools` より優先されます）。つまり `allowed-tools` と `!` の行がそろうと、誰にも確認されずに動くコマンドになります。"
           }
         ]
       },
@@ -124,8 +124,8 @@
       },
       "body": [
         {
-          "en": "A subagent is a helper Claude hands a side task to. It works in its own context and sends back only a summary. Its file can limit its tools: `tools` lists the ones it may use, `disallowedTools` the ones it may not.",
-          "ja": "サブエージェントは、Claude が脇の作業を任せる助っ人です。自分専用のコンテキストで作業し、要約だけを返します。ファイルで道具を絞れます。`tools` には使ってよいツールを、`disallowedTools` には使ってはいけないツールを書きます。"
+          "en": "A subagent is a helper that works in its own context and sends back only a summary. Its file can limit its tools: `tools` lists the ones it may use, `disallowedTools` the ones it may not.",
+          "ja": "サブエージェントは、自分専用のコンテキストで作業し、要約だけを返す助っ人です。ファイルで道具を絞れます。`tools` には使ってよいツールを、`disallowedTools` には使ってはいけないツールを書きます。"
         },
         {
           "en": "If your session is in Bypass permissions, Accept edits or auto mode, the subagent runs in that mode too, whatever its file says. Claude Code scans its report for instruction-like text, but the scan doesn't judge intent.",
@@ -232,8 +232,8 @@
           },
           {
             "text": {
-              "en": "Before you choose, read the plugin's files as on the Terminal tab: `hooks/hooks.json`, `.mcp.json` and `bin/`. The desktop docs don't describe a **Will install** list.",
-              "ja": "選ぶ前に、ターミナルのタブと同じようにプラグインのファイルを読みます。`hooks/hooks.json`、`.mcp.json`、`bin/` です。デスクトップ版のドキュメントには **Will install** の一覧の説明がありません。"
+              "en": "Before you choose, open the marketplace's repository and find the plugin's folder there. Read `hooks/hooks.json`, `.mcp.json` and every file in `bin/`. The desktop docs don't describe a **Will install** list.",
+              "ja": "選ぶ前に、マーケットプレイスのリポジトリを開き、その中でプラグインのフォルダを探します。`hooks/hooks.json`、`.mcp.json`、そして `bin/` の中のファイルをすべて読みます。デスクトップ版のドキュメントには **Will install** の一覧の説明がありません。"
             }
           },
           {
@@ -342,8 +342,8 @@
         "ja": "このプラグインは確認済みです。どうインストールしますか？"
       },
       "scenario": {
-        "en": "You want a Markdown tidy-up command, just for yourself, in this one repository. You opened the plugin's details in `/plugin`, and its `bin/` folder is empty.",
-        "ja": "Markdown を整えるコマンドが欲しいと思っています。自分だけ、このリポジトリだけで使うつもりです。`/plugin` でプラグインの詳細を開きました。`bin/` フォルダは空です。"
+        "en": "You want a Markdown tidy-up command, just for yourself, in this one repository. You opened the plugin's details in `/plugin`. Its `bin/` folder holds one script, `md-tidy`, which you read: it only rewrites the file you pass it.",
+        "ja": "Markdown を整えるコマンドが欲しいと思っています。自分だけ、このリポジトリだけで使うつもりです。`/plugin` でプラグインの詳細を開きました。`bin/` フォルダにはスクリプトが1つ、`md-tidy` だけがあり、中身も読みました。渡したファイルを書き直すだけのものです。"
       },
       "panel": {
         "title": "/plugin · md-tidy",
@@ -365,8 +365,8 @@
             "ja": "Install for you, in this repo only (local scope)（自分だけ、このリポジトリだけ）"
           },
           "feedback": {
-            "en": "Right. One skill, no hooks, no servers, and you want it only here. Local scope is exactly that, and it's easy to remove later.",
-            "ja": "正解です。スキルが1つだけで、フックもサーバーもなく、ここでだけ使いたいのですから、ローカルスコープがぴったりです。あとで外すのも簡単です。"
+            "en": "Right. One skill, one script you read, no hooks, no servers, and you want it only here. Local scope is exactly that, and it's easy to remove later.",
+            "ja": "正解です。スキルが1つと読んだスクリプトが1つだけで、フックもサーバーもなく、ここでだけ使いたいのですから、ローカルスコープがぴったりです。あとで外すのも簡単です。"
           }
         },
         {
@@ -395,8 +395,8 @@
             "ja": "インストールしない。プラグインは決して安全ではない"
           },
           "feedback": {
-            "en": "You reviewed it: one Markdown skill, nothing that runs on its own. Refusing everything just pushes people toward installing without looking.",
-            "ja": "もう確認しました。Markdown のスキルが1つだけで、勝手に動くものはありません。何でも断っていると、結局みんな見ずに入れるようになってしまいます。"
+            "en": "You reviewed it: one Markdown skill and one script you read, nothing that runs on its own. Refusing everything just pushes people toward installing without looking.",
+            "ja": "もう確認しました。Markdown のスキルが1つと読んだスクリプトが1つだけで、勝手に動くものはありません。何でも断っていると、結局みんな見ずに入れるようになってしまいます。"
           }
         }
       ],
@@ -404,8 +404,8 @@
         0
       ],
       "explain": {
-        "en": "A reviewed plugin with a single skill is fine to install. Choose the narrowest scope that does what you need: here, local.",
-        "ja": "確認済みでスキルが1つだけのプラグインなら、インストールしてかまいません。必要なことができるいちばん狭いスコープ、ここではローカルを選びましょう。"
+        "en": "A reviewed plugin with one skill and one script you read is fine to install. Choose the narrowest scope that does what you need: here, local.",
+        "ja": "確認済みで、スキルが1つと読んだスクリプトが1つだけのプラグインなら、インストールしてかまいません。必要なことができるいちばん狭いスコープ、ここではローカルを選びましょう。"
       },
       "more": {
         "slug": "plugins/install",
@@ -616,8 +616,8 @@
         "ja": "複製したリポジトリにこのスキルが入っていました。危険な行をタップしましょう。"
       },
       "explain": {
-        "en": "A bare `Bash` pre-approves every shell command while the skill runs, and a project skill's `allowed-tools` applies even before you trust the folder. Sorting imports needs reading and editing files, not any command at all.",
-        "ja": "何も付けない `Bash` は、スキルが動いている間、あらゆるシェルコマンドを事前に許可します。しかも、プロジェクトのスキルの `allowed-tools` は、フォルダを信頼する前から効きます。import の並べ替えに必要なのはファイルの読み書きで、どんなコマンドでも実行できる権限ではありません。"
+        "en": "A bare `Bash` pre-approves every shell command your deny and ask rules don't catch while the skill runs, and a project skill's `allowed-tools` applies even before you trust the folder. Sorting imports needs reading and editing files, not any command at all.",
+        "ja": "何も付けない `Bash` は、スキルが動いている間、deny や ask のルールに当たらないあらゆるシェルコマンドを事前に許可します。しかも、プロジェクトのスキルの `allowed-tools` は、フォルダを信頼する前から効きます。import の並べ替えに必要なのはファイルの読み書きで、どんなコマンドでも実行できる権限ではありません。"
       },
       "file": ".claude/skills/tidy-imports/SKILL.md",
       "scope": "project",
@@ -646,8 +646,8 @@
           "ja": "整理用のスキルなら妥当です。許可もあなたの次のメッセージで終わります。本当の問題はその下です。"
         },
         "6": {
-          "en": "This one: every shell command runs unasked while the skill runs, including ones a planted note could suggest.",
-          "ja": "これです。スキルが動いている間、どんなシェルコマンドも確認なしで動きます。仕込まれたメモが勧めるコマンドも含めてです。"
+          "en": "This one: while the skill runs, every shell command your deny and ask rules don't catch runs unasked, including ones a planted note could suggest.",
+          "ja": "これです。スキルが動いている間、deny や ask のルールに当たらないシェルコマンドはすべて確認なしで動きます。仕込まれたメモが勧めるコマンドも含めてです。"
         }
       },
       "answer": [
@@ -814,8 +814,8 @@
         "ja": "カレンダー用プラグインのサーバー設定です。気になる行をタップしましょう。"
       },
       "explain": {
-        "en": "The `sync` server's command downloads a script and runs it every time the server starts. A plugin's servers run outside the sandbox, as you, and **Will install** names only the server, so you'd never see that script.",
-        "ja": "`sync` サーバーのコマンドは、サーバーが起動するたびにスクリプトをダウンロードして実行します。プラグインのサーバーはサンドボックスの外で、あなたとして動きます。**Will install** に出るのはサーバーの名前だけなので、そのスクリプトをあなたが目にすることはありません。"
+        "en": "The `sync` server's command downloads a script and runs it every time the server starts. A plugin's servers run outside the sandbox, as you, and **Will install** names only the server, not the command it runs, so read `.mcp.json` to see it.",
+        "ja": "`sync` サーバーのコマンドは、サーバーが起動するたびにスクリプトをダウンロードして実行します。プラグインのサーバーはサンドボックスの外で、あなたとして動きます。**Will install** に出るのはサーバーの名前だけで、実行するコマンドまでは出ないので、`.mcp.json` を読んで確かめましょう。"
       },
       "file": ".mcp.json",
       "header": {
