@@ -288,8 +288,8 @@
       "ja": "ブラウザ自動操作"
     },
     "blurb": {
-      "en": "Your logged-in browser, the deadly combo, how data leaves through a browser, and safe setups.",
-      "ja": "ログイン中のブラウザ、危険な組み合わせ、ブラウザ経由でデータが漏れる仕組み、そして安全な環境づくり。"
+      "en": "Claude in Chrome versus the desktop Browser pane, your logged-in browser, the deadly combo, how data leaves, computer use, and safe setups.",
+      "ja": "Claude in Chrome とデスクトップの Browser ペインの違い、ログイン中のブラウザ、危険な組み合わせ、データが出ていく道、コンピューター操作、そして安全な環境づくり。"
     },
     "chips": [
       "chain",
@@ -306,17 +306,18 @@
           "slug": "chrome"
         },
         "note": {
-          "en": "Read this if you want to use Claude Code with your Chrome browser and know what it can see.",
-          "ja": "Chrome ブラウザで Claude Code を使うとき、何が見えるのかを知りたいとき。"
+          "en": "Read this if you use Claude in Chrome and want to know what it can reach, how site permissions work, and which files it won't upload.",
+          "ja": "Claude in Chrome を使っていて、どこまで手が届くのか、サイトの許可のしくみ、アップロードしないファイルを知りたいとき。"
         }
       },
       {
         "ref": {
-          "slug": "desktop"
+          "slug": "desktop",
+          "anchor": "browse-external-sites"
         },
         "note": {
-          "en": "Read this if you use the desktop app's browser pane or computer use.",
-          "ja": "デスクトップアプリのブラウザペインやコンピューター操作を使うとき。"
+          "en": "Read this if you use the desktop app's Browser pane and want its safeguards and site approvals.",
+          "ja": "デスクトップアプリの Browser ペインを使っていて、その守りやサイトごとの許可を知りたいとき。"
         }
       },
       {

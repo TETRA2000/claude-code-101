@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { content } from './index';
 import { validateContent } from './validate';
-import type { ApproveItem, ChainItem, HiddenItem } from './types';
+import type { ApproveItem, ChainItem, ChoiceItem, HiddenItem } from './types';
 
 describe('content', () => {
   it('is valid', () => {
@@ -159,7 +159,7 @@ describe('unit 5: browser', () => {
   const SCENARIOS: Record<string, string[]> = {
     takeover: ['browser-chain-1'],
     cookieDump: ['browser-approve-1'],
-    uploadTrap: ['browser-approve-2'],
+    uploadTrap: ['browser-approve-2', 'browser-combo-2'],
     networkLog: ['browser-approve-3'],
     clickingYes: ['browser-chain-2'],
     screenshotSpill: ['browser-predict-1'],
@@ -181,5 +181,43 @@ describe('unit 5: browser', () => {
     }
     const hiddenText = items.find((it) => it.id === 'browser-hidden-1') as HiddenItem | undefined;
     expect(hiddenText?.source).toBe('web');
+  });
+
+  it('has 6–7 cards and 12–14 items, separate Chrome and Browser pane cards, a computer use card, and both prompt kinds', () => {
+    const body = content.bodyOf('browser');
+    const cards = body?.cards ?? [];
+    const items = body?.items ?? [];
+    expect(cards.length).toBeGreaterThanOrEqual(6);
+    expect(cards.length).toBeLessThanOrEqual(7);
+    expect(items.length).toBeGreaterThanOrEqual(12);
+    expect(items.length).toBeLessThanOrEqual(14);
+    const chromeCard = cards.find((c) => c.title.en.includes('Claude in Chrome'));
+    const paneCard = cards.find((c) => c.title.en.includes('Browser pane'));
+    expect(chromeCard).toBeDefined();
+    expect(paneCard).toBeDefined();
+    expect(chromeCard?.id).not.toBe(paneCard?.id);
+    expect(cards.some((c) => c.title.en.toLowerCase().includes('computer use'))).toBe(true);
+    const approves = items.filter((it): it is ApproveItem => it.type === 'approve');
+    expect(approves.some((it) => it.pane === 'browser')).toBe(true);
+    expect(approves.some((it) => it.surface === 'terminal')).toBe(true);
+    const setups = items.filter((it): it is ChoiceItem => it.type === 'setup');
+    expect(
+      setups.some(
+        (it) => it.opts.some((o) => o.text.en.includes('Claude in Chrome')) && it.opts.some((o) => o.text.en.includes('Browser pane')),
+      ),
+    ).toBe(true);
+  });
+
+  it('never makes a credential-named file an upload target (the Chrome guard already refuses those)', () => {
+    const items = content.bodyOf('browser')?.items ?? [];
+    const guarded = /\.env\b|id_rsa|\.pem\b|\.key\b|\.ssh\//;
+    const isUpload = (tool: string, target: string) => /upload/i.test(tool) || target.includes('←');
+    const targets = items.flatMap((it) => {
+      if (it.type === 'approve') return isUpload(it.tool, it.target) ? [it.target] : [];
+      if (it.type === 'chain') return it.steps.filter((s) => isUpload(s.tool, s.target)).map((s) => s.target);
+      return [];
+    });
+    expect(targets.length).toBeGreaterThan(0);
+    for (const t of targets) expect(t, t).not.toMatch(guarded);
   });
 });
