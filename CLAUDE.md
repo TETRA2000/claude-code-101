@@ -33,7 +33,7 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
 ```
 index.html  package.json  tsconfig.json  vite.config.ts  playwright.config.ts  .nvmrc  .gitignore  CLAUDE.md
 .github/workflows/ci.yml        CI: typecheck, unit tests, build, Playwright
-content/course.json             all 11 units: meta, status, chips, lastChecked, sources
+content/course.json             all 13 units: meta, status, chips, lastChecked, sources
 content/practice-types.json     chip/type names
 content/units/<key>.json        one per ready unit: { cards, items }
 docs/claude-code-facts.md       sourced facts; every Claude Code claim in content cites it

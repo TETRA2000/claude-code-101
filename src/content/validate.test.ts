@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, UnitBody } from './types';
-import { validateContent } from './validate';
+import { ITEM_RANGE, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -192,8 +192,12 @@ describe('validateContent', () => {
 
   it('14: flags a ready unit with too many items', () => {
     const problems = mutated((p) => {
-      const extra = p.bodies.demo!.items.slice(0, 4).map((i) => ({ ...structuredClone(i), id: `more-${i.id}` }));
-      p.bodies.demo!.items.push(...extra);
+      const items = p.bodies.demo!.items;
+      const extra = Array.from({ length: ITEM_RANGE[1] + 1 - items.length }, (_, n) => ({
+        ...structuredClone(items[0]!),
+        id: `more-${n}`,
+      }));
+      items.push(...extra);
     });
     expectOne(problems, 'demo');
   });

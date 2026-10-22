@@ -93,4 +93,23 @@ describe('suggestedUnit', () => {
     expect(suggestedUnit(content, { ...empty, practiced: { demo: true } })?.key).toBe('second');
     expect(suggestedUnit(content, { ...empty, practiced: { demo: true, second: true } })).toBeNull();
   });
+
+  it('skips soon units across a gap', () => {
+    const keys = ['computer', 'agent', 'permissions', 'injection', 'browser', 'powers', 'lockdown'];
+    const units: UnitMeta[] = keys.map((k) => ({ ...demoUnit, key: k, status: k === 'powers' ? 'soon' : 'ready' }));
+    const c = createContent(units, fixtureParts.types, {});
+    const practiced: Record<string, true> = { computer: true, agent: true, permissions: true, injection: true, browser: true };
+    expect(suggestedUnit(c, { ...empty, practiced })?.key).toBe('lockdown');
+  });
+
+  it('old progress keys still apply', () => {
+    const keys = ['computer', 'lockdown'];
+    const units: UnitMeta[] = keys.map((k) => ({ ...demoUnit, key: k, status: 'ready' }));
+    const c = createContent(units, fixtureParts.types, {});
+    const p: Progress = { ...empty, practiced: { computer: true, lockdown: true } };
+    expect(suggestedUnit(c, p)).toBeNull();
+    const soonLock = createContent([units[0]!, { ...units[1]!, status: 'soon' }], fixtureParts.types, {});
+    expect(suggestedUnit(soonLock, p)).toBeNull();
+    expect(p.practiced.lockdown).toBe(true);
+  });
 });

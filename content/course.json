@@ -2,24 +2,40 @@
   {
     "key": "computer",
     "status": "ready",
-    "title": { "en": "Your computer, from the inside", "ja": "パソコンの中身を知ろう" },
+    "title": {
+      "en": "Your computer, from the inside",
+      "ja": "パソコンの中身を知ろう"
+    },
     "blurb": {
       "en": "The terminal, files and paths, hidden dot-files, where secrets live, and what rm really does.",
       "ja": "ターミナル、ファイルとパス、隠しファイル、秘密情報のありか、そして rm が本当にすること。"
     },
-    "chips": ["predict", "decode", "pairs"],
+    "chips": [
+      "predict",
+      "decode",
+      "pairs"
+    ],
     "lastChecked": "2026-10-22",
-    "sources": ["https://code.claude.com/docs"]
+    "sources": [
+      "https://code.claude.com/docs"
+    ]
   },
   {
     "key": "agent",
     "status": "ready",
-    "title": { "en": "How Claude Code works", "ja": "Claude Code の仕組み" },
+    "title": {
+      "en": "How Claude Code works",
+      "ja": "Claude Code の仕組み"
+    },
     "blurb": {
       "en": "The agent loop, tools, the context window, CLAUDE.md and memory, and MCP as more tools.",
       "ja": "エージェントループ、ツール、コンテキストウィンドウ、CLAUDE.md とメモリ、そして「ツールを増やす」MCP。"
     },
-    "chips": ["order", "pairs", "predict"],
+    "chips": [
+      "order",
+      "pairs",
+      "predict"
+    ],
     "lastChecked": "2026-10-22",
     "sources": [
       "https://code.claude.com/docs/en/how-claude-code-works",
@@ -33,12 +49,19 @@
   {
     "key": "permissions",
     "status": "ready",
-    "title": { "en": "Permission prompts", "ja": "許可プロンプト" },
+    "title": {
+      "en": "Permission prompts",
+      "ja": "許可プロンプト"
+    },
     "blurb": {
       "en": "Read the prompt before you say yes: the three answers, permission modes, red flags, and permission fatigue.",
       "ja": "「はい」の前にプロンプトを読む。3つの答え方、許可モード、危険のサイン、そして確認疲れ。"
     },
-    "chips": ["approve", "decode", "setup"],
+    "chips": [
+      "approve",
+      "decode",
+      "setup"
+    ],
     "lastChecked": "2026-10-22",
     "sources": [
       "https://code.claude.com/docs/en/permissions",
@@ -54,12 +77,19 @@
   {
     "key": "injection",
     "status": "ready",
-    "title": { "en": "Prompt injection", "ja": "プロンプトインジェクション" },
+    "title": {
+      "en": "Prompt injection",
+      "ja": "プロンプトインジェクション"
+    },
     "blurb": {
       "en": "Where injections hide, invisible text, warning signs, persistence via CLAUDE.md, and what to do.",
       "ja": "インジェクションの隠れ場所、見えない文字、警告のサイン、CLAUDE.md に居座る手口、そして取るべき行動。"
     },
-    "chips": ["hidden", "chain", "approve"],
+    "chips": [
+      "hidden",
+      "chain",
+      "approve"
+    ],
     "lastChecked": "2026-10-22",
     "sources": [
       "https://code.claude.com/docs/en/permissions",
@@ -74,12 +104,22 @@
   {
     "key": "browser",
     "status": "ready",
-    "title": { "en": "Browser automation", "ja": "ブラウザ自動操作" },
+    "title": {
+      "en": "Browser automation",
+      "ja": "ブラウザ自動操作"
+    },
     "blurb": {
       "en": "Your logged-in browser, the deadly combo, how data leaves through a browser, and safe setups.",
       "ja": "ログイン中のブラウザ、危険な組み合わせ、ブラウザ経由でデータが漏れる仕組み、そして安全な環境づくり。"
     },
-    "chips": ["chain", "combo", "setup", "hidden", "approve", "predict"],
+    "chips": [
+      "chain",
+      "combo",
+      "setup",
+      "hidden",
+      "approve",
+      "predict"
+    ],
     "lastChecked": "2026-10-22",
     "sources": [
       "https://code.claude.com/docs/en/chrome",
@@ -92,61 +132,134 @@
   {
     "key": "powers",
     "status": "soon",
-    "title": { "en": "Who can do what", "ja": "誰が何をできるのか" },
-    "blurb": {
-      "en": "Users, file permissions, sudo, and environment variables. Claude runs with your powers.",
-      "ja": "ユーザー、ファイルの権限、sudo、環境変数。Claude はあなたと同じ力で動きます。"
+    "title": {
+      "en": "Who can do what",
+      "ja": "誰が何をできる？"
     },
-    "chips": ["decode", "predict"]
+    "blurb": {
+      "en": "Users, file permissions, sudo and environment variables. Claude runs with your powers.",
+      "ja": "ユーザー、ファイル権限、sudo、環境変数。Claude はあなたの権限で動きます。"
+    },
+    "chips": [
+      "decode",
+      "predict"
+    ]
   },
   {
     "key": "mcp",
     "status": "soon",
-    "title": { "en": "MCP servers", "ja": "MCPサーバー" },
-    "blurb": {
-      "en": "What a connector can see and do, login scopes, poisoned tool descriptions, and servers that change after approval.",
-      "ja": "コネクタに見えるもの・できること、ログインの権限範囲、毒入りのツール説明、承認後に変わるサーバー。"
+    "title": {
+      "en": "MCP servers",
+      "ja": "MCP サーバー"
     },
-    "chips": ["scopes", "poisoned"]
+    "blurb": {
+      "en": "What a connector can see and do, install scopes, logins, poisoned tool descriptions, and servers that change after approval.",
+      "ja": "コネクタが見られること・できること、インストール範囲、ログイン、汚染されたツール説明、承認後に変わるサーバー。"
+    },
+    "chips": [
+      "scopes",
+      "poisoned"
+    ]
+  },
+  {
+    "key": "extensions",
+    "status": "soon",
+    "title": {
+      "en": "Skills, plugins and subagents",
+      "ja": "スキル、プラグイン、サブエージェント"
+    },
+    "blurb": {
+      "en": "Skills and plugins are code you install: what they can run, how to review them first, and what subagents inherit.",
+      "ja": "スキルとプラグインは、あなたがインストールするコードです。何が実行できるか、入れる前の確認方法、サブエージェントが引き継ぐもの。"
+    },
+    "chips": [
+      "review",
+      "settings",
+      "approve"
+    ]
   },
   {
     "key": "installing",
     "status": "soon",
-    "title": { "en": "Installing code safely", "ja": "安全なインストール" },
+    "title": {
+      "en": "Installing code safely",
+      "ja": "コードを安全に入れる"
+    },
     "blurb": {
       "en": "Lookalike and made-up packages, install scripts, curl | sh, npx -y, and booby-trapped projects.",
-      "ja": "なりすましや存在しないパッケージ、インストールスクリプト、curl | sh、npx -y、罠付きのプロジェクト。"
+      "ja": "そっくりな名前や実在しないパッケージ、インストールスクリプト、curl | sh、npx -y、罠入りのプロジェクト。"
     },
-    "chips": ["package", "settings", "approve"]
+    "chips": [
+      "package",
+      "settings",
+      "approve"
+    ]
   },
   {
     "key": "sandboxes",
     "status": "soon",
-    "title": { "en": "Sandboxes", "ja": "サンドボックス" },
-    "blurb": {
-      "en": "What a sandbox is, the options you can use, and network restrictions: which exits stay open.",
-      "ja": "サンドボックスとは何か、使える選択肢、そしてネットワーク制限。どの出口が開いたままなのか。"
+    "title": {
+      "en": "Sandboxes",
+      "ja": "サンドボックス"
     },
-    "chips": ["inside", "allowlist"]
+    "blurb": {
+      "en": "What a sandbox isolates and what runs outside it, network allowlists, and the openings that quietly let data out.",
+      "ja": "サンドボックスが隔離するものと外で動くもの、ネットワークの許可リスト、データがこっそり出ていく抜け道。"
+    },
+    "chips": [
+      "inside",
+      "allowlist",
+      "trim"
+    ]
   },
   {
     "key": "lockdown",
     "status": "soon",
-    "title": { "en": "Locking it down", "ja": "守りを固める" },
-    "blurb": {
-      "en": "Allow and deny rules, settings files, hooks, and separate browser profiles. Build your own safe setup.",
-      "ja": "許可・拒否ルール、設定ファイル、フック、専用のブラウザプロファイル。自分だけの安全な環境を組み立てます。"
+    "title": {
+      "en": "Locking it down",
+      "ja": "しっかり守る設定"
     },
-    "chips": ["rule", "settings"]
+    "blurb": {
+      "en": "Settings files and which one wins, allow and deny rules, hooks, and a starter safe setup.",
+      "ja": "設定ファイルとどれが優先されるか、許可・拒否ルール、フック、安全な初期設定の作り方。"
+    },
+    "chips": [
+      "rule",
+      "precedence",
+      "settings",
+      "setup"
+    ]
+  },
+  {
+    "key": "automode",
+    "status": "soon",
+    "title": {
+      "en": "Auto mode, safely",
+      "ja": "オートモードを安全に使う"
+    },
+    "blurb": {
+      "en": "What the classifier sees, what it blocks and allows by default, how to clear a block, and why a sandbox still matters.",
+      "ja": "分類器が見ているもの、既定でブロック・許可されるもの、ブロックの解除方法、それでもサンドボックスが大切な理由。"
+    },
+    "chips": [
+      "automode",
+      "setup",
+      "approve"
+    ]
   },
   {
     "key": "boss",
     "status": "soon",
-    "title": { "en": "Boss: Continue? Y/N", "ja": "ボス戦：Continue? Y/N" },
+    "title": {
+      "en": "Boss: Continue? Y/N",
+      "ja": "ボス戦：Continue? Y/N"
+    },
     "blurb": {
       "en": "60 seconds, about 20 prompts, most of them harmless. Can you keep reading?",
       "ja": "60秒で約20個のプロンプト。ほとんどは無害。最後まで読み続けられる？"
     },
-    "chips": ["boss"]
+    "chips": [
+      "boss"
+    ]
   }
 ]

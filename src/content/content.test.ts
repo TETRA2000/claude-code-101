@@ -8,7 +8,7 @@ describe('content', () => {
     expect(validateContent(content)).toEqual([]);
   });
 
-  it('lists all 11 units in course order', () => {
+  it('lists all 13 units in course order', () => {
     expect(content.units.map((u) => u.key)).toEqual([
       'computer',
       'agent',
@@ -17,11 +17,19 @@ describe('content', () => {
       'browser',
       'powers',
       'mcp',
+      'extensions',
       'installing',
       'sandboxes',
       'lockdown',
+      'automode',
       'boss',
     ]);
+  });
+
+  it('wave 2 and new units are soon', () => {
+    for (const key of ['extensions', 'automode', 'powers', 'mcp', 'installing', 'sandboxes', 'lockdown', 'boss']) {
+      expect(content.unitByKey(key)?.status, key).toBe('soon');
+    }
   });
 });
 

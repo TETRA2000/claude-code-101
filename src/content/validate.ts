@@ -123,6 +123,10 @@ function checkItem(it: Item): string[] {
   return p;
 }
 
+/** Transitional size ranges for ready units. */
+export const CARD_RANGE = [3, 7] as const;
+export const ITEM_RANGE = [8, 14] as const;
+
 /** Returns every problem found; an empty array means the content is valid. */
 export function validateContent(c: Content): string[] {
   const out: string[] = [];
@@ -145,8 +149,8 @@ export function validateContent(c: Content): string[] {
       if (body) {
         const nc = body.cards.length;
         const ni = body.items.length;
-        if (nc < 3 || nc > 5) out.push(`${u.key}: ready unit needs 3–5 cards, has ${nc}`);
-        if (ni < 8 || ni > 12) out.push(`${u.key}: ready unit needs 8–12 items, has ${ni}`);
+        if (nc < CARD_RANGE[0] || nc > CARD_RANGE[1]) out.push(`${u.key}: ready unit needs ${CARD_RANGE[0]}–${CARD_RANGE[1]} cards, has ${nc}`);
+        if (ni < ITEM_RANGE[0] || ni > ITEM_RANGE[1]) out.push(`${u.key}: ready unit needs ${ITEM_RANGE[0]}–${ITEM_RANGE[1]} items, has ${ni}`);
       }
     } else if (body) {
       out.push(`${u.key}: body file for a "${u.status}" unit`);
