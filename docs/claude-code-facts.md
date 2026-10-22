@@ -206,6 +206,10 @@ Checked: 2026-10-21
 - Specifier examples from the docs: `Bash(npm run build)` (exact command), `Read(./.env)` ("Matches reading the `.env` file in the current directory"), `WebFetch(domain:example.com)` (fetch requests to example.com).
 - Order: "Rules are evaluated in order: deny, then ask, then allow. The first match in that order determines the outcome, and rule specificity doesn't change the order." "An allow rule can't carve an exception out of a deny rule." A matching ask rule prompts even when a more specific allow rule matches.
 - Rules are enforced by Claude Code, not the model (see F3).
+- Rules in every mode: "Deny rules block in every mode, including `bypassPermissions`." "Allow rules have no effect in `bypassPermissions`." Under "Actions no mode auto-approves": "Claude Code doesn't auto-approve the following in any mode, including `bypassPermissions`": first bullet "Tools matched by an explicit ask rule". With the sandbox in auto-allow mode, "Deny rules still apply, and ask rules that name a command, such as `Bash(git push *)`, still prompt." (permission-modes#available-modes, #actions-no-mode-auto-approves, #common-setups; checked 2026-10-22.)
+- A prompt forced by an `ask` rule or a hook never offers `Yes, and switch to auto mode` (F1): "auto mode still shows you those prompts, so switching wouldn't remove them" (permission-modes#switch-permission-modes; checked 2026-10-22).
+- UNVERIFIED: whether a prompt forced by an `ask` rule offers `Yes, and don't ask again`. Searched permissions, permission-modes. Unit 11's ask-rule item (lockdown-approve-2) shows only `Yes` / `No` as a simulation assumption.
+- Docs anchor: the "What a Bash rule doesn't match" section is `permissions#bash-rule-limits` (checked in the rendered page 2026-10-22).
 - Wildcards: a `*` in a Bash rule matches any text, including spaces; no `*` means one exact command. Docs warning: "Put the `*` after the subcommand"; `Bash(git log *)` allows only `git log` commands, `Bash(git *)` allows every git command. Claude Code warns at startup about an allow rule with `*` before the subcommand (e.g. `Bash(git * main)`).
 - The docs' wildcard table:
 

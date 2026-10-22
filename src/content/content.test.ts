@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { content } from './index';
 import { validateContent } from './validate';
-import type { ApproveItem, ChainItem, ChoiceItem, HiddenItem } from './types';
+import type { ApproveItem, ChainItem, ChoiceItem, HiddenItem, RuleItem } from './types';
 
 describe('content', () => {
   it('is valid', () => {
@@ -27,7 +27,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['extensions', 'automode', 'powers', 'mcp', 'installing', 'sandboxes', 'lockdown', 'boss']) {
+    for (const key of ['extensions', 'automode', 'powers', 'mcp', 'installing', 'sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -219,5 +219,47 @@ describe('unit 5: browser', () => {
     });
     expect(targets.length).toBeGreaterThan(0);
     for (const t of targets) expect(t, t).not.toMatch(guarded);
+  });
+});
+
+describe('unit 11: lockdown', () => {
+  it('is ready, with 6–7 cards and 12–14 items in the required mix', () => {
+    expect(content.unitByKey('lockdown')?.status).toBe('ready');
+    const body = content.bodyOf('lockdown');
+    const items = body?.items ?? [];
+    const nc = body?.cards.length ?? 0;
+    expect(nc).toBeGreaterThanOrEqual(6);
+    expect(nc).toBeLessThanOrEqual(7);
+    expect(items.length).toBeGreaterThanOrEqual(12);
+    expect(items.length).toBeLessThanOrEqual(14);
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('rule')).toBeGreaterThanOrEqual(3);
+    expect(count('precedence')).toBeGreaterThanOrEqual(2);
+    expect(count('settings')).toBeGreaterThanOrEqual(2);
+    expect(count('setup')).toBeGreaterThanOrEqual(1);
+    const approves = items.filter((it): it is ApproveItem => it.type === 'approve');
+    expect(approves.length).toBeGreaterThanOrEqual(2);
+    expect(approves.some((it) => it.askRule)).toBe(true);
+  });
+
+  it('practices "deny isn\'t a wall": a rule test call uses /usr/bin/curl or sh -c', () => {
+    const rules = (content.bodyOf('lockdown')?.items ?? []).filter((it): it is RuleItem => it.type === 'rule');
+    expect(rules.some((it) => it.tests.some((t) => /\/usr\/bin\/curl|sh -c/.test(t.call.target)))).toBe(true);
+  });
+
+  it('has the settings and rules demos, a copyable secrets deny, and a no-copy hooks card', () => {
+    const cards = content.bodyOf('lockdown')?.cards ?? [];
+    expect(cards.some((c) => c.demo?.kind === 'settings')).toBe(true);
+    expect(cards.some((c) => c.demo?.kind === 'rules')).toBe(true);
+    const secrets = cards.find((c) =>
+      c.try?.terminal.some((s) => s.copy && s.code?.includes('Read(./.env)') && s.code.includes('Read(./.env.*)') && s.code.includes('"deny"')),
+    );
+    expect(secrets).toBeDefined();
+    expect(secrets?.try?.terminal.some((s) => s.code === '/permissions')).toBe(true);
+    const hooks = cards.find((c) => c.title.en.toLowerCase().includes('hook'));
+    expect(hooks).toBeDefined();
+    const hookSteps = [...(hooks?.try?.terminal ?? []), ...(hooks?.try?.desktop ?? [])];
+    expect(hookSteps.every((s) => !s.copy || s.code === '/hooks')).toBe(true);
+    expect(JSON.stringify(hooks)).toContain('protect-files.sh');
   });
 });

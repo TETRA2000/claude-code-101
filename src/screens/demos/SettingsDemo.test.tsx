@@ -47,4 +47,14 @@ describe('SettingsDemo', () => {
     expect(names[0]).toContain('settings.local.json');
     expect(names[2]).toContain('~/.claude/settings.json');
   });
+
+  it("buttons hold only phrasing content; each file’s lines render below the button, not inside it", () => {
+    const { container } = wrap();
+    for (const b of screen.getAllByRole('button')) {
+      expect(b.querySelector('pre, div, p, ul, li, h1, h2, h3')).toBeNull();
+    }
+    const pres = container.querySelectorAll('li > pre');
+    expect(pres).toHaveLength(demo.files.length);
+    expect([...pres].some((p) => p.textContent?.includes('"defaultMode": "plan"'))).toBe(true);
+  });
 });

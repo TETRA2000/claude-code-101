@@ -37,12 +37,17 @@ export function SettingsDemo({ demo }: Props) {
         </h3>
         <ul className={styles.files}>
           {files.map((f, i) => (
-            <li key={f.scope}>
+            <li
+              key={f.scope}
+              className={styles.item}
+              data-open={open === f.scope ? 'true' : undefined}
+              data-winner={win?.file.scope === f.scope ? 'true' : undefined}
+            >
+              {/* A button holds only phrasing content: it names the file; the file's lines sit below it. */}
               <button
                 type="button"
                 className={styles.file}
                 aria-pressed={open === f.scope}
-                data-winner={win?.file.scope === f.scope ? 'true' : undefined}
                 onClick={() => setOpen(open === f.scope ? null : f.scope)}
               >
                 <span className={styles.rank} aria-hidden="true">
@@ -50,8 +55,8 @@ export function SettingsDemo({ demo }: Props) {
                 </span>
                 <code className={styles.path}>{f.path}</code>
                 <span className={styles.scope}>{ui.scopeLabel[f.scope]}</span>
-                <pre className={styles.code}>{f.lines.join('\n')}</pre>
               </button>
+              <pre className={styles.code}>{f.lines.join('\n')}</pre>
             </li>
           ))}
         </ul>

@@ -436,7 +436,7 @@
   },
   {
     "key": "lockdown",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Locking it down",
       "ja": "しっかり守る設定"
@@ -449,8 +449,59 @@
       "rule",
       "precedence",
       "settings",
-      "setup"
-    ]
+      "setup",
+      "approve",
+      "pairs"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "settings"
+        },
+        "note": {
+          "en": "Read this if you want to know which settings file affects whom, which one wins, and how to check what loaded.",
+          "ja": "どの設定ファイルが誰に効くのか、どれが優先されるのか、何が読み込まれたかの確かめ方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permissions"
+        },
+        "note": {
+          "en": "Read this if you want the full rule syntax, including what a Bash rule doesn't match.",
+          "ja": "ルールの書き方の全体と、Bash のルールが当てはまらない形を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks-guide"
+        },
+        "note": {
+          "en": "Read this if you want to see hooks step by step, including the example that blocks edits to protected files.",
+          "ja": "保護したいファイルの編集を止める例も含め、フックを順を追って見てみたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks"
+        },
+        "note": {
+          "en": "Read this if you want every hook event and exactly what a hook can return.",
+          "ja": "フックのすべてのイベントと、フックが返せる内容を正確に知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "settings-reference"
+        },
+        "note": {
+          "en": "Read this if you want to look up a specific settings key, such as defaultMode.",
+          "ja": "defaultMode など、特定の設定キーを調べたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "automode",
