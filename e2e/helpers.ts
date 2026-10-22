@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
 import { choiceLabels, choicesOf } from '../src/content/approve';
+import { resolvePicks } from '../src/content/picks';
 import { outcomeOf } from '../src/rules/match';
 import { AUTO_OUTCOMES } from '../src/content/types';
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
@@ -14,10 +15,14 @@ export const READY = UNITS.filter((u) => u.status === 'ready');
 export const SOON = UNITS.filter((u) => u.status === 'soon');
 // Every content/units/<key>.json, so a new unit needs no edit here.
 const UNITS_DIR = new URL('../content/units/', import.meta.url);
-const BODIES: Record<string, UnitBody> = Object.fromEntries(
-  readdirSync(UNITS_DIR)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => [f.slice(0, -'.json'.length), JSON.parse(readFileSync(new URL(f, UNITS_DIR), 'utf8')) as UnitBody]),
+// A boss unit's items are resolved from its picks, the same way the app's loader does it.
+const BODIES: Record<string, UnitBody> = resolvePicks(
+  UNITS,
+  Object.fromEntries(
+    readdirSync(UNITS_DIR)
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => [f.slice(0, -'.json'.length), JSON.parse(readFileSync(new URL(f, UNITS_DIR), 'utf8')) as UnitBody]),
+  ),
 );
 export const bodyOf = (key: string): UnitBody => {
   const b = BODIES[key];
@@ -41,8 +46,8 @@ export async function expectNoOverflow(page: Page, where: string) {
   expect(o.scrollWidth, `horizontal overflow at ${where}`).toBeLessThanOrEqual(o.innerWidth);
 }
 
-/** Shared ARMED wait: Check/Continue ignore activation for ACTIVATION_GUARD_MS after appearing. */
-const GUARD_WAIT = 450;
+/** Shared ARMED wait: Check/Continue (and a new boss prompt) ignore activation for ACTIVATION_GUARD_MS after appearing. */
+export const GUARD_WAIT = 450;
 
 export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = false): Promise<void> {
   const ui = UI[lang];

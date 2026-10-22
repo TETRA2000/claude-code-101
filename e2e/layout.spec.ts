@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { UI } from '../src/i18n/ui';
-import { answerItem, expectCopyOnlyInTryIt, expectNoCopyButtons, bodyOf, expectNoOverflow, LANGS, openUnit, READY, setLang, SOON, UNITS } from './helpers';
+import { answerItem, expectCopyOnlyInTryIt, expectNoCopyButtons, bodyOf, expectNoOverflow, GUARD_WAIT, LANGS, openUnit, READY, selectAnswer, setLang, SOON, UNITS } from './helpers';
 
 test.describe('layout and safety', () => {
   for (const lang of LANGS) {
@@ -52,6 +52,35 @@ test.describe('layout and safety', () => {
           if (i < n - 1) await page.getByRole('button', { name: ui.next, exact: true }).click();
         }
       });
+
+      if (unit.mode === 'boss') {
+        test(`${unit.key}: the boss intro, every prompt and the recap fit (${lang})`, async ({ page }) => {
+          const ui = UI[lang];
+          const items = bodyOf(unit.key).items;
+          await page.goto('/');
+          await setLang(page, lang);
+          await openUnit(page, unit, lang, 'practice');
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText(unit.title[lang]);
+          await expectNoOverflow(page, `${unit.key} intro ${lang}`);
+          await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
+          await expect(page.getByRole('timer')).toBeVisible();
+          for (const item of items) {
+            await expect(page.getByRole('heading', { level: 1 })).toHaveText(item.prompt[lang]);
+            await expectNoOverflow(page, `${unit.key}/${item.id} ${lang}`);
+            await expectNoCopyButtons(page);
+            // Say Yes to every prompt, so the recap shows each dangerous one's headline too.
+            const dangerous = item.type === 'approve' && !item.accept.includes('yes');
+            await page.waitForTimeout(GUARD_WAIT);
+            await selectAnswer(page, item, lang, dangerous);
+          }
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossRecapTitle);
+          await expect(page.getByRole('listitem')).toHaveCount(items.length);
+          await expect(page.getByText(ui.breaking, { exact: true })).not.toHaveCount(0);
+          await expectNoOverflow(page, `${unit.key} recap ${lang}`);
+          await expectNoCopyButtons(page);
+        });
+        continue;
+      }
 
       test(`${unit.key}: every practice screen fits (${lang})`, async ({ page }) => {
         await page.goto('/');

@@ -92,6 +92,8 @@ export interface ApproveItem extends Base {
   /** One outcome per offered choice. */
   outcomes: Partial<Record<ApproveChoice, ApproveOutcome>>;
   decode?: { code: string; means: L }[];
+  /** Set by the loader on a boss copy: the key of the ready unit this prompt was published in. */
+  fromUnit?: string;
 }
 export interface PredictItem extends Base {
   type: 'predict';
@@ -266,6 +268,8 @@ export type UnitStatus = 'ready' | 'soon';
 export interface UnitMeta {
   key: string;
   status: UnitStatus;
+  /** `boss`: a timed run of approve prompts picked from the ready units, with a recap (unit 13); 1–3 cards and 18–24 picks. */
+  mode?: 'boss';
   title: L;
   blurb: L;
   chips: string[];
@@ -276,6 +280,11 @@ export interface UnitMeta {
 export interface UnitBody {
   cards: Card[];
   items: Item[];
+  /**
+   * Boss units only: ids of published approve items in other ready units. The loader copies them,
+   * in this order, into `items` (see src/content/picks.ts); a boss file has no `items` of its own.
+   */
+  picks?: string[];
 }
 export interface PracticeTypeInfo {
   key: string;

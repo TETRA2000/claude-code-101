@@ -857,7 +857,8 @@
   },
   {
     "key": "boss",
-    "status": "soon",
+    "status": "ready",
+    "mode": "boss",
     "title": {
       "en": "Boss: Continue? Y/N",
       "ja": "ボス戦：Continue? Y/N"
@@ -868,6 +869,56 @@
     },
     "chips": [
       "boss"
+    ],
+    "lastChecked": "2026-10-22",
+    "linksChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions",
+          "anchor": "permission-system"
+        },
+        "note": {
+          "en": "Read this if you want to know what each answer on a prompt does and what a saved rule allows.",
+          "ja": "プロンプトの各答えが何をするのか、保存したルールが何を許可するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes"
+        },
+        "note": {
+          "en": "Read this if you want to know what Manual mode asks about and how the other modes change that.",
+          "ja": "Manual モードで何を確認されるのか、ほかのモードでそれがどう変わるのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the big picture of how Claude Code keeps you safe, including why web commands like curl ask first.",
+          "ja": "curl のような Web にアクセスするコマンドが先に確認を求める理由も含め、Claude Code がどう安全を守るのか全体像を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you want to know how MCP servers and their tools work, and what to check before you connect one.",
+          "ja": "MCP サーバーとそのツールの仕組みと、接続する前に確認すべきことを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sandboxing"
+        },
+        "note": {
+          "en": "Read this if you want fewer prompts, with limits the system enforces instead of your attention.",
+          "ja": "注意力に頼るのではなく、システムが強制する制限を使ってプロンプトを減らしたいとき。"
+        }
+      }
     ]
   }
 ]

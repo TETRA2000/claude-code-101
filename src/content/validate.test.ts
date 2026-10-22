@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { fixtureContent, fixtureParts, withWave2 } from '../test/fixtures';
+import { bossParts, bossPicks, bossSourceMetas, fixtureContent, fixtureParts, withWave2 } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, AutoModeItem, RuleItem, SettingsItem, UnitBody } from './types';
-import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
+import { AUTO_WRONG_UNITS, BOSS_CARD_RANGE, BOSS_HARMLESS_SHARE, BOSS_ITEM_RANGE, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -234,7 +234,7 @@ describe('validateContent', () => {
     });
 
     it('flags auto in accept in the learning units', () => {
-      expect(AUTO_WRONG_UNITS).toEqual(['permissions', 'injection', 'browser']);
+      expect(AUTO_WRONG_UNITS).toEqual(['permissions', 'injection', 'browser', 'boss']);
       const problems = mutated((p) => {
         p.units[0]!.key = 'permissions';
         p.bodies.permissions = p.bodies.demo!;
@@ -396,6 +396,129 @@ describe('validateContent', () => {
       items.push(...extra);
     });
     expectOne(problems, 'demo');
+  });
+
+  describe('boss units', () => {
+    /** The fixture plus a valid boss unit and the two units it picks from, mutated by `fn`. */
+    const boss = (fn: (p: Parts) => void = () => {}) =>
+      mutated((p) => {
+        const parts = bossParts();
+        p.units.push(...parts.units);
+        Object.assign(p.bodies, parts.bodies);
+        fn(p);
+      });
+    const picks = (p: Parts) => p.bodies.boss!.picks!;
+    const meta = (p: Parts, key: string) => p.units.find((u) => u.key === key)!;
+
+    it('pins the boss size rules', () => {
+      expect([BOSS_CARD_RANGE, BOSS_ITEM_RANGE, BOSS_HARMLESS_SHARE]).toEqual([[1, 3], [18, 24], [0.6, 0.8]]);
+    });
+
+    it('accepts a boss unit with 1 card and 20 picks', () => {
+      expect(boss()).toEqual([]);
+    });
+
+    it('uses 1–3 cards instead of 4–7', () => {
+      expect(boss((p) => void p.bodies.boss!.cards.splice(0))).toEqual(['boss: boss unit needs 1–3 cards, has 0']);
+    });
+
+    it('needs 18–24 picks', () => {
+      // Drop three harmless picks, so the harmless share stays in range.
+      const drop = ['bsrc-a-safe-1', 'bsrc-a-safe-2', 'bsrc-a-safe-3'];
+      expect(boss((p) => void (p.bodies.boss!.picks = picks(p).filter((id) => !drop.includes(id))))).toEqual(['boss: boss unit needs 18–24 picks, has 17']);
+      expect(
+        boss((p) => {
+          const b = p.bodies['bsrc-b']!;
+          b.items.push({ ...structuredClone(b.items[0]!), id: 'bsrc-b-more-1' }, { ...structuredClone(b.items[0]!), id: 'bsrc-b-more-2' });
+          picks(p).push('bsrc-b-safe-3', 'bsrc-b-safe-4', 'bsrc-b-safe-5', 'bsrc-b-safe-6', 'bsrc-b-more-1');
+        }),
+      ).toEqual(['boss: boss unit needs 18–24 picks, has 25']);
+    });
+
+    it('resolves picks into copies, in pick order, with fromUnit', () => {
+      const parts = bossParts();
+      const c = createContent([...fixtureParts.units, ...parts.units], fixtureParts.types, { ...fixtureParts.bodies, ...parts.bodies });
+      const items = c.bodyOf('boss')!.items as ApproveItem[];
+      expect(items.map((it) => it.id)).toEqual(bossPicks);
+      expect(items.every((it) => it.fromUnit === it.id.slice(0, 'bsrc-a'.length))).toBe(true);
+      // Copies, not the published objects.
+      const source = c.bodyOf('bsrc-a')!.items[0]!;
+      expect(items.find((it) => it.id === source.id)).not.toBe(source);
+      expect(source).not.toHaveProperty('fromUnit');
+    });
+
+    it('falls back to the source unit\'s first docs entry when a pick has no more link', () => {
+      const parts = bossParts();
+      delete parts.bodies['bsrc-a']!.items[0]!.more;
+      const c = createContent(parts.units, fixtureParts.types, parts.bodies);
+      const copy = c.bodyOf('boss')!.items.find((it) => it.id === 'bsrc-a-safe-1')!;
+      expect(copy.more).toEqual(bossSourceMetas[0]!.docs![0]!.ref);
+      const kept = c.bodyOf('boss')!.items.find((it) => it.id === 'bsrc-b-danger-1')!;
+      expect(kept.more).toEqual({ slug: 'security' });
+    });
+
+    it('drops the decode hint from a copy (the timed run has no hints)', () => {
+      const parts = bossParts();
+      (parts.bodies['bsrc-a']!.items[0] as ApproveItem).decode = [{ code: 'npm', means: { en: 'Package tool', ja: 'パッケージ管理ツール' } }];
+      const c = createContent(parts.units, fixtureParts.types, parts.bodies);
+      expect(c.bodyOf('boss')!.items.find((it) => it.id === 'bsrc-a-safe-1')).not.toHaveProperty('decode');
+      expect(c.bodyOf('bsrc-a')!.items[0]).toHaveProperty('decode');
+    });
+
+    it('flags a boss unit without picks', () => {
+      expect(boss((p) => void delete p.bodies.boss!.picks)).toEqual(['boss: boss unit needs picks']);
+    });
+
+    it('flags a pick that does not exist', () => {
+      expect(boss((p) => void (picks(p)[0] = 'nope-1'))).toContain('boss/picks/nope-1: no item with this id in a non-boss unit');
+    });
+
+    it('flags a pick that is not an approve item', () => {
+      expect(boss((p) => void (picks(p)[0] = 'demo-predict'))).toContain('boss/picks/demo-predict: picks are approve items, this is predict');
+    });
+
+    it('flags a pick from a unit that is not ready', () => {
+      const problems = boss((p) => void (meta(p, 'bsrc-a').status = 'soon'));
+      expect(problems).toContain('boss/picks/bsrc-a-safe-1: picked from "bsrc-a", which is not ready');
+    });
+
+    it('flags a pick from another boss unit', () => {
+      const problems = boss((p) => void (meta(p, 'bsrc-a').mode = 'boss'));
+      expect(problems).toContain('boss/picks/bsrc-a-safe-1: no item with this id in a non-boss unit');
+    });
+
+    it('flags a pick whose accept includes auto', () => {
+      const problems = boss((p) => {
+        for (const it of p.bodies['bsrc-a']!.items) (it as ApproveItem).accept.push('auto');
+      });
+      expect(problems).toContain('boss/picks/bsrc-a-safe-1: auto is an accepted answer, never right in the boss');
+    });
+
+    it('flags a duplicate pick', () => {
+      expect(boss((p) => void (picks(p)[1] = picks(p)[0]!))).toContain(`boss/picks/${bossPicks[0]}: duplicate pick`);
+    });
+
+    it('flags picks that are not mixed terminal and desktop', () => {
+      const problems = boss((p) => p.bodies['bsrc-b']!.items.forEach((it) => void ((it as ApproveItem).surface = 'terminal')));
+      expect(problems).toContain('boss: boss picks mix terminal and desktop prompts');
+    });
+
+    it('derives harmless from accept and wants about 70% harmless', () => {
+      const allSafe = boss((p) => p.bodies['bsrc-b']!.items.forEach((it) => void ((it as ApproveItem).accept = ['yes'])));
+      expect(allSafe).toContain('boss: boss picks are 20/20 harmless, need 60–80%');
+    });
+
+    it('flags picks in a unit that is not a boss', () => {
+      expect(boss((p) => void (p.bodies.demo!.picks = ['bsrc-a-safe-1']))).toEqual(['demo: picks are only for a boss unit']);
+    });
+
+    it('keeps 4–7 cards for a ready unit without mode boss', () => {
+      expect(boss((p) => void delete meta(p, 'boss').mode)).toEqual([
+        'boss: ready unit needs 4–7 cards, has 1',
+        'boss: ready unit needs 10–14 items, has 0',
+        'boss: picks are only for a boss unit',
+      ]);
+    });
   });
 
   it('15: flags a ready unit with a bad lastChecked', () => {

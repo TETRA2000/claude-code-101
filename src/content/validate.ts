@@ -2,8 +2,9 @@ import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
+import { findPick } from './picks';
 import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
-import { APPROVE_CHOICES, AUTO_OUTCOMES, ITEM_TYPES, type AutoModeItem, type ApproveItem, type Card, type ChoiceItem, type DocRef, type HiddenItem, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
+import { APPROVE_CHOICES, AUTO_OUTCOMES, ITEM_TYPES, type AutoModeItem, type ApproveItem, type Card, type ChoiceItem, type DocRef, type HiddenItem, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody, type UnitMeta } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -147,7 +148,7 @@ function checkTry(card: Card): string[] {
 }
 
 /** Units where "Yes, and switch to auto mode" is never an accepted answer (design: Grading Approve or deny). */
-export const AUTO_WRONG_UNITS: readonly string[] = ['permissions', 'injection', 'browser'];
+export const AUTO_WRONG_UNITS: readonly string[] = ['permissions', 'injection', 'browser', 'boss'];
 
 /** Approve rules: choices match the real prompt (F1, F8), outcomes match choices, headlines by danger. */
 function checkApprove(it: ApproveItem, unitKey: string): string[] {
@@ -401,11 +402,66 @@ function checkItem(it: Item, unitKey: string): string[] {
   return p;
 }
 
+/** Harmless versus dangerous, read from `accept`: a prompt you should say Yes to is harmless. */
+export const isHarmless = (it: ApproveItem): boolean => it.accept.includes('yes');
+
+/**
+ * Boss picks (revision 2): each pick is a published approve item from a ready, non-boss unit, never
+ * graded right for `auto`, listed once; there are 18–24 of them, mixing terminal and desktop prompts.
+ */
+function checkBossPicks(c: Content, u: UnitMeta, body: UnitBody): string[] {
+  const out: string[] = [];
+  const picks = body.picks;
+  if (!picks) return [`${u.key}: boss unit needs picks`];
+  const bodies: Record<string, UnitBody> = {};
+  for (const x of c.units) {
+    const b = c.bodyOf(x.key);
+    if (b) bodies[x.key] = b;
+  }
+  const seen = new Set<string>();
+  const surfaces = new Set<string>();
+  let harmless = 0;
+  let approves = 0;
+  for (const id of picks) {
+    const where = `${u.key}/picks/${id}`;
+    if (seen.has(id)) out.push(`${where}: duplicate pick`);
+    seen.add(id);
+    const found = findPick(c.units, bodies, id);
+    if (!found) {
+      out.push(`${where}: no item with this id in a non-boss unit`);
+      continue;
+    }
+    if (found.unit.status !== 'ready') out.push(`${where}: picked from "${found.unit.key}", which is not ready`);
+    if (found.item.type !== 'approve') {
+      out.push(`${where}: picks are approve items, this is ${found.item.type}`);
+      continue;
+    }
+    if (found.item.accept.includes('auto')) out.push(`${where}: auto is an accepted answer, never right in the boss`);
+    surfaces.add(found.item.surface);
+    approves++;
+    if (isHarmless(found.item)) harmless++;
+  }
+  const n = picks.length;
+  if (n < BOSS_ITEM_RANGE[0] || n > BOSS_ITEM_RANGE[1]) out.push(`${u.key}: boss unit needs ${BOSS_ITEM_RANGE[0]}–${BOSS_ITEM_RANGE[1]} picks, has ${n}`);
+  if (!surfaces.has('terminal') || !surfaces.has('desktop')) out.push(`${u.key}: boss picks mix terminal and desktop prompts`);
+  // Spec: most prompts are harmless (about 70%), but some must be dangerous.
+  const share = approves ? harmless / approves : 0;
+  if (approves && (share < BOSS_HARMLESS_SHARE[0] || share > BOSS_HARMLESS_SHARE[1])) {
+    out.push(`${u.key}: boss picks are ${harmless}/${approves} harmless, need ${BOSS_HARMLESS_SHARE[0] * 100}–${BOSS_HARMLESS_SHARE[1] * 100}%`);
+  }
+  return out;
+}
+
 export const DOCS_RANGE = [3, 8] as const;
 
 /** Size rules for ready units (revision 2). */
 export const CARD_RANGE = [4, 7] as const;
 export const ITEM_RANGE = [10, 14] as const;
+/** Size rules for a `mode: 'boss'` unit: a short intro and a timed run of picked prompts. */
+export const BOSS_CARD_RANGE = [1, 3] as const;
+export const BOSS_ITEM_RANGE = [18, 24] as const;
+/** Share of harmless boss picks (accept includes `yes`): "most of them harmless", about 70%. */
+export const BOSS_HARMLESS_SHARE = [0.6, 0.8] as const;
 /** Most English words in a card's `body` plus `key` (`try` and `deep` are not counted). */
 export const MAX_CARD_WORDS = 100;
 
@@ -438,8 +494,13 @@ export function validateContent(c: Content): string[] {
       if (body) {
         const nc = body.cards.length;
         const ni = body.items.length;
-        if (nc < CARD_RANGE[0] || nc > CARD_RANGE[1]) out.push(`${u.key}: ready unit needs ${CARD_RANGE[0]}–${CARD_RANGE[1]} cards, has ${nc}`);
-        if (ni < ITEM_RANGE[0] || ni > ITEM_RANGE[1]) out.push(`${u.key}: ready unit needs ${ITEM_RANGE[0]}–${ITEM_RANGE[1]} items, has ${ni}`);
+        if (u.mode === 'boss') {
+          // The item count is checked on the picks (checkBossPicks).
+          if (nc < BOSS_CARD_RANGE[0] || nc > BOSS_CARD_RANGE[1]) out.push(`${u.key}: boss unit needs ${BOSS_CARD_RANGE[0]}–${BOSS_CARD_RANGE[1]} cards, has ${nc}`);
+        } else {
+          if (nc < CARD_RANGE[0] || nc > CARD_RANGE[1]) out.push(`${u.key}: ready unit needs ${CARD_RANGE[0]}–${CARD_RANGE[1]} cards, has ${nc}`);
+          if (ni < ITEM_RANGE[0] || ni > ITEM_RANGE[1]) out.push(`${u.key}: ready unit needs ${ITEM_RANGE[0]}–${ITEM_RANGE[1]} items, has ${ni}`);
+        }
       }
     } else if (body) {
       out.push(`${u.key}: body file for a "${u.status}" unit`);
@@ -456,6 +517,12 @@ export function validateContent(c: Content): string[] {
       if (card.demo?.kind === 'settings') for (const msg of checkSettingsDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'rules') for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
     }
+    if (u.mode === 'boss') {
+      // Boss items are copies of published items, already checked in their own unit.
+      out.push(...checkBossPicks(c, u, body));
+      continue;
+    }
+    if (body.picks) out.push(`${u.key}: picks are only for a boss unit`);
     for (const it of body.items) {
       const where = `${u.key}/${it.id}`;
       const prev = seenIds.get(it.id);

@@ -1,7 +1,7 @@
 import practiceTypes from '../../content/practice-types.json';
 import { createContent, type Content } from '../content';
 import { ITEM_RANGE } from '../content/validate';
-import type { Item, PracticeTypeInfo, UnitBody, UnitMeta } from '../content/types';
+import type { ApproveItem, Item, PracticeTypeInfo, UnitBody, UnitMeta } from '../content/types';
 
 const demoMeta: UnitMeta = {
   key: 'demo',
@@ -496,3 +496,89 @@ export const fixtureParts: { units: UnitMeta[]; types: PracticeTypeInfo[]; bodie
 };
 
 export const fixtureContent: Content = createContent(fixtureParts.units, fixtureParts.types, fixtureParts.bodies);
+
+/** A harmless terminal Bash prompt and a dangerous desktop one, for boss tests. */
+export const bossSafe: ApproveItem = {
+  id: 'boss-t-safe',
+  type: 'approve',
+  surface: 'terminal',
+  prompt: { en: 'Allow this?', ja: '許可しますか？' },
+  explain: { en: 'Tests are routine.', ja: 'テストはいつもの作業です。' },
+  task: { en: 'Run the tests.', ja: 'テストを実行して。' },
+  narration: { en: "I'll run the tests.", ja: 'テストを実行します。' },
+  tool: 'Bash',
+  target: 'npm test',
+  reason: { en: 'Run the test suite', ja: 'テストを実行します' },
+  alwaysLabel: { en: "Yes, and don't ask again for: npm test *", ja: 'はい、今後 npm test * は確認しない' },
+  choices: ['yes', 'always', 'auto', 'no'],
+  accept: ['yes', 'always'],
+  outcomes: {
+    yes: { feedback: { en: 'Fine: it runs your tests.', ja: '問題ありません。テストを実行するだけです。' } },
+    always: { feedback: { en: 'Fine: the rule is narrow.', ja: '問題ありません。ルールの範囲は狭いです。' } },
+    auto: { feedback: { en: 'Safe, but stay in Manual here.', ja: '安全ですが、ここでは Manual のままにしましょう。' } },
+    no: { feedback: { en: 'This was safe.', ja: 'これは安全でした。' } },
+  },
+  more: { slug: 'permissions' },
+};
+
+export const bossDanger: ApproveItem = {
+  id: 'boss-d-danger',
+  type: 'approve',
+  surface: 'desktop',
+  prompt: { en: 'Allow this?', ja: '許可しますか？' },
+  explain: { en: 'It deletes files outside the project.', ja: 'プロジェクトの外のファイルを削除します。' },
+  task: { en: 'Clean the build.', ja: 'ビルドを掃除して。' },
+  narration: { en: "I'll free some space.", ja: '空き容量を作ります。' },
+  tool: 'Bash',
+  target: 'rm -rf ~/Documents',
+  reason: { en: 'Free up disk space', ja: 'ディスクの空き容量を確保します' },
+  choices: ['yes', 'no'],
+  accept: ['no'],
+  outcomes: {
+    yes: {
+      headline: { en: 'Documents folder wiped by cleanup', ja: '掃除のついでに書類フォルダが消滅' },
+      feedback: { en: 'It deleted your Documents folder.', ja: '書類フォルダが削除されました。' },
+    },
+    no: { feedback: { en: 'Right: that folder is outside the project.', ja: '正解です。そのフォルダはプロジェクトの外です。' } },
+  },
+  more: { slug: 'security' },
+};
+
+/** `n` copies of `base` with ids `<prefix>-1` … `<prefix>-n`. */
+const copies = (base: ApproveItem, prefix: string, n: number, from = 1): ApproveItem[] =>
+  Array.from({ length: n }, (_, i) => ({ ...structuredClone(base), id: `${prefix}-${i + from}` }));
+
+/**
+ * Two ready units that publish the approve items a boss unit picks from: `bsrc-a` has 12 harmless
+ * terminal prompts, `bsrc-b` 6 harmless terminal and 6 dangerous desktop prompts.
+ */
+export const bossSourceMetas: UnitMeta[] = ['bsrc-a', 'bsrc-b'].map((key) => ({ ...structuredClone(demoMeta), key, chips: ['approve'] }));
+export const bossSourceBodies = (): Record<string, UnitBody> => ({
+  'bsrc-a': { cards: structuredClone(demoBody.cards), items: copies(bossSafe, 'bsrc-a-safe', 12) },
+  'bsrc-b': { cards: structuredClone(demoBody.cards), items: [...copies(bossSafe, 'bsrc-b-safe', 6), ...copies(bossDanger, 'bsrc-b-danger', 6)] },
+});
+
+/** 20 picks, 14 harmless and 6 dangerous (70%), in a fixed order that mixes them. */
+export const bossPicks: readonly string[] = [
+  ...Array.from({ length: 12 }, (_, i) => `bsrc-a-safe-${i + 1}`),
+  'bsrc-b-safe-1',
+  'bsrc-b-safe-2',
+  ...Array.from({ length: 6 }, (_, i) => `bsrc-b-danger-${i + 1}`),
+].map((_, i, all) => all[(i * 7) % all.length]!);
+
+export const bossMeta: UnitMeta = {
+  ...demoMeta,
+  key: 'boss',
+  mode: 'boss',
+  chips: ['boss'],
+  title: { en: 'Boss: Continue? Y/N', ja: 'ボス戦：Continue? Y/N' },
+};
+
+/** A valid boss unit file: one card and 20 picks, no items of its own. */
+export const bossBody = (): UnitBody => ({ cards: [structuredClone(demoBody.cards[0]!)], items: [], picks: [...bossPicks] });
+
+/** Units and bodies for a content with the boss and the two units it picks from. */
+export const bossParts = (): { units: UnitMeta[]; bodies: Record<string, UnitBody> } => ({
+  units: [...structuredClone(bossSourceMetas), structuredClone(bossMeta)],
+  bodies: { ...bossSourceBodies(), boss: bossBody() },
+});

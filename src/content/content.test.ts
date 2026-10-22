@@ -27,10 +27,8 @@ describe('content', () => {
     ]);
   });
 
-  it('wave 2 and new units are soon', () => {
-    for (const key of ['boss']) {
-      expect(content.unitByKey(key)?.status, key).toBe('soon');
-    }
+  it('every unit is ready', () => {
+    expect(content.units.filter((u) => u.status !== 'ready').map((u) => u.key)).toEqual([]);
   });
 });
 
@@ -449,5 +447,47 @@ describe('unit 12: automode', () => {
   it('covers runs, blocked and asks', () => {
     const autos = (content.bodyOf('automode')?.items ?? []).filter((it): it is AutoModeItem => it.type === 'automode');
     expect(new Set(autos.map((it) => it.answer))).toEqual(new Set(['runs', 'blocked', 'asks']));
+  });
+});
+
+describe('unit 13: boss', () => {
+  const meta = content.unitByKey('boss');
+  const body = content.bodyOf('boss');
+  const items = (body?.items ?? []) as ApproveItem[];
+
+  it('is a ready boss unit with 1–3 intro cards and 18–24 picks', () => {
+    expect(meta?.status).toBe('ready');
+    expect(meta?.mode).toBe('boss');
+    expect(body?.cards.length).toBeGreaterThanOrEqual(1);
+    expect(body?.cards.length).toBeLessThanOrEqual(3);
+    expect(body?.picks?.length).toBeGreaterThanOrEqual(18);
+    expect(body?.picks?.length).toBeLessThanOrEqual(24);
+  });
+
+  it('reuses published approve items: no new prompts, in pick order', () => {
+    expect(items.map((it) => it.id)).toEqual(body?.picks);
+    for (const it of items) {
+      expect(it.type, it.id).toBe('approve');
+      const src = content.bodyOf(it.fromUnit ?? '')?.items.find((x) => x.id === it.id) as ApproveItem | undefined;
+      expect(src, it.id).toBeDefined();
+      expect(content.unitByKey(it.fromUnit!)?.status, it.id).toBe('ready');
+      // The copy is the published item, plus fromUnit, a more link and no decode hint.
+      const { fromUnit: _from, more: _more, ...copy } = it;
+      const { decode: _decode, more: _srcMore, ...published } = src!;
+      expect(copy, it.id).toEqual(published);
+      expect(it.more, it.id).toEqual(src!.more ?? content.unitByKey(it.fromUnit!)!.docs![0]!.ref);
+    }
+  });
+
+  it('is about 70% harmless, mixes terminal and desktop, and never accepts auto', () => {
+    const harmless = items.filter((it) => it.accept.includes('yes')).length;
+    expect(harmless / items.length).toBeGreaterThanOrEqual(0.6);
+    expect(harmless / items.length).toBeLessThanOrEqual(0.8);
+    expect(new Set(items.map((it) => it.surface))).toEqual(new Set(['terminal', 'desktop']));
+    expect(items.filter((it) => it.accept.includes('auto'))).toEqual([]);
+  });
+
+  it('picks no prompt from the injection lessons, and no Browser pane card', () => {
+    expect(items.filter((it) => it.fromUnit === 'injection' || it.pane === 'browser').map((it) => it.id)).toEqual([]);
   });
 });

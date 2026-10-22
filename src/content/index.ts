@@ -1,5 +1,6 @@
 import course from '../../content/course.json';
 import practiceTypes from '../../content/practice-types.json';
+import { resolvePicks } from './picks';
 import type { PracticeTypeInfo, UnitBody, UnitMeta } from './types';
 
 export interface Content {
@@ -13,8 +14,10 @@ export interface Content {
 export function createContent(
   units: UnitMeta[],
   types: PracticeTypeInfo[],
-  bodies: Record<string, UnitBody>,
+  rawBodies: Record<string, UnitBody>,
 ): Content {
+  // A boss unit's items are copies of its picks from the other units.
+  const bodies = resolvePicks(units, rawBodies);
   return {
     units,
     practiceTypes: types,

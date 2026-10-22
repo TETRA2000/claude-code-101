@@ -139,6 +139,24 @@ export interface UiStrings {
   settingsWinsTitle: string;
   settingsWins: (key: string, value: string, where: string) => string;
   settingsNoWinner: (key: string) => string;
+  bossIntro: (seconds: number, count: number) => string;
+  bossIntroRules: string[];
+  bossStart: string;
+  bossTimeLabel: string;
+  bossSecondsLeft: (n: number) => string;
+  bossPause: string;
+  bossResume: string;
+  bossPausedNote: string;
+  bossProgress: string;
+  bossRecapTitle: string;
+  bossTimeUp: string;
+  bossScore: (right: number, answered: number, total: number) => string;
+  bossNoAnswers: string;
+  bossAllowed: string;
+  bossDenied: string;
+  bossRight: string;
+  bossWrong: string;
+  bossFrom: (unit: string) => string;
 }
 
 /** Keys whose Japanese value is intentionally identical to English. */
@@ -286,6 +304,29 @@ const en: UiStrings = {
   settingsWinsTitle: 'Which value wins',
   settingsWins: (key, value, where) => `${key} is ${value}, set in ${where}.`,
   settingsNoWinner: (key) => `No file sets ${key}.`,
+  bossIntro: (seconds, count) => `${seconds} seconds, ${count} permission prompts, in Manual mode. Most of them are harmless.`,
+  bossIntroRules: [
+    'Each prompt gets one answer. Tap it and the next prompt appears.',
+    'No hearts here. When the time runs out, the recap shows what you allowed and denied.',
+    'Need a break? Pause stops the clock.',
+  ],
+  bossStart: 'Start',
+  bossTimeLabel: 'Time left',
+  bossSecondsLeft: (n) => (n <= 0 ? "Time's up" : `${n} seconds left`),
+  bossPause: 'Pause',
+  bossResume: 'Resume',
+  bossPausedNote: 'Paused. The clock has stopped.',
+  bossProgress: 'Prompts answered',
+  bossRecapTitle: 'Recap',
+  bossTimeUp: "Time's up: recap",
+  bossScore: (right, answered, total) =>
+    `${right} of ${answered} answered right. ${total - answered} of ${total} not reached.`,
+  bossNoAnswers: 'You did not answer any prompts this time.',
+  bossAllowed: 'You allowed it',
+  bossDenied: 'You denied it',
+  bossRight: 'Right call',
+  bossWrong: 'Wrong call',
+  bossFrom: (unit) => `From the unit: ${unit}`,
 };
 
 const ja: UiStrings = {
@@ -430,6 +471,29 @@ const ja: UiStrings = {
   settingsWinsTitle: '勝つ値',
   settingsWins: (key, value, where) => `${key} は ${value} です（${where} で設定）。`,
   settingsNoWinner: (key) => `${key} を設定しているファイルはありません。`,
+  bossIntro: (seconds, count) => `${seconds}秒で${count}個の許可プロンプト。モードは Manual（手動確認）です。ほとんどは無害です。`,
+  bossIntroRules: [
+    '答えられるのは各プロンプトに1回だけ。タップすると次のプロンプトが出ます。',
+    'ここにハートはありません。時間切れになると、振り返り画面で何を許可し、何を拒否したかを確認できます。',
+    '休みたいときは「一時停止」で時計が止まります。',
+  ],
+  bossStart: 'スタート',
+  bossTimeLabel: '残り時間',
+  bossSecondsLeft: (n) => (n <= 0 ? '時間切れ' : `残り${n}秒`),
+  bossPause: '一時停止',
+  bossResume: '再開',
+  bossPausedNote: '一時停止中です。時計は止まっています。',
+  bossProgress: '回答したプロンプト',
+  bossRecapTitle: '振り返り',
+  bossTimeUp: '時間切れ：振り返り',
+  bossScore: (right, answered, total) =>
+    `${answered}問中${right}問正解。${total}問中${total - answered}問は時間内に届きませんでした。`,
+  bossNoAnswers: '今回はどのプロンプトにも答えませんでした。',
+  bossAllowed: '許可した',
+  bossDenied: '拒否した',
+  bossRight: '正しい判断',
+  bossWrong: '誤った判断',
+  bossFrom: (unit) => `出題元のユニット：${unit}`,
 };
 
 export const UI: Record<Lang, UiStrings> = { en, ja };

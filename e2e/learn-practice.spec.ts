@@ -47,3 +47,22 @@ test('learn unit 1, practice it with one miss, finish, and keep the XP', async (
   await expect(page.locator('header').getByText(xp, { exact: true }).first()).toBeVisible();
   await expect(card(page, unit, 'en').getByText(ui.done, { exact: true })).toBeVisible();
 });
+
+test('the boss shows the recap when time runs out (?bossSeconds=3, dev and test builds only)', async ({ page }) => {
+  const boss = READY.find((u) => u.mode === 'boss')!;
+  const first = bodyOf(boss.key).items[0]!;
+  await page.goto('/?bossSeconds=3');
+  await page.evaluate((k) => localStorage.removeItem(k), STORAGE_KEY);
+  await page.reload();
+
+  await openUnit(page, boss, 'en', 'practice');
+  await expect(page.getByText(ui.heartsLeft(5))).not.toBeAttached();
+  await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
+  await expect(page.getByRole('timer')).toHaveText('0:03');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(first.prompt.en);
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 6000 });
+  await expect(page.getByText(ui.bossNoAnswers)).toBeVisible();
+  await page.getByRole('button', { name: ui.continue, exact: true }).click();
+  await expect(card(page, boss, 'en').getByText(ui.done, { exact: true })).toBeVisible();
+});
