@@ -103,13 +103,13 @@ describe('unit 3: permissions', () => {
     expect(approves.some((it) => it.accept.join() === 'yes')).toBe(true);
   });
 
-  it('has 4–7 cards and 10–14 items, a modes demo, two Try it cards, and a one-time-only prompt', () => {
+  it('has 6–7 cards and 12–14 items, a modes demo, two Try it cards, and a one-time-only prompt', () => {
     const body = content.bodyOf('permissions');
     const nc = body?.cards.length ?? 0;
     const ni = body?.items.length ?? 0;
-    expect(nc).toBeGreaterThanOrEqual(4);
+    expect(nc).toBeGreaterThanOrEqual(6);
     expect(nc).toBeLessThanOrEqual(7);
-    expect(ni).toBeGreaterThanOrEqual(10);
+    expect(ni).toBeGreaterThanOrEqual(12);
     expect(ni).toBeLessThanOrEqual(14);
     expect(body?.cards.some((c) => c.demo?.kind === 'modes')).toBe(true);
     expect(body?.cards.some((c) => c.demo?.kind === 'anatomy')).toBe(true);

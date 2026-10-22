@@ -57,8 +57,8 @@
           {
             "part": "options",
             "text": {
-              "en": "Your four answers on a command prompt in Manual mode. The next card explains each one.",
-              "ja": "Manual モードでのコマンドのプロンプトには、4つの答え方があります。次のカードでひとつずつ説明します。"
+              "en": "Your answers on a command prompt in Manual mode: up to four, since the auto-mode option appears only when auto mode is available. The next card explains each one.",
+              "ja": "Manual モードでのコマンドのプロンプトの答え方です。auto モードに切り替える選択肢は auto モードが使えるときだけ出るので、最大4つです。次のカードでひとつずつ説明します。"
             }
           }
         ]
@@ -105,8 +105,8 @@
       },
       "body": [
         {
-          "en": "\"Don't ask again\" on a command or a web-fetch domain saves an allow rule in `.claude/settings.local.json` at your repository's root (the top of the project folder git tracks). It applies in later sessions too. File-edit approvals end with the session. Approving `git status && npm test` saves a rule for each part that needed one: here, `npm test`.",
-          "ja": "コマンドや Web取得のドメインで「今後は確認しない」を選ぶと、リポジトリのルート（git が管理するプロジェクトフォルダのいちばん上）にある `.claude/settings.local.json` に allow（許可）ルールが保存されます。次回以降のセッションでも有効です。ファイル編集の許可は、セッションが終わると消えます。`git status && npm test` を許可すると、確認が必要だった部分ごとにルールが保存されます。この例では `npm test` です。"
+          "en": "\"Don't ask again\" on a command or a web-fetch domain saves an allow rule in `.claude/settings.local.json` at your repository's root (the top folder git tracks; without git, the folder you started in). It applies in later sessions too. File-edit approvals end with the session. Approving `git status && npm test` saves a rule for each part that needed one: here, `npm test`.",
+          "ja": "コマンドや Web取得のドメインで「今後は確認しない」を選ぶと、リポジトリのルート（git が管理するフォルダのいちばん上。git を使っていなければ、起動したフォルダ）にある `.claude/settings.local.json` に allow（許可）ルールが保存されます。次回以降のセッションでも有効です。ファイル編集の許可は、セッションが終わると消えます。`git status && npm test` を許可すると、確認が必要だった部分ごとにルールが保存されます。この例では `npm test` です。"
         },
         {
           "en": "Permission fatigue: after twenty prompts, you click Yes without reading. A broad rule like `curl *` then lets the next upload through unasked.",
@@ -380,16 +380,16 @@
       },
       "body": [
         {
-          "en": "Writes to protected files and folders always ask in Manual and Accept edits, and no allow rule can pre-approve them: `.git`, `.claude`, `.vscode`, shell settings files like `.zshrc`, `.npmrc`, `.gitconfig`, `.mcp.json` and more. And no rule can pre-approve an `rm` of `/`, your home folder or your working folder.",
-          "ja": "保護されたファイルやフォルダへの書き込みは、Manual と Accept edits では必ず確認され、allow ルールで事前に許可することもできません。`.git`、`.claude`、`.vscode`、`.zshrc` のようなシェルの設定ファイル、`.npmrc`、`.gitconfig`、`.mcp.json` などです。また、`/`（ルート）、ホームフォルダ、作業フォルダを `rm` で消す操作は、どんなルールでも事前に許可できません。"
+          "en": "Writes to protected files and folders always ask in Manual and Accept edits; allow rules can't skip that: `.git`, `.claude`, shell files like `.zshrc`, `.npmrc`, `.gitconfig`, `.mcp.json` and more. No rule can pre-approve an `rm` that Claude Code recognizes as deleting `/`, your home folder or your working folder, though the check can miss some forms.",
+          "ja": "保護されたファイルやフォルダへの書き込みは、Manual と Accept edits では必ず確認され、allow ルールでも省けません。`.git`、`.claude`、`.zshrc` のようなシェルの設定ファイル、`.npmrc`、`.gitconfig`、`.mcp.json` などです。`/`（ルート）、ホームフォルダ、作業フォルダを消すと Claude Code が判断した `rm` は、どんなルールでも事前に許可できません。ただし、この判定は見逃す書き方もあります。"
         },
         {
-          "en": "Opening a folder for the first time shows a trust dialog listing what its settings would allow. Start Claude Code in a project folder: in your home folder, trust is never saved.",
+          "en": "A folder's first opening shows a trust dialog listing what its settings would allow. Start Claude Code in a project folder: in your home folder, trust is never saved.",
           "ja": "はじめて開くフォルダでは、そのフォルダの設定が何を許可するかを並べた「信頼」のダイアログが表示されます。Claude Code はプロジェクトのフォルダで起動しましょう。ホームフォルダで起動すると、信頼の選択は保存されません。"
         }
       ],
       "key": {
-        "en": "A prompt on a protected file is a checkpoint. Read it twice.",
+        "en": "A prompt on a protected file is a checkpoint: read it twice.",
         "ja": "保護されたファイルのプロンプトは、大事な関所です。二度読みましょう。"
       },
       "more": {
@@ -700,8 +700,8 @@
         "ja": "Claude がこれを実行しようとしています。どれを押しますか？"
       },
       "explain": {
-        "en": "Reading outside the working folder asks, so you get to check the path. This is the one file you named. Approve it once: the \"don't ask again\" option would cover your whole Downloads folder, not just this file.",
-        "ja": "作業フォルダの外を読むときは確認されるので、パスを確かめられます。これはあなたが名前を挙げたファイルそのものです。今回だけ許可しましょう。「今後は確認しない」は、このファイルだけでなくダウンロードフォルダ全体が対象になります。"
+        "en": "Reading outside the working folder asks, so you get to check the path. This is the one file you named. Approve it once: the \"don't ask again\" option here names your whole Downloads folder, not just this file.",
+        "ja": "作業フォルダの外を読むときは確認されるので、パスを確かめられます。これはあなたが名前を挙げたファイルそのものです。今回だけ許可しましょう。ここでの「今後は確認しない」の選択肢には、このファイルだけでなくダウンロードフォルダ全体が書かれています。"
       },
       "task": {
         "en": "Use the client brief I saved in Downloads (client-brief.md) to write the About page.",
@@ -733,8 +733,8 @@
         },
         "always": {
           "feedback": {
-            "en": "Reading this file is fine, but the option covers all of `~/Downloads/`, where tax forms, contracts and other private files tend to pile up. Approve this one file with plain Yes.",
-            "ja": "このファイルを読むのは問題ありません。でもこの選択肢は `~/Downloads/` 全体が対象です。そこには税金の書類や契約書など、私的なファイルがたまりがちです。このファイル1つだけを、ただの「はい」で許可しましょう。"
+            "en": "Reading this file is fine, but this option names all of `~/Downloads/`, where tax forms, contracts and other private files tend to pile up. Approve this one file with plain Yes.",
+            "ja": "このファイルを読むのは問題ありません。でもこの選択肢に書かれているのは `~/Downloads/` 全体です。そこには税金の書類や契約書など、私的なファイルがたまりがちです。このファイル1つだけを、ただの「はい」で許可しましょう。"
           }
         },
         "no": {
