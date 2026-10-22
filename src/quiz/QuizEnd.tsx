@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '../components/Button';
 import { BrokenHeartIcon, StarIcon } from '../components/icons';
+import type { DocEntry } from '../content/types';
+import { DocsList } from '../screens/cards/DocsList';
 import { useLang } from '../i18n/LangContext';
 import { accuracy } from './session';
 import type { Session } from './types';
@@ -14,7 +16,14 @@ function useFocusOnMount<T extends HTMLElement>() {
   return ref;
 }
 
-export function QuizDone({ session, onHome, onRetry }: { session: Session; onHome: () => void; onRetry: () => void }) {
+interface DoneProps {
+  session: Session;
+  docs?: readonly DocEntry[];
+  onHome: () => void;
+  onRetry: () => void;
+}
+
+export function QuizDone({ session, docs, onHome, onRetry }: DoneProps) {
   const { ui } = useLang();
   const heading = useFocusOnMount<HTMLHeadingElement>();
   const perfect = session.firstTry === session.total;
@@ -32,6 +41,7 @@ export function QuizDone({ session, onHome, onRetry }: { session: Session; onHom
         <li className={`${styles.stat} ${styles.hearts}`}>{ui.heartsLeft(session.hearts)}</li>
       </ul>
       <p className={styles.sub}>{perfect ? ui.perfectRun : ui.retriedNote}</p>
+      <DocsList docs={docs} />
       <div className={styles.actions}>
         <Button onClick={onHome}>{ui.continue}</Button>
         <Button variant="secondary" onClick={onRetry}>

@@ -28,6 +28,17 @@ describe('FeedbackSheet', () => {
     expect(screen.getByRole('button', { name: UI.ja.continue })).toBeInTheDocument();
   });
 
+  it('shows the item\'s more link after the explanation', () => {
+    const withMore = { ...approve, more: { slug: 'permissions', anchor: 'manage-permissions' } };
+    wrap(<FeedbackSheet item={withMore} answer={answer({ sel: 0, ok: true })} index={0} guardMs={0} onContinue={vi.fn()} />);
+    expect(screen.getByRole('link', { name: /Learn more/ })).toHaveAttribute('href', 'https://code.claude.com/docs/en/permissions#manage-permissions');
+  });
+
+  it('shows no link when the item has no more', () => {
+    wrap(<FeedbackSheet item={approve} answer={answer({ sel: 0, ok: true })} index={0} guardMs={0} onContinue={vi.fn()} />);
+    expect(screen.queryByRole('link')).toBeNull();
+  });
+
   it('ignores Continue clicks during the guard', () => {
     vi.useFakeTimers();
     const onContinue = vi.fn();

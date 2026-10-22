@@ -14,7 +14,7 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
   - URLs use reserved hosts (`*.example`, `example.com|net|org` and subdomains, `*.test`, `*.invalid`, `localhost`) or the real-host allowlist in `src/content/hosts.ts`.
   - There are no copy buttons anywhere.
 - Rules: `HEARTS_PER_RUN = 5`, `XP_FIRST_TRY = 10`, `XP_RETRY = 5`, `XP_HINT_COST = 5` (taken off that item's award, never below 0), `ACTIVATION_GUARD_MS = 350`.
-- Ready units have 3–5 Learn cards and 8–12 practice items. Every ready unit has `lastChecked` (`YYYY-MM-DD`) and at least one source URL.
+- Ready units have 3–5 Learn cards and 8–12 practice items. Every ready unit has `lastChecked` (`YYYY-MM-DD`), `linksChecked` (`YYYY-MM-DD`) and 3–8 `docs` entries (slug + note, in both languages).
 - Design tokens are copied from cascade-learn's `src/styles/tokens.css`. Accessibility:
   - real `<button>`s, `aria-pressed` on selectable tiles, `aria-live` feedback, `role="progressbar"` with values;
   - targets ≥44px, contrast ≥4.5:1;
@@ -33,20 +33,20 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
 ```
 index.html  package.json  tsconfig.json  vite.config.ts  playwright.config.ts  .nvmrc  .gitignore  CLAUDE.md
 .github/workflows/ci.yml        CI: typecheck, unit tests, build, Playwright
-content/course.json             all 13 units: meta, status, chips, lastChecked, sources
+content/course.json             all 13 units: meta, status, chips, lastChecked, linksChecked, docs
 content/practice-types.json     chip/type names
 content/units/<key>.json        one per ready unit: { cards, items }
 docs/claude-code-facts.md       sourced facts; every Claude Code claim in content cites it
 src/main.tsx  src/App.tsx       entry; screen switch, persistence, <html lang> sync
 src/styles/                     tokens.css, global.css
 src/i18n/                       lang.ts (Localized, detectLang), ui.ts (UI strings en+ja), LangContext.tsx
-src/content/                    types.ts, index.ts (loads units), validate.ts, hosts.ts (URL allowlist); tests: validate.test.ts, content.test.ts (validates the real content)
+src/content/                    types.ts, index.ts (loads units), validate.ts, hosts.ts (URL allowlist), docs.ts (doc slugs, link hosts, docHref); tests: validate.test.ts, content.test.ts (validates the real content)
 src/state/                      rules.ts (hearts, XP, guard), app.ts (reducer)
 src/storage/progress.ts         localStorage progress, never throws
 src/quiz/                       types.ts (session/answer state), session.ts (pure reducer), grade.ts, feedback.ts, useArmed.ts, Quiz.tsx, FeedbackSheet.tsx, QuizEnd.tsx
 src/quiz/renderers/             one per item type: Approve, PermissionPrompt, Choice, PairBoard, OrderList, HiddenDoc, Chain, BrowserFrame, TerminalFrame, ItemBody
-src/screens/                    Home.tsx, Learn.tsx, demos/ (TerminalDemo, ContextDemo, AnatomyDemo)
-src/components/                 Button, ProgressBar, HeartCount, RichText, LangSwitch, icons
+src/screens/                    Home.tsx, Learn.tsx, cards/DocsList.tsx, demos/ (TerminalDemo, ContextDemo, AnatomyDemo)
+src/components/                 Button, DocLink, ProgressBar, HeartCount, RichText, LangSwitch, icons
 src/test/                       setup.ts (vitest setup), fixtures.ts (a demo unit with every card/item shape)
 e2e/                            Playwright specs + helpers.ts (reads every content/units/*.json)
 ```
@@ -55,7 +55,7 @@ Each `.tsx` with styles has a sibling `.module.css`; tests sit next to their fil
 
 ## Content tasks
 
-- Write `content/units/<key>.json`, set the unit's `status` to `ready` in `content/course.json` (plus `lastChecked` as `YYYY-MM-DD` and at least one source URL), then run `npm test`. Ready units need 3-5 cards and 8-12 items.
+- Write `content/units/<key>.json`, set the unit's `status` to `ready` in `content/course.json` (plus `lastChecked` and `linksChecked` as `YYYY-MM-DD`, and 3–8 `docs` entries, each a slug from `src/content/docs.ts` or an allowed full URL plus a "read this if…" note), then run `npm test`. Ready units need 3-5 cards and 8-12 items.
 - Every Claude Code claim (tool names, modes, prompts, settings) must match `docs/claude-code-facts.md`; add a sourced entry there first if a fact is missing.
 - Unit contents are discovered by a Vite glob at test time. After adding or renaming a unit file, clear `node_modules/.vitest-cache` (and any `.vitest-cache`) if tests do not see it.
 - Planted attack text (injection lessons: hidden instructions, fake "pre-approved" notes, poisoned CLAUDE.md lines) is inert teaching material. It may only ask for harmless, obviously fake actions on reserved hosts (`*.example`, `example.com|net|org`, `*.test`, `*.invalid`, `localhost`) with fake secrets containing `FAKE`. Never use real hosts outside the `src/content/hosts.ts` allowlist, real credentials, or text that would work as an attack against a real tool. There are no copy buttons anywhere, so nobody can copy it out.

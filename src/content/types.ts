@@ -1,4 +1,4 @@
-import type { Localized } from '../i18n/lang';
+import type { Lang, Localized } from '../i18n/lang';
 
 type L = Localized;
 
@@ -18,10 +18,19 @@ export const ITEM_TYPES: readonly ItemType[] = [
 export const APPROVE_CHOICES = ['yes', 'always', 'no'] as const;
 export type ApproveChoice = (typeof APPROVE_CHOICES)[number];
 
+/** A link to the official docs: a slug (+ anchor) on code.claude.com, or a full URL with its language. */
+export type DocRef = { slug: string; anchor?: string } | { url: string; lang: Lang };
+export interface DocEntry {
+  ref: DocRef;
+  /** "Read this if…" */
+  note: L;
+}
+
 interface Base {
   id: string;
   prompt: L;
   explain: L;
+  more?: DocRef;
 }
 export interface ApproveItem extends Base {
   type: 'approve';
@@ -120,6 +129,7 @@ export interface Card {
   body: L[];
   key?: L;
   demo?: Demo;
+  more?: DocRef;
 }
 
 export type UnitStatus = 'ready' | 'soon';
@@ -130,7 +140,8 @@ export interface UnitMeta {
   blurb: L;
   chips: string[];
   lastChecked?: string;
-  sources?: string[];
+  docs?: DocEntry[];
+  linksChecked?: string;
 }
 export interface UnitBody {
   cards: Card[];

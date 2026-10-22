@@ -61,6 +61,10 @@ export interface UiStrings {
   retriedNote: string;
   backToHome: string;
   keyIdea: string;
+  learnMore: string;
+  officialDocs: string;
+  opensNewTab: string;
+  englishPage: string;
   colorByAuthor: string;
   clear: string;
   tryCommand: string;
@@ -143,6 +147,10 @@ const en: UiStrings = {
   retriedNote: 'Missed questions came back until you got them. That is the point.',
   backToHome: 'Back to home',
   keyIdea: 'Key idea',
+  learnMore: 'Learn more',
+  officialDocs: 'Official docs',
+  opensNewTab: '(opens in a new tab)',
+  englishPage: 'English page',
   colorByAuthor: 'Color by who wrote it',
   clear: 'Clear',
   tryCommand: 'Tap a command to run it. Nothing here touches a real computer.',
@@ -222,6 +230,10 @@ const ja: UiStrings = {
   retriedNote: '間違えた問題は、正解するまで戻ってきます。それが狙いです。',
   backToHome: 'ホームへ戻る',
   keyIdea: 'ポイント',
+  learnMore: 'もっと詳しく',
+  officialDocs: '公式ドキュメント',
+  opensNewTab: '（新しいタブで開きます）',
+  englishPage: '英語ページ',
   colorByAuthor: '書いた人で色分け',
   clear: 'クリア',
   tryCommand: 'コマンドをタップして実行してみましょう。ここでは本物のコンピューターには何も起きません。',

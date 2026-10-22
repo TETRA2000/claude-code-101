@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { DocLink } from '../components/DocLink';
 import { CheckCircleIcon, XCircleIcon } from '../components/icons';
 import { RichText } from '../components/RichText';
 import type { Item } from '../content/types';
@@ -21,7 +22,7 @@ interface Props {
 /** Slides up after Check. Must be rendered inside an always-present aria-live region. */
 export function FeedbackSheet({ item, answer, index, guardMs, onContinue }: Props) {
   const { lang, ui } = useLang();
-  const { title, headline, body, explain } = feedbackFor(item, answer, index, lang);
+  const { title, headline, body, explain, more } = feedbackFor(item, answer, index, lang);
   const continueRef = useRef<HTMLButtonElement>(null);
   const armed = useArmed('sheet', guardMs);
 
@@ -45,6 +46,7 @@ export function FeedbackSheet({ item, answer, index, guardMs, onContinue }: Prop
       <p className={styles.explain}>
         <RichText text={explain} />
       </p>
+      {more && <DocLink docRef={more} />}
       <button
         ref={continueRef}
         type="button"

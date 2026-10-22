@@ -1,0 +1,5 @@
+.docs { display: flex; flex-direction: column; gap: 8px; min-width: 0; text-align: left; }
+.heading { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.item { display: flex; flex-direction: column; min-width: 0; border-left: 3px solid var(--line-strong); padding-left: 10px; }
+.note { color: var(--ink-muted); font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }

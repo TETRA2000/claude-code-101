@@ -3,10 +3,12 @@ import { Button } from '../components/Button';
 import { CloseIcon } from '../components/icons';
 import { LangSwitch } from '../components/LangSwitch';
 import { ProgressBar } from '../components/ProgressBar';
+import { DocLink } from '../components/DocLink';
 import { RichText } from '../components/RichText';
 import type { Card, Demo, UnitMeta } from '../content/types';
 import { useLang } from '../i18n/LangContext';
 import type { Action } from '../state/app';
+import { DocsList } from './cards/DocsList';
 import { AnatomyDemo } from './demos/AnatomyDemo';
 import { ContextDemo } from './demos/ContextDemo';
 import { TerminalDemo } from './demos/TerminalDemo';
@@ -68,6 +70,8 @@ export function Learn({ unit, cards, card, dispatch }: Props) {
               </p>
             </aside>
           )}
+          {c.more && <DocLink docRef={c.more} />}
+          {last && <DocsList docs={unit.docs} />}
         </section>
         {c.demo && (
           <section className={styles.demo} key={c.id}>

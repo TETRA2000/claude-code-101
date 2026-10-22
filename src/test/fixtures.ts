@@ -9,7 +9,12 @@ const demoMeta: UnitMeta = {
   blurb: { en: 'One of everything, for tests.', ja: 'テスト用に、すべての種類をひとつずつ。' },
   chips: ['approve', 'chain'],
   lastChecked: '2026-10-21',
-  sources: ['https://code.claude.com/docs/en/permissions'],
+  docs: [
+    { ref: { slug: 'permissions', anchor: 'manage-permissions' }, note: { en: 'Read this to manage rules.', ja: '権限ルールを管理したいときに。' } },
+    { ref: { slug: 'security' }, note: { en: 'Read this for the safety model.', ja: '安全の考え方を知りたいときに。' } },
+    { ref: { url: 'https://support.claude.com/en/articles/12012173', lang: 'en' }, note: { en: 'Read this for Chrome help.', ja: 'Chrome のヘルプを読みたいときに。' } },
+  ],
+  linksChecked: '2026-10-22',
 };
 
 const demoBody: UnitBody = {
@@ -19,6 +24,7 @@ const demoBody: UnitBody = {
       title: { en: 'The terminal', ja: 'ターミナル' },
       body: [{ en: 'Type a command and press Enter.', ja: 'コマンドを入力して Enter を押します。' }],
       key: { en: 'Hidden files start with a dot.', ja: '隠しファイルはドットで始まります。' },
+      more: { slug: 'claude-directory' },
       demo: {
         kind: 'terminal',
         cwd: '~/project',

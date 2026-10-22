@@ -1,4 +1,4 @@
-import type { Item } from '../content/types';
+import type { DocRef, Item } from '../content/types';
 import { APPROVE_CHOICES } from '../content/types';
 import { t, type Lang } from '../i18n/lang';
 import { UI } from '../i18n/ui';
@@ -11,6 +11,7 @@ export interface FeedbackText {
   /** The chosen option's own feedback; null when it has none. */
   body: string | null;
   explain: string;
+  more?: DocRef;
 }
 
 export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lang): FeedbackText {
@@ -44,5 +45,5 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
   }
 
   const title = a.ok ? (ui.praise[index % ui.praise.length] ?? '') : headline ? ui.breaking : ui.notQuite;
-  return { ok: a.ok, title, headline, body, explain };
+  return { ok: a.ok, title, headline, body, explain, more: item.more };
 }

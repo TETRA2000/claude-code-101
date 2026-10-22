@@ -16,9 +16,37 @@
       "pairs"
     ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "claude-directory"
+        },
+        "note": {
+          "en": "Read this if you want to know which files and folders Claude Code reads and writes (CLAUDE.md, settings, .claude).",
+          "ja": "Claude Code がどのファイルやフォルダを読み書きするか（CLAUDE.md、設定、.claude）を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "how-claude-code-works",
+          "anchor": "work-with-sessions"
+        },
+        "note": {
+          "en": "Read this if you want to see how Claude Code works in your folders and sessions.",
+          "ja": "Claude Code がフォルダやセッションの中でどう動くかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "overview"
+        },
+        "note": {
+          "en": "Read this if you want a map of what Claude Code is and where to start.",
+          "ja": "Claude Code とは何か、どこから始めるかの全体像がほしいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "agent",
@@ -37,14 +65,63 @@
       "predict"
     ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/how-claude-code-works",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/memory",
-      "https://code.claude.com/docs/en/mcp",
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/sandboxing"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "how-claude-code-works"
+        },
+        "note": {
+          "en": "Read this if you want the agent loop and the tools Claude uses, explained end to end.",
+          "ja": "エージェントループと Claude が使うツールを、通して理解したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "context-window"
+        },
+        "note": {
+          "en": "Read this if you want to see what fills the context window and what happens when it gets full.",
+          "ja": "コンテキストウィンドウに何が入り、いっぱいになると何が起きるかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "memory"
+        },
+        "note": {
+          "en": "Read this if you want Claude to remember your project rules with CLAUDE.md.",
+          "ja": "CLAUDE.md でプロジェクトのルールを Claude に覚えさせたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "features-overview"
+        },
+        "note": {
+          "en": "Read this if you are choosing between memory, skills, MCP, hooks and other extensions.",
+          "ja": "メモリ、スキル、MCP、フックなど、どの拡張を使うか迷っているとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "checkpointing"
+        },
+        "note": {
+          "en": "Read this if you want to rewind Claude's edits to an earlier point.",
+          "ja": "Claude の編集を以前の状態まで巻き戻したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sessions"
+        },
+        "note": {
+          "en": "Read this if you want to resume, name or branch your sessions.",
+          "ja": "セッションを再開したり、名前を付けたり、枝分かれさせたりしたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "permissions",
@@ -63,16 +140,56 @@
       "setup"
     ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/interactive-mode",
-      "https://code.claude.com/docs/en/settings",
-      "https://code.claude.com/docs/en/security",
-      "https://code.claude.com/docs/en/desktop",
-      "https://code.claude.com/docs/en/desktop-quickstart"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "permissions"
+        },
+        "note": {
+          "en": "Read this if you want to write allow, ask and deny rules and see how they are checked.",
+          "ja": "allow・ask・deny のルールの書き方と、その判定のされ方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes"
+        },
+        "note": {
+          "en": "Read this if you want to know what each permission mode changes and how to switch.",
+          "ja": "各許可モードが何を変えるのか、どう切り替えるのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "permission-modes",
+          "anchor": "protected-paths"
+        },
+        "note": {
+          "en": "Read this if you want to know which folders and files stay protected in every mode.",
+          "ja": "どのモードでも守られるフォルダやファイルを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the big picture of how Claude Code keeps you safe.",
+          "ja": "Claude Code がどのように安全を守るのか、全体像を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop",
+          "anchor": "choose-a-permission-mode"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app and want to pick its permission mode.",
+          "ja": "デスクトップアプリを使っていて、許可モードを選びたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "injection",
@@ -91,15 +208,47 @@
       "approve"
     ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/security",
-      "https://code.claude.com/docs/en/memory",
-      "https://code.claude.com/docs/en/how-claude-code-works",
-      "https://code.claude.com/docs/en/tools-reference",
-      "https://code.claude.com/docs/en/mcp"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "security",
+          "anchor": "protect-against-prompt-injection"
+        },
+        "note": {
+          "en": "Read this if you want to know how Claude Code defends against prompt injection and what is still on you.",
+          "ja": "Claude Code がプロンプトインジェクションにどう備えているか、そしてあなたの役割は何かを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "tools-reference",
+          "anchor": "webfetch-tool-behavior"
+        },
+        "note": {
+          "en": "Read this if you want to know what the web fetch tool does with the pages it reads.",
+          "ja": "Web 取得ツールが読み込んだページをどう扱うかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "memory"
+        },
+        "note": {
+          "en": "Read this if you want to know which memory files Claude trusts and loads at startup.",
+          "ja": "Claude がどのメモリファイルを読み込み、信頼するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "mcp"
+        },
+        "note": {
+          "en": "Read this if you connect MCP servers and want the security warning about untrusted ones.",
+          "ja": "MCP サーバーをつなぐ前に、信頼できないサーバーについての注意を読みたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "browser",
@@ -121,13 +270,55 @@
       "predict"
     ],
     "lastChecked": "2026-10-22",
-    "sources": [
-      "https://code.claude.com/docs/en/chrome",
-      "https://code.claude.com/docs/en/desktop",
-      "https://code.claude.com/docs/en/permissions",
-      "https://code.claude.com/docs/en/permission-modes",
-      "https://code.claude.com/docs/en/mcp"
-    ]
+    "docs": [
+      {
+        "ref": {
+          "slug": "chrome"
+        },
+        "note": {
+          "en": "Read this if you want to use Claude Code with your Chrome browser and know what it can see.",
+          "ja": "Chrome ブラウザで Claude Code を使うとき、何が見えるのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "desktop"
+        },
+        "note": {
+          "en": "Read this if you use the desktop app's browser pane or computer use.",
+          "ja": "デスクトップアプリのブラウザペインやコンピューター操作を使うとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "computer-use"
+        },
+        "note": {
+          "en": "Read this if you want to know how Claude controls your screen and how to limit it.",
+          "ja": "Claude が画面をどう操作するのか、どう制限するのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "security"
+        },
+        "note": {
+          "en": "Read this if you want the safety model behind browser and computer actions.",
+          "ja": "ブラウザやコンピューター操作の背後にある安全の考え方を知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "url": "https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome",
+          "lang": "en"
+        },
+        "note": {
+          "en": "Read this if you want the step-by-step setup for Claude in Chrome.",
+          "ja": "Claude in Chrome のセットアップ手順を順番に確認したいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "powers",

@@ -1,6 +1,7 @@
+import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
-import type { Item, UnitBody } from './types';
+import type { DocRef, Item, UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -38,6 +39,36 @@ function hostOf(s: string): string {
 
 const hostAllowed = (h: string) => isReservedHost(h) || REAL_HOSTS.includes(h);
 
+/** Link fields are checked by `checkRef`, not by the simulation host rule. */
+const LINK_KEYS = new Set(['docs', 'more']);
+const withoutLinks = (v: unknown): unknown =>
+  v && typeof v === 'object' && !Array.isArray(v)
+    ? Object.fromEntries(Object.entries(v).filter(([k]) => !LINK_KEYS.has(k)))
+    : v;
+
+/** Link rules: known slug, or a full URL on an allowed host (github.com only under /anthropics/). */
+function checkRef(where: string, ref: DocRef, out: string[]): void {
+  if ('slug' in ref) {
+    if (!DOC_SLUGS.includes(ref.slug)) out.push(`${where}: unknown doc slug "${ref.slug}"`);
+    return;
+  }
+  let u: URL;
+  try {
+    u = new URL(ref.url);
+  } catch {
+    out.push(`${where}: link "${ref.url}" is not a URL`);
+    return;
+  }
+  const host = u.hostname.toLowerCase();
+  const isDocs = host === 'code.claude.com';
+  if (u.protocol !== 'https:') out.push(`${where}: link "${ref.url}" must be https`);
+  else if (isDocs) out.push(`${where}: use a doc slug for ${ref.url}`);
+  else if (!LINK_HOSTS.includes(host)) out.push(`${where}: link host "${host}" not allowed`);
+  else if (host === 'github.com' && !u.pathname.toLowerCase().startsWith('/anthropics/')) {
+    out.push(`${where}: link host "github.com" only allows /anthropics/ paths`);
+  }
+}
+
 /** Rules 1, 12, 13 for any piece of content: empty text, unlisted hosts, live-looking secrets. */
 function checkText(where: string, v: unknown, extraUrls: string[], out: string[]): void {
   walkLocalized(v, '', (l, path) => {
@@ -47,7 +78,7 @@ function checkText(where: string, v: unknown, extraUrls: string[], out: string[]
   });
   const hosts = new Set<string>();
   for (const u of extraUrls) hosts.add(hostOf(u));
-  walkStrings(v, '', (s, path) => {
+  walkStrings(withoutLinks(v), '', (s, path) => {
     for (const m of s.matchAll(URL_IN_TEXT)) hosts.add(hostOf(m[0]));
     if (SECRET.test(s) && !s.includes('FAKE')) out.push(`${where}: secret-looking text without FAKE at ${path}`);
   });
@@ -123,6 +154,8 @@ function checkItem(it: Item): string[] {
   return p;
 }
 
+export const DOCS_RANGE = [3, 8] as const;
+
 /** Transitional size ranges for ready units. */
 export const CARD_RANGE = [3, 7] as const;
 export const ITEM_RANGE = [8, 14] as const;
@@ -137,6 +170,7 @@ export function validateContent(c: Content): string[] {
 
   for (const u of c.units) {
     checkText(u.key, u, [], out);
+    for (const d of u.docs ?? []) checkRef(u.key, d.ref, out);
     for (const chip of u.chips) {
       if (!typeKeys.has(chip)) out.push(`${u.key}: chip "${chip}" is not a practice type`);
     }
@@ -145,7 +179,9 @@ export function validateContent(c: Content): string[] {
     if (u.status === 'ready') {
       if (!body) out.push(`${u.key}: ready unit has no body file`);
       if (!u.lastChecked || !DATE.test(u.lastChecked)) out.push(`${u.key}: lastChecked must be YYYY-MM-DD`);
-      if (!u.sources || u.sources.length === 0) out.push(`${u.key}: ready unit needs at least one source`);
+      if (!u.linksChecked || !DATE.test(u.linksChecked)) out.push(`${u.key}: linksChecked must be YYYY-MM-DD`);
+      const nd = u.docs?.length ?? 0;
+      if (nd < DOCS_RANGE[0] || nd > DOCS_RANGE[1]) out.push(`${u.key}: ready unit needs ${DOCS_RANGE[0]}–${DOCS_RANGE[1]} docs, has ${nd}`);
       if (body) {
         const nc = body.cards.length;
         const ni = body.items.length;
@@ -157,13 +193,17 @@ export function validateContent(c: Content): string[] {
     }
     if (!body) continue;
 
-    for (const card of body.cards) checkText(`${u.key}/${card.id}`, card, [], out);
+    for (const card of body.cards) {
+      checkText(`${u.key}/${card.id}`, card, [], out);
+      if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
+    }
     for (const it of body.items) {
       const where = `${u.key}/${it.id}`;
       const prev = seenIds.get(it.id);
       if (prev) out.push(`${where}: duplicate item id (also in ${prev})`);
       else seenIds.set(it.id, u.key);
       checkText(where, it, structuredUrls(it), out);
+      if (it.more) checkRef(where, it.more, out);
       for (const msg of checkItem(it)) out.push(`${where}: ${msg}`);
     }
   }

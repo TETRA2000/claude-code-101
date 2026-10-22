@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { LangProvider } from '../i18n/LangContext';
@@ -17,6 +17,24 @@ function setup(card: number) {
   );
   return dispatch;
 }
+
+describe('Learn docs links', () => {
+  it('shows the card\'s Learn more link', () => {
+    setup(0);
+    const a = screen.getByRole('link', { name: /Learn more/ });
+    expect(a).toHaveAttribute('href', 'https://code.claude.com/docs/en/claude-directory');
+    expect(a).toHaveAttribute('target', '_blank');
+  });
+  it('shows the unit\'s official docs list on the last card only', () => {
+    setup(0);
+    expect(screen.queryByRole('heading', { name: 'Official docs' })).toBeNull();
+    cleanup();
+    setup(2);
+    expect(screen.getByRole('heading', { name: 'Official docs' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link')).toHaveLength(unit.docs!.length);
+    expect(screen.getByText('Read this for the safety model.')).toBeInTheDocument();
+  });
+});
 
 describe('Learn', () => {
   it('first card: no Back, shows key idea, Next goes to card 1', async () => {

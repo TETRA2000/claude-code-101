@@ -209,8 +209,45 @@ describe('validateContent', () => {
     expectOne(mutated((p) => void (p.units[0]!.lastChecked = '21 Oct 2026')), 'demo');
   });
 
-  it('15: flags a ready unit with no sources', () => {
-    expectOne(mutated((p) => void (p.units[0]!.sources = [])), 'demo');
+  it('15: flags a ready unit with 2 or 9 docs', () => {
+    const doc = { ref: { slug: 'permissions' }, note: { en: 'Read this.', ja: '読む。' } };
+    for (const n of [2, 9]) {
+      const problems = mutated((p) => void (p.units[0]!.docs = Array.from({ length: n }, () => structuredClone(doc))));
+      expect(problems).toEqual(['demo: ready unit needs 3–8 docs, has ' + n]);
+    }
+  });
+
+  it('15: flags a ready unit with a missing or malformed linksChecked', () => {
+    expectOne(mutated((p) => void delete p.units[0]!.linksChecked), 'linksChecked');
+    expectOne(mutated((p) => void (p.units[0]!.linksChecked = '22/10/2026')), 'linksChecked');
+  });
+
+  it('18: flags an unknown doc slug', () => {
+    const problems = mutated((p) => void (p.units[0]!.docs![0]!.ref = { slug: 'x' }));
+    expect(problems).toEqual(['demo: unknown doc slug "x"']);
+  });
+
+  it('18: flags a link host that is not allowed', () => {
+    const problems = mutated((p) => void (p.units[0]!.docs![0]!.ref = { url: 'https://evil.example/a', lang: 'en' }));
+    expect(problems).toEqual(['demo: link host "evil.example" not allowed']);
+  });
+
+  it('18: allows github.com only under /anthropics/', () => {
+    expect(mutated((p) => void (p.units[0]!.docs![0]!.ref = { url: 'https://github.com/anthropics/sandbox-runtime', lang: 'en' }))).toEqual([]);
+    const problems = mutated((p) => void (p.units[0]!.docs![0]!.ref = { url: 'https://github.com/other/repo', lang: 'en' }));
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('github.com');
+  });
+
+  it('18: checks `more` on cards and items too', () => {
+    expect(mutated((p) => void (p.bodies.demo!.cards[0]!.more = { slug: 'nope' }))).toEqual(['demo/demo-card-terminal: unknown doc slug "nope"']);
+    expect(mutated((p) => void (item<ApproveItem>(p, 'demo-approve').more = { url: 'https://bad.example/', lang: 'en' }))).toEqual([
+      'demo/demo-approve: link host "bad.example" not allowed',
+    ]);
+  });
+
+  it('18: flags an empty doc note', () => {
+    expectOne(mutated((p) => void (p.units[0]!.docs![0]!.note.ja = '')), 'ja text empty');
   });
 
   it('16: flags a ready unit with no body', () => {
