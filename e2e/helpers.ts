@@ -80,6 +80,19 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
       for (const i of picks) await lines.nth(i).click();
       return;
     }
+    case 'settings':
+    case 'review':
+    case 'trim': {
+      const lines = page.locator('[data-settings-file] button');
+      const picks = wrong ? [item.lines.findIndex((_, k) => !item.answer.includes(k))] : item.answer;
+      for (const i of picks) await lines.nth(i).click();
+      return;
+    }
+    case 'precedence': {
+      const i = wrong ? item.opts.findIndex((_, k) => k !== item.answer) : item.answer;
+      await page.getByTestId('precedence-options').getByRole('button', { name: item.opts[i]?.text[lang] ?? '', exact: true }).click();
+      return;
+    }
     case 'order': {
       const cur = [...item.start];
       const label = (id: string) => item.steps.find((s) => s.id === id)?.text[lang] ?? id;

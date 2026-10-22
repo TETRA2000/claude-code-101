@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ApproveItem, ChoiceItem, Item } from '../content/types';
+import type { ApproveItem, ChoiceItem, Item, SettingsItem } from '../content/types';
 import { fixtureContent } from '../test/fixtures';
 import { canCheck, freshAnswer, isAutoGraded, isCorrect } from './grade';
 
@@ -54,6 +54,27 @@ describe('isCorrect', () => {
     expect(isCorrect(it, ans(it, { picked: [2, 1] }))).toBe(true);
     expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(false);
     expect(isCorrect(it, ans(it, { picked: [1, 2, 0] }))).toBe(false);
+  });
+
+  it('settings needs exactly the answer set, in any order (review and trim too)', () => {
+    const base = get<SettingsItem>('settings');
+    const it = { ...base, answer: [1, 2] };
+    expect(isCorrect(it, ans(it, { picked: [2, 1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(false);
+    expect(isCorrect(it, ans(it, { picked: [1, 2, 0] }))).toBe(false);
+    for (const type of ['review', 'trim'] as const) {
+      const other = { ...it, type };
+      expect(isCorrect(other, ans(other, { picked: [1, 2] }))).toBe(true);
+      expect(canCheck(other, freshAnswer(other))).toBe(false);
+      expect(canCheck(other, ans(other, { picked: [0] }))).toBe(true);
+    }
+  });
+
+  it('precedence compares sel with answer', () => {
+    const it = get<Extract<Item, { type: 'precedence' }>>('precedence');
+    expect(isCorrect(it, ans(it, { sel: it.answer }))).toBe(true);
+    expect(isCorrect(it, ans(it, { sel: it.answer + 1 }))).toBe(false);
+    expect(canCheck(it, ans(it, { sel: 0 }))).toBe(true);
   });
 
   it('order needs the steps order', () => {

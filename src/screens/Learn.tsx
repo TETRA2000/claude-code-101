@@ -14,6 +14,7 @@ import { TryIt } from './cards/TryIt';
 import { AnatomyDemo } from './demos/AnatomyDemo';
 import { ContextDemo } from './demos/ContextDemo';
 import { RulesDemo } from './demos/RulesDemo';
+import { SettingsDemo } from './demos/SettingsDemo';
 import { TerminalDemo } from './demos/TerminalDemo';
 import styles from './Learn.module.css';
 
@@ -34,6 +35,8 @@ function DemoView({ demo }: { demo: Demo }) {
       return <AnatomyDemo demo={demo} />;
     case 'rules':
       return <RulesDemo demo={demo} />;
+    case 'settings':
+      return <SettingsDemo demo={demo} />;
   }
 }
 

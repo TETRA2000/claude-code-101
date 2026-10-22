@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
-import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, RuleItem, UnitBody } from './types';
+import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, RuleItem, SettingsItem, UnitBody } from './types';
 import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
@@ -510,6 +510,54 @@ describe('validateContent', () => {
       expect(mutated((p) => void rule(p).existing!.push({ list: 'deny', text: 'nope(' }))).toEqual([
         'demo/demo-rule: existing rule "nope(" does not parse',
       ]);
+    });
+  });
+
+  describe('settings items', () => {
+    const settings = (p: Parts) => item<SettingsItem>(p, 'demo-settings');
+    it('flags an empty or out-of-range answer', () => {
+      expectOne(mutated((p) => void (settings(p).answer = [])), 'settings.answer is empty');
+      expectOne(mutated((p) => void (settings(p).answer = [2, 9])), 'settings.answer out of range');
+    });
+    it('applies to review and trim too', () => {
+      expectOne(mutated((p) => void Object.assign(settings(p), { type: 'trim', answer: [9] })), 'answer out of range');
+    });
+    it('flags a note keyed by a line that does not exist', () => {
+      expectOne(mutated((p) => void (settings(p).notes!['9'] = { en: 'x', ja: 'x' })), 'settings.notes key "9"');
+    });
+    it('flags a settings file line that holds a live-looking secret', () => {
+      expectOne(mutated((p) => void settings(p).lines.push('"token": "sk_live_abc"')), 'secret-looking');
+    });
+  });
+
+  describe('precedence items', () => {
+    const prec = (p: Parts) => item<PrecedenceItem>(p, 'demo-precedence');
+    it('flags an answer out of range', () => {
+      expectOne(mutated((p) => void (prec(p).answer = 5)), 'precedence.answer 5 out of range');
+    });
+    it('flags a wrong option without feedback', () => {
+      expectOne(mutated((p) => void delete prec(p).opts[0]!.feedback), 'precedence option 0 needs feedback');
+    });
+    it('flags duplicate scopes in files', () => {
+      expectOne(mutated((p) => void (prec(p).files[1]!.scope = 'user')), 'duplicate scope "user"');
+    });
+    it('flags fewer than two files', () => {
+      expectOne(mutated((p) => void prec(p).files.pop()), 'precedence needs at least 2 files');
+    });
+  });
+
+  describe('settings demo', () => {
+    const demo = (p: Parts) => {
+      const d = p.bodies.demo!.cards.find((c) => c.demo?.kind === 'settings')!.demo;
+      if (d?.kind !== 'settings') throw new Error('expected settings demo');
+      return d;
+    };
+    it.each(['allow', 'ask', 'deny'])('rejects the list key "%s" (lists merge, F11)', (key) => {
+      expectOne(mutated((p) => void (demo(p).key = key)), `settings demo key "${key}"`);
+    });
+    it('flags duplicate scopes and a key no file sets', () => {
+      expectOne(mutated((p) => void (demo(p).files[1]!.scope = 'user')), 'duplicate scope "user"');
+      expectOne(mutated((p) => void (demo(p).key = 'model')), 'no file sets "model"');
     });
   });
 });

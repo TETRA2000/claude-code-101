@@ -35,6 +35,7 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
       break;
     }
     case 'predict':
+    case 'precedence':
     case 'setup':
     case 'combo': {
       const fb = sel === null ? undefined : item.opts[sel]?.feedback;

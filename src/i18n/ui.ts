@@ -1,4 +1,5 @@
 import type { Lang } from './lang';
+import type { Scope } from '../content/types';
 
 export interface UiStrings {
   appTitle: string;
@@ -111,6 +112,18 @@ export interface UiStrings {
   ruleTestOk: string;
   ruleTestMiss: string;
   ruleTestsTitle: string;
+  scopeLabel: Record<Scope, string>;
+  settingsProblemMark: string;
+  settingsFineMark: string;
+  settingsFilesTitle: string;
+  precedenceOptions: string;
+  settingsDemoHint: string;
+  settingsHighest: string;
+  settingsWhoTitle: string;
+  settingsPickFile: string;
+  settingsWinsTitle: string;
+  settingsWins: (key: string, value: string, where: string) => string;
+  settingsNoWinner: (key: string) => string;
 }
 
 /** Keys whose Japanese value is intentionally identical to English. */
@@ -225,6 +238,24 @@ const en: UiStrings = {
   ruleTestOk: 'As the goal wants',
   ruleTestMiss: 'Not what the goal wants',
   ruleTestsTitle: 'Test calls',
+  scopeLabel: {
+    managed: 'Managed (your organization)',
+    cli: '--settings (command line)',
+    local: 'Local (this project, just you)',
+    project: 'Project (shared)',
+    user: 'User',
+  },
+  settingsProblemMark: 'Problem line',
+  settingsFineMark: 'Not a problem',
+  settingsFilesTitle: 'Settings files',
+  precedenceOptions: 'Pick the winner',
+  settingsDemoHint: 'Click a settings file to see who it affects. Highest priority is at the top. Nothing here changes a real file.',
+  settingsHighest: 'Highest priority first',
+  settingsWhoTitle: 'Who it affects',
+  settingsPickFile: 'Pick a file above.',
+  settingsWinsTitle: 'Which value wins',
+  settingsWins: (key, value, where) => `${key} is ${value}, set in ${where}.`,
+  settingsNoWinner: (key) => `No file sets ${key}.`,
 };
 
 const ja: UiStrings = {
@@ -336,6 +367,24 @@ const ja: UiStrings = {
   ruleTestOk: '目標どおり',
   ruleTestMiss: '目標と違う',
   ruleTestsTitle: 'テストの呼び出し',
+  scopeLabel: {
+    managed: '管理設定（組織）',
+    cli: '--settings（コマンドライン）',
+    local: 'ローカル（このプロジェクト、自分だけ）',
+    project: 'プロジェクト（共有）',
+    user: 'ユーザー',
+  },
+  settingsProblemMark: '問題のある行',
+  settingsFineMark: '問題なし',
+  settingsFilesTitle: '設定ファイル',
+  precedenceOptions: '勝つ値を選ぶ',
+  settingsDemoHint: '設定ファイルをクリックすると、誰に効くかが分かります。上ほど優先されます。実際のファイルは変更されません。',
+  settingsHighest: '優先度の高い順',
+  settingsWhoTitle: '誰に効くか',
+  settingsPickFile: '上のファイルを選んでください。',
+  settingsWinsTitle: '勝つ値',
+  settingsWins: (key, value, where) => `${key} は ${value} です（${where} で設定）。`,
+  settingsNoWinner: (key) => `${key} を設定しているファイルはありません。`,
 };
 
 export const UI: Record<Lang, UiStrings> = { en, ja };

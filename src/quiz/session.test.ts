@@ -156,6 +156,16 @@ describe('move and togglePick', () => {
     expect(on.answer.picked).toEqual([2]);
     expect(run(on, { type: 'togglePick', line: 2 }).answer.picked).toEqual([]);
   });
+  it('togglePick also works on settings items, and they are graded by check', () => {
+    const h = startSession('demo', [get('settings')]);
+    const on = run(h, { type: 'togglePick', line: 2 });
+    expect(on.answer.picked).toEqual([2]);
+    expect(run(on, { type: 'check' }).answer.ok).toBe(true);
+    expect(run(h, { type: 'togglePick', line: 1 }, { type: 'check' }).answer.ok).toBe(false);
+  });
+  it('togglePick is ignored on a precedence item', () => {
+    expect(run(startSession('demo', [get('precedence')]), { type: 'togglePick', line: 0 }).answer.picked).toEqual([]);
+  });
   it('the hidden item is graded by check', () => {
     const s = run(startSession('demo', [get('hidden')]), { type: 'togglePick', line: 2 }, { type: 'check' });
     expect(s.answer.ok).toBe(true);

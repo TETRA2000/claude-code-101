@@ -105,6 +105,35 @@ const demoBody: UnitBody = {
         ],
       },
     },
+    {
+      id: 'demo-card-settings',
+      title: { en: 'The settings stack', ja: '設定の重なり' },
+      body: [{ en: 'Click a file to see who it affects.', ja: 'ファイルをクリックして、誰に効くか見てみましょう。' }],
+      demo: {
+        kind: 'settings',
+        key: 'defaultMode',
+        files: [
+          {
+            scope: 'user',
+            path: '~/.claude/settings.json',
+            who: { en: 'You, in every project.', ja: 'すべてのプロジェクトのあなた。' },
+            lines: ['{', '  "permissions": {', '    "defaultMode": "default"', '  }', '}'],
+          },
+          {
+            scope: 'project',
+            path: '.claude/settings.json',
+            who: { en: 'Everyone working in this folder.', ja: 'このフォルダで作業する全員。' },
+            lines: ['{', '  "permissions": {', '    "defaultMode": "plan"', '  }', '}'],
+          },
+          {
+            scope: 'local',
+            path: '.claude/settings.local.json',
+            who: { en: 'You, in this one project only.', ja: 'あなた自身、このプロジェクトだけ。' },
+            lines: ['{', '  "permissions": {', '    "allow": ["Bash(npm test)"]', '  }', '}'],
+          },
+        ],
+      },
+    },
   ],
   items: [
     {
@@ -278,6 +307,36 @@ const demoBody: UnitBody = {
         { call: { tool: 'Bash', target: 'npm test' }, want: 'runs' },
         { call: { tool: 'Bash', target: 'ls -la' }, want: 'runs' },
       ],
+    },
+    {
+      id: 'demo-settings',
+      type: 'settings',
+      prompt: { en: 'Tap the dangerous line.', ja: '危険な行をタップしましょう。' },
+      explain: { en: 'Skipping permission checks removes your safety net.', ja: '許可の確認を飛ばすと、安全網がなくなります。' },
+      file: '.claude/settings.json',
+      scope: 'project',
+      lines: ['{', '  "permissions": {', '    "defaultMode": "bypassPermissions",', '    "deny": ["Read(./.env)"]', '  }', '}'],
+      notes: {
+        '2': { en: 'This turns off the prompts.', ja: 'これで確認が出なくなります。' },
+        '3': { en: 'This protects your secrets.', ja: 'これは秘密を守ります。' },
+      },
+      answer: [2],
+    },
+    {
+      id: 'demo-precedence',
+      type: 'precedence',
+      prompt: { en: 'Which file wins?', ja: 'どのファイルが優先されますか。' },
+      explain: { en: 'Local beats project, and project beats user.', ja: 'ローカルはプロジェクトに、プロジェクトはユーザーに優先します。' },
+      question: { en: 'What mode does Claude start in?', ja: 'Claude はどのモードで始まりますか。' },
+      files: [
+        { scope: 'user', path: '~/.claude/settings.json', lines: ['"defaultMode": "default"'] },
+        { scope: 'project', path: '.claude/settings.json', lines: ['"defaultMode": "plan"'] },
+      ],
+      opts: [
+        { text: { en: 'default', ja: 'default' }, mono: true, feedback: { en: 'That is the user file, the lowest.', ja: 'それはユーザー設定で、最も低い優先度です。' } },
+        { text: { en: 'plan', ja: 'plan' }, mono: true },
+      ],
+      answer: 1,
     },
   ],
 };

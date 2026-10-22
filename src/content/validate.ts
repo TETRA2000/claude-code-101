@@ -3,7 +3,7 @@ import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
 import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
-import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type RuleItem, type UnitBody } from './types';
+import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -202,6 +202,53 @@ function checkRule(it: RuleItem): string[] {
   return p;
 }
 
+/** Duplicate scopes among a list of settings files. */
+function duplicateScopes(files: readonly { scope: string }[]): string[] {
+  const seen = new Set<string>();
+  const p: string[] = [];
+  for (const f of files) {
+    if (seen.has(f.scope)) p.push(`duplicate scope "${f.scope}"`);
+    seen.add(f.scope);
+  }
+  return p;
+}
+
+/** Fix the settings (and review, trim): answer lines exist, notes point at real lines. */
+function checkSettings(it: SettingsItem): string[] {
+  const p: string[] = [];
+  if (it.lines.length === 0) p.push('settings.lines is empty');
+  if (it.answer.length === 0) p.push('settings.answer is empty');
+  else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push('settings.answer out of range');
+  for (const k of Object.keys(it.notes ?? {})) {
+    if (!/^\d+$/.test(k) || !inRange(Number(k), it.lines.length)) p.push(`settings.notes key "${k}" is not a line index`);
+  }
+  return p;
+}
+
+/** Which file wins: answer in range, every wrong option explains itself, one file per scope. */
+function checkPrecedence(it: PrecedenceItem): string[] {
+  const p: string[] = [];
+  if (it.files.length < 2) p.push('precedence needs at least 2 files');
+  p.push(...duplicateScopes(it.files));
+  if (!inRange(it.answer, it.opts.length)) p.push(`precedence.answer ${it.answer} out of range`);
+  else
+    it.opts.forEach((o, i) => {
+      if (i !== it.answer && !o.feedback) p.push(`precedence option ${i} needs feedback`);
+    });
+  return p;
+}
+
+/** List keys merge across files (F11), so "which value wins" does not apply to them. */
+const LIST_KEYS: readonly string[] = ['allow', 'ask', 'deny'];
+
+function checkSettingsDemo(demo: Extract<NonNullable<Card['demo']>, { kind: 'settings' }>): string[] {
+  const p: string[] = [];
+  if (LIST_KEYS.includes(demo.key)) return [`settings demo key "${demo.key}" is a list key; lists merge (F11)`];
+  p.push(...duplicateScopes(demo.files));
+  if (!demo.files.some((f) => f.lines.some((l) => l.includes(`"${demo.key}":`)))) p.push(`settings demo: no file sets "${demo.key}"`);
+  return p;
+}
+
 /** Rules 3–11 and 18: type-specific checks. */
 function checkItem(it: Item, unitKey: string): string[] {
   const p: string[] = [];
@@ -250,6 +297,14 @@ function checkItem(it: Item, unitKey: string): string[] {
     case 'rule':
       p.push(...checkRule(it));
       break;
+    case 'settings':
+    case 'review':
+    case 'trim':
+      p.push(...checkSettings(it));
+      break;
+    case 'precedence':
+      p.push(...checkPrecedence(it));
+      break;
   }
   return p;
 }
@@ -297,6 +352,7 @@ export function validateContent(c: Content): string[] {
       checkText(`${u.key}/${card.id}`, card, [], out);
       if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
       for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
+      if (card.demo?.kind === 'settings') for (const msg of checkSettingsDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'rules') for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
     }
     for (const it of body.items) {

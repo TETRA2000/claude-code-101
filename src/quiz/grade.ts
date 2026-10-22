@@ -27,6 +27,9 @@ export function canCheck(item: Item, a: AnswerState): boolean {
   if (a.checked || isAutoGraded(item)) return false;
   switch (item.type) {
     case 'hidden':
+    case 'settings':
+    case 'review':
+    case 'trim':
       return a.picked.length > 0;
     case 'order':
       return a.order.length > 0;
@@ -45,11 +48,15 @@ export function isCorrect(item: Item, a: AnswerState): boolean {
     }
     case 'predict':
     case 'chain':
+    case 'precedence':
       return a.sel === item.answer;
     case 'setup':
     case 'combo':
       return a.sel !== null && item.accept.includes(a.sel);
-    case 'hidden': {
+    case 'hidden':
+    case 'settings':
+    case 'review':
+    case 'trim': {
       const picked = new Set(a.picked);
       return picked.size === item.answer.length && item.answer.every((i) => picked.has(i));
     }

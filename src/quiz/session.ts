@@ -16,6 +16,9 @@ export type SessionAction =
   | { type: 'check' }
   | { type: 'next' };
 
+/** Items answered by tapping lines. */
+const PICK_TYPES: readonly Item['type'][] = ['hidden', 'settings', 'review', 'trim'];
+
 export { canCheck, freshAnswer, isAutoGraded, isCorrect };
 
 export function startSession(unitKey: string, items: readonly Item[], hearts = HEARTS_PER_RUN): Session {
@@ -94,7 +97,7 @@ export function sessionReducer(s: Session, action: SessionAction): Session {
       return item.type !== 'rule' || a.checked ? s : withAnswer(s, { list: action.list });
 
     case 'togglePick': {
-      if (item.type !== 'hidden' || a.checked) return s;
+      if (!PICK_TYPES.includes(item.type) || a.checked) return s;
       const picked = a.picked.includes(action.line) ? a.picked.filter((l) => l !== action.line) : [...a.picked, action.line];
       return withAnswer(s, { picked });
     }

@@ -4,7 +4,21 @@ import type { Call, Outcome, Rule, RuleList } from '../rules/match';
 type L = Localized;
 
 export type Surface = 'terminal' | 'desktop';
-export type ItemType = 'approve' | 'decode' | 'predict' | 'pairs' | 'order' | 'hidden' | 'chain' | 'combo' | 'setup' | 'rule';
+export type ItemType =
+  | 'approve'
+  | 'decode'
+  | 'predict'
+  | 'pairs'
+  | 'order'
+  | 'hidden'
+  | 'chain'
+  | 'combo'
+  | 'setup'
+  | 'rule'
+  | 'settings'
+  | 'review'
+  | 'trim'
+  | 'precedence';
 export const ITEM_TYPES: readonly ItemType[] = [
   'approve',
   'decode',
@@ -16,6 +30,10 @@ export const ITEM_TYPES: readonly ItemType[] = [
   'combo',
   'setup',
   'rule',
+  'settings',
+  'review',
+  'trim',
+  'precedence',
 ];
 /** Every answer an approve item can offer, in the order Claude Code lists them (F1). */
 export const APPROVE_CHOICES = ['yes', 'always', 'auto', 'no'] as const;
@@ -139,7 +157,31 @@ export interface RuleItem extends Base {
   patterns: string[];
   tests: { call: Call; want: Outcome }[];
 }
-export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem | RuleItem;
+/** The five settings scopes, named as the course shows them. */
+export type Scope = 'managed' | 'cli' | 'local' | 'project' | 'user';
+/** Highest precedence first (F11). */
+export const SCOPE_ORDER: readonly Scope[] = ['managed', 'cli', 'local', 'project', 'user'];
+/** Fix the settings: tap the line(s) that are wrong or dangerous. `review` and `trim` share this shape. */
+export interface SettingsItem extends Base {
+  type: 'settings' | 'review' | 'trim';
+  file: string;
+  scope?: Scope;
+  /** wave 2 `review`: a details pane shown above the file. */
+  header?: { title: string; rows: L[] };
+  lines: string[];
+  /** Feedback for a picked line, keyed by line index as a string. */
+  notes?: Record<string, L>;
+  answer: number[];
+}
+/** Which file wins? Several settings files set the same key. */
+export interface PrecedenceItem extends Base {
+  type: 'precedence';
+  question: L;
+  files: { scope: Scope; path: string; lines: string[] }[];
+  opts: { text: L; mono?: boolean; feedback?: L }[];
+  answer: number;
+}
+export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem | RuleItem | SettingsItem | PrecedenceItem;
 
 export type Demo =
   | { kind: 'terminal'; cwd: string; commands: { cmd: string; output: { text: string; note?: L; secret?: boolean }[] }[] }
@@ -152,7 +194,8 @@ export type Demo =
       alwaysLabel: L;
       notes: { part: 'tool' | 'target' | 'reason' | 'options'; text: L }[];
     }
-  | { kind: 'rules'; rules: Rule[]; calls: Call[] };
+  | { kind: 'rules'; rules: Rule[]; calls: Call[] }
+  | { kind: 'settings'; key: string; files: { scope: Scope; path: string; who: L; lines: string[] }[] };
 export interface TryStep {
   text: L;
   code?: string;
