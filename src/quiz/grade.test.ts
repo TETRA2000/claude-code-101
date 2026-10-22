@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ApproveItem, ChoiceItem, Item, SettingsItem } from '../content/types';
+import { AUTO_OUTCOMES, type ApproveItem, type AutoModeItem, type ChoiceItem, type Item, type SettingsItem } from '../content/types';
 import { fixtureContent } from '../test/fixtures';
 import { canCheck, freshAnswer, isAutoGraded, isCorrect } from './grade';
 
@@ -75,6 +75,16 @@ describe('isCorrect', () => {
     expect(isCorrect(it, ans(it, { sel: it.answer }))).toBe(true);
     expect(isCorrect(it, ans(it, { sel: it.answer + 1 }))).toBe(false);
     expect(canCheck(it, ans(it, { sel: 0 }))).toBe(true);
+  });
+
+  it('automode compares the picked outcome (sel indexes AUTO_OUTCOMES) with the answer', () => {
+    const it = get<AutoModeItem>('automode');
+    expect(it.answer).toBe('runs');
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('runs') }))).toBe(true);
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('blocked') }))).toBe(false);
+    expect(isCorrect(it, ans(it, { sel: AUTO_OUTCOMES.indexOf('asks') }))).toBe(false);
+    expect(isCorrect(it, freshAnswer(it))).toBe(false);
+    expect(canCheck(it, ans(it, { sel: 2 }))).toBe(true);
   });
 
   it('order needs the steps order', () => {

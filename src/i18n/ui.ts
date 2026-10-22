@@ -117,6 +117,21 @@ export interface UiStrings {
   settingsFineMark: string;
   settingsFilesTitle: string;
   precedenceOptions: string;
+  autoRuns: string;
+  autoBlocked: string;
+  autoAsks: string;
+  autoRequestLabel: string;
+  autoActionLabel: string;
+  autoSetupLabel: string;
+  autoOptions: string;
+  pressShiftTab: string;
+  modeSelector: string;
+  modesHint: string;
+  modesTerminalTitle: string;
+  modesDesktopTitle: string;
+  modesRunsTitle: string;
+  modesAsksTitle: string;
+  modesAnnounce: (status: string) => string;
   settingsDemoHint: string;
   settingsHighest: string;
   settingsWhoTitle: string;
@@ -249,6 +264,21 @@ const en: UiStrings = {
   settingsFineMark: 'Not a problem',
   settingsFilesTitle: 'Settings files',
   precedenceOptions: 'Pick the winner',
+  autoRuns: 'Runs',
+  autoBlocked: 'Blocked by auto mode',
+  autoAsks: 'Still asks you',
+  autoRequestLabel: 'You asked',
+  autoActionLabel: 'Claude wants to do this',
+  autoSetupLabel: 'What is going on',
+  autoOptions: 'What happens in auto mode?',
+  pressShiftTab: 'Press Shift+Tab',
+  modeSelector: 'Mode selector',
+  modesHint: 'Press the button, or pick a mode in the desktop selector. Both views show what runs without asking. Nothing here changes real settings.',
+  modesTerminalTitle: 'Terminal status bar',
+  modesDesktopTitle: 'Desktop mode selector',
+  modesRunsTitle: 'Runs without asking',
+  modesAsksTitle: 'Still asks you',
+  modesAnnounce: (status) => `Mode changed: ${status}`,
   settingsDemoHint: 'Click a settings file to see who it affects. Highest priority is at the top. Nothing here changes a real file.',
   settingsHighest: 'Highest priority first',
   settingsWhoTitle: 'Who it affects',
@@ -378,6 +408,21 @@ const ja: UiStrings = {
   settingsFineMark: '問題なし',
   settingsFilesTitle: '設定ファイル',
   precedenceOptions: '勝つ値を選ぶ',
+  autoRuns: '実行される',
+  autoBlocked: '自動モードがブロックする',
+  autoAsks: '確認が出る',
+  autoRequestLabel: 'あなたの依頼',
+  autoActionLabel: 'Claude がやろうとしていること',
+  autoSetupLabel: '状況',
+  autoOptions: '自動モードではどうなる？',
+  pressShiftTab: 'Shift+Tab を押す',
+  modeSelector: 'モード選択',
+  modesHint: 'ボタンを押すか、デスクトップのセレクターでモードを選びます。どちらも「確認なしで実行されること」を表示します。実際の設定は変わりません。',
+  modesTerminalTitle: 'ターミナルのステータスバー',
+  modesDesktopTitle: 'デスクトップのモード選択',
+  modesRunsTitle: '確認なしで実行',
+  modesAsksTitle: '確認が出る',
+  modesAnnounce: (status) => `モードが変わりました：${status}`,
   settingsDemoHint: '設定ファイルをクリックすると、誰に効くかが分かります。上ほど優先されます。実際のファイルは変更されません。',
   settingsHighest: '優先度の高い順',
   settingsWhoTitle: '誰に効くか',

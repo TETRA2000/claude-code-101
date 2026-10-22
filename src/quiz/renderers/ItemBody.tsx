@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import type { Item } from '../../content/types';
 import { Approve, type RendererProps } from './Approve';
 import { Chain } from './Chain';
+import { AutoMode } from './AutoMode';
 import { Choice } from './Choice';
 import { HiddenDoc } from './HiddenDoc';
 import { OrderList } from './OrderList';
@@ -37,5 +38,7 @@ export function ItemBody(p: RendererProps<Item>): ReactElement {
       return <SettingsFile item={item} answer={answer} act={act} />;
     case 'precedence':
       return <Precedence item={item} answer={answer} act={act} />;
+    case 'automode':
+      return <AutoMode item={item} answer={answer} act={act} />;
   }
 }

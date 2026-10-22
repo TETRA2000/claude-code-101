@@ -18,7 +18,8 @@ export type ItemType =
   | 'settings'
   | 'review'
   | 'trim'
-  | 'precedence';
+  | 'precedence'
+  | 'automode';
 export const ITEM_TYPES: readonly ItemType[] = [
   'approve',
   'decode',
@@ -34,6 +35,7 @@ export const ITEM_TYPES: readonly ItemType[] = [
   'review',
   'trim',
   'precedence',
+  'automode',
 ];
 /** Every answer an approve item can offer, in the order Claude Code lists them (F1). */
 export const APPROVE_CHOICES = ['yes', 'always', 'auto', 'no'] as const;
@@ -181,7 +183,21 @@ export interface PrecedenceItem extends Base {
   opts: { text: L; mono?: boolean; feedback?: L }[];
   answer: number;
 }
-export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem | RuleItem | SettingsItem | PrecedenceItem;
+/** What auto mode does with an action (F4, F16). */
+export const AUTO_OUTCOMES = ['runs', 'blocked', 'asks'] as const;
+export type AutoOutcome = (typeof AUTO_OUTCOMES)[number];
+/** Would auto mode stop this? The learner predicts: runs, blocked by the classifier, or still asks. */
+export interface AutoModeItem extends Base {
+  type: 'automode';
+  surface: Surface;
+  request: L;
+  action: { tool: string; target: string };
+  /** Context the classifier sees, shown as a list. */
+  setup: L[];
+  answer: AutoOutcome;
+  feedback: Record<AutoOutcome, L>;
+}
+export type Item = ApproveItem | PredictItem | PairsItem | DecodeItem | OrderItem | ChoiceItem | HiddenItem | ChainItem | RuleItem | SettingsItem | PrecedenceItem | AutoModeItem;
 
 export type Demo =
   | { kind: 'terminal'; cwd: string; commands: { cmd: string; output: { text: string; note?: L; secret?: boolean }[] }[] }
@@ -195,6 +211,10 @@ export type Demo =
       notes: { part: 'tool' | 'target' | 'reason' | 'options'; text: L }[];
     }
   | { kind: 'rules'; rules: Rule[]; calls: Call[] }
+  | {
+      kind: 'modes';
+      modes: { mode: 'default' | 'acceptEdits' | 'plan' | 'auto'; status: string; desktop: string; runs: L[]; asks: L[] }[];
+    }
   | { kind: 'settings'; key: string; files: { scope: Scope; path: string; who: L; lines: string[] }[] };
 export interface TryStep {
   text: L;

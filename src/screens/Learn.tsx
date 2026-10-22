@@ -13,6 +13,7 @@ import { DocsList } from './cards/DocsList';
 import { TryIt } from './cards/TryIt';
 import { AnatomyDemo } from './demos/AnatomyDemo';
 import { ContextDemo } from './demos/ContextDemo';
+import { ModesDemo } from './demos/ModesDemo';
 import { RulesDemo } from './demos/RulesDemo';
 import { SettingsDemo } from './demos/SettingsDemo';
 import { TerminalDemo } from './demos/TerminalDemo';
@@ -37,6 +38,8 @@ function DemoView({ demo }: { demo: Demo }) {
       return <RulesDemo demo={demo} />;
     case 'settings':
       return <SettingsDemo demo={demo} />;
+    case 'modes':
+      return <ModesDemo demo={demo} />;
   }
 }
 

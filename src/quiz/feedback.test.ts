@@ -51,6 +51,12 @@ describe('feedbackFor', () => {
     expect(feedbackFor(fourOption, answered(fourOption, { sel: 3, ok: true }), 0, 'en').body).toBe('Good denial.');
   });
 
+  it('automode shows the feedback for the picked outcome', () => {
+    const item = byType('automode');
+    expect(feedbackFor(item, answered(item, { sel: 1, ok: false }), 0, 'en').body).toBe('Not blocked: pushing to this repo is allowed.');
+    expect(feedbackFor(item, answered(item, { sel: 0, ok: true }), 0, 'ja').body).toBe('正解：実行されます。');
+  });
+
   it('harmless approve + no has no headline and uses the no feedback', () => {
     const item = byType('approve');
     const f = feedbackFor(item, answered(item, { sel: 3, ok: false }), 0, 'en');

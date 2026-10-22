@@ -1,5 +1,5 @@
 import { choicesOf } from '../content/approve';
-import type { Item, RuleItem } from '../content/types';
+import { AUTO_OUTCOMES, type Item, type RuleItem } from '../content/types';
 import { outcomeOf, type Outcome } from '../rules/match';
 import type { AnswerState } from './types';
 
@@ -50,6 +50,8 @@ export function isCorrect(item: Item, a: AnswerState): boolean {
     case 'chain':
     case 'precedence':
       return a.sel === item.answer;
+    case 'automode':
+      return a.sel !== null && AUTO_OUTCOMES[a.sel] === item.answer;
     case 'setup':
     case 'combo':
       return a.sel !== null && item.accept.includes(a.sel);

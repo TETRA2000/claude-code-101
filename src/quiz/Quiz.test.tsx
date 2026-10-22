@@ -70,6 +70,9 @@ async function answerRight(user: ReturnType<typeof userEvent.setup>, id: string)
     case 'demo-settings':
       await user.click(btn(/bypassPermissions/));
       break;
+    case 'demo-automode':
+      await user.click(btn('Runs'));
+      break;
     case 'demo-precedence':
       await user.click(within(screen.getByTestId('precedence-options')).getByRole('button', { name: 'plan' }));
       break;

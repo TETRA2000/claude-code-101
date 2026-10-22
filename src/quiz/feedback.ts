@@ -1,4 +1,4 @@
-import type { DocRef, Item } from '../content/types';
+import { AUTO_OUTCOMES, type DocRef, type Item } from '../content/types';
 import { choicesOf } from '../content/approve';
 import { t, type Lang } from '../i18n/lang';
 import { UI } from '../i18n/ui';
@@ -40,6 +40,11 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
     case 'combo': {
       const fb = sel === null ? undefined : item.opts[sel]?.feedback;
       body = fb ? t(fb, lang) : null;
+      break;
+    }
+    case 'automode': {
+      const outcome = sel === null ? undefined : AUTO_OUTCOMES[sel];
+      body = outcome ? t(item.feedback[outcome], lang) : null;
       break;
     }
     case 'chain':

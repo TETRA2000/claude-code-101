@@ -44,8 +44,8 @@ src/content/                    types.ts, index.ts (loads units), validate.ts, h
 src/state/                      rules.ts (hearts, XP, guard), app.ts (reducer)
 src/storage/progress.ts         localStorage progress, never throws
 src/quiz/                       types.ts (session/answer state), session.ts (pure reducer), grade.ts, feedback.ts, useArmed.ts, Quiz.tsx, FeedbackSheet.tsx, QuizEnd.tsx
-src/quiz/renderers/             one per item type: Approve, PermissionPrompt, Choice, PairBoard, OrderList, HiddenDoc, Chain, SettingsFile, Precedence, BrowserFrame, TerminalFrame, ItemBody
-src/screens/                    Home.tsx, Learn.tsx, cards/ (DocsList, TryIt, Deep), demos/ (TerminalDemo, ContextDemo, AnatomyDemo, SettingsDemo)
+src/quiz/renderers/             one per item type: Approve, PermissionPrompt, Choice, PairBoard, OrderList, HiddenDoc, Chain, SettingsFile, Precedence, AutoMode, BrowserFrame, TerminalFrame, ItemBody
+src/screens/                    Home.tsx, Learn.tsx, cards/ (DocsList, TryIt, Deep), demos/ (TerminalDemo, ContextDemo, AnatomyDemo, SettingsDemo, ModesDemo)
 src/components/                 Button, DocLink, ProgressBar, HeartCount, RichText, LangSwitch, icons
 src/test/                       setup.ts (vitest setup), fixtures.ts (a demo unit with every card/item shape)
 e2e/                            Playwright specs + helpers.ts (reads every content/units/*.json)

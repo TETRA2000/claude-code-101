@@ -3,7 +3,7 @@ import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
 import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
-import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
+import { APPROVE_CHOICES, AUTO_OUTCOMES, type AutoModeItem, type ApproveItem, type Card, type DocRef, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -238,6 +238,35 @@ function checkPrecedence(it: PrecedenceItem): string[] {
   return p;
 }
 
+/** Would auto mode stop this: the answer is an outcome and every outcome has feedback. */
+function checkAutoMode(it: AutoModeItem): string[] {
+  const p: string[] = [];
+  if (!AUTO_OUTCOMES.includes(it.answer)) p.push(`automode.answer "${String(it.answer)}" is not one of ${AUTO_OUTCOMES.join(', ')}`);
+  for (const o of AUTO_OUTCOMES) if (!it.feedback?.[o]) p.push(`automode feedback.${o} is missing`);
+  return p;
+}
+
+/** The modes demo follows the Shift+Tab cycle from auto (F4) and uses the product strings. */
+const MODE_CYCLE = ['auto', 'default', 'acceptEdits', 'plan'] as const;
+const MODE_STATUS: Record<(typeof MODE_CYCLE)[number], { status: string; desktop: string }> = {
+  auto: { status: '⏵⏵ auto mode on', desktop: 'Auto' },
+  default: { status: '⏸ manual mode on', desktop: 'Manual' },
+  acceptEdits: { status: '⏵⏵ accept edits on', desktop: 'Accept edits' },
+  plan: { status: '⏸ plan mode on', desktop: 'Plan' },
+};
+
+function checkModesDemo(demo: Extract<NonNullable<Card['demo']>, { kind: 'modes' }>): string[] {
+  if (demo.modes.map((m) => m.mode).join() !== MODE_CYCLE.join()) return ['modes demo must follow the Shift+Tab cycle (F4)'];
+  const p: string[] = [];
+  for (const m of demo.modes) {
+    const want = MODE_STATUS[m.mode];
+    if (m.status !== want.status) p.push(`modes demo status for ${m.mode} must be "${want.status}"`);
+    if (m.desktop !== want.desktop) p.push(`modes demo desktop label for ${m.mode} must be "${want.desktop}"`);
+    if (m.runs.length === 0) p.push(`modes demo runs for ${m.mode} is empty`);
+  }
+  return p;
+}
+
 /** List keys merge across files (F11), so "which value wins" does not apply to them. */
 const LIST_KEYS: readonly string[] = ['allow', 'ask', 'deny'];
 
@@ -305,6 +334,9 @@ function checkItem(it: Item, unitKey: string): string[] {
     case 'precedence':
       p.push(...checkPrecedence(it));
       break;
+    case 'automode':
+      p.push(...checkAutoMode(it));
+      break;
   }
   return p;
 }
@@ -352,6 +384,7 @@ export function validateContent(c: Content): string[] {
       checkText(`${u.key}/${card.id}`, card, [], out);
       if (card.more) checkRef(`${u.key}/${card.id}`, card.more, out);
       for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
+      if (card.demo?.kind === 'modes') for (const msg of checkModesDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'settings') for (const msg of checkSettingsDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'rules') for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
     }

@@ -106,6 +106,20 @@ const demoBody: UnitBody = {
       },
     },
     {
+      id: 'demo-card-modes',
+      title: { en: 'Switching modes', ja: 'モードの切り替え' },
+      body: [{ en: 'Press Shift+Tab to cycle the mode.', ja: 'Shift+Tab でモードを切り替えます。' }],
+      demo: {
+        kind: 'modes',
+        modes: [
+          { mode: 'auto', status: '⏵⏵ auto mode on', desktop: 'Auto', runs: [{ en: 'Everything, with safety checks.', ja: 'すべて（安全確認つき）。' }], asks: [{ en: 'Anything an ask rule covers.', ja: 'ask ルールの対象。' }] },
+          { mode: 'default', status: '⏸ manual mode on', desktop: 'Manual', runs: [{ en: 'Reads only.', ja: '読み取りのみ。' }], asks: [{ en: 'Edits and commands.', ja: '編集とコマンド。' }] },
+          { mode: 'acceptEdits', status: '⏵⏵ accept edits on', desktop: 'Accept edits', runs: [{ en: 'Reads and file edits in the folder.', ja: 'フォルダ内の読み取りとファイル編集。' }], asks: [{ en: 'Other commands.', ja: 'それ以外のコマンド。' }] },
+          { mode: 'plan', status: '⏸ plan mode on', desktop: 'Plan', runs: [{ en: 'Reads and planning.', ja: '読み取りと計画。' }], asks: [{ en: 'Editing source.', ja: 'ソースの編集。' }] },
+        ],
+      },
+    },
+    {
       id: 'demo-card-settings',
       title: { en: 'The settings stack', ja: '設定の重なり' },
       body: [{ en: 'Click a file to see who it affects.', ja: 'ファイルをクリックして、誰に効くか見てみましょう。' }],
@@ -321,6 +335,25 @@ const demoBody: UnitBody = {
         '3': { en: 'This protects your secrets.', ja: 'これは秘密を守ります。' },
       },
       answer: [2],
+    },
+    {
+      id: 'demo-automode',
+      type: 'automode',
+      prompt: { en: 'Would auto mode stop this?', ja: '自動モードはこれを止めますか。' },
+      explain: { en: 'Pushing to the current repo is allowed by default.', ja: '現在のリポジトリへのプッシュは、標準で許可されます。' },
+      surface: 'terminal',
+      request: { en: 'Push my changes.', ja: '変更をプッシュして。' },
+      action: { tool: 'Bash', target: 'git push origin feature-x' },
+      setup: [
+        { en: 'Auto mode is on.', ja: '自動モードはオンです。' },
+        { en: 'The branch belongs to this repo.', ja: 'このブランチはこのリポジトリのものです。' },
+      ],
+      answer: 'runs',
+      feedback: {
+        runs: { en: 'Right: it runs.', ja: '正解：実行されます。' },
+        blocked: { en: 'Not blocked: pushing to this repo is allowed.', ja: 'ブロックされません。このリポジトリへのプッシュは許可です。' },
+        asks: { en: 'It does not ask in auto mode.', ja: '自動モードでは確認されません。' },
+      },
     },
     {
       id: 'demo-precedence',

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
-import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, RuleItem, SettingsItem, UnitBody } from './types';
+import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, AutoModeItem, RuleItem, SettingsItem, UnitBody } from './types';
 import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
@@ -558,6 +558,37 @@ describe('validateContent', () => {
     it('flags duplicate scopes and a key no file sets', () => {
       expectOne(mutated((p) => void (demo(p).files[1]!.scope = 'user')), 'duplicate scope "user"');
       expectOne(mutated((p) => void (demo(p).key = 'model')), 'no file sets "model"');
+    });
+  });
+
+  describe('automode items', () => {
+    const auto = (p: Parts) => item<AutoModeItem>(p, 'demo-automode');
+    it.each(['runs', 'blocked', 'asks'] as const)('flags missing feedback for %s', (o) => {
+      expectOne(mutated((p) => void delete (auto(p).feedback as Partial<AutoModeItem['feedback']>)[o]), `automode feedback.${o} is missing`);
+    });
+    it('flags an answer that is not an outcome', () => {
+      expectOne(mutated((p) => void ((auto(p) as { answer: string }).answer = 'maybe')), 'automode.answer "maybe"');
+    });
+  });
+
+  describe('modes demo', () => {
+    const demo = (p: Parts) => {
+      const d = p.bodies.demo!.cards.find((c) => c.demo?.kind === 'modes')!.demo;
+      if (d?.kind !== 'modes') throw new Error('expected modes demo');
+      return d;
+    };
+    it('accepts the Shift+Tab cycle from auto', () => {
+      expect(mutated(() => undefined)).toEqual([]);
+    });
+    it('rejects any other order or set of modes', () => {
+      expectOne(mutated((p) => void demo(p).modes.reverse()), 'modes demo must follow the Shift+Tab cycle (F4)');
+      expectOne(mutated((p) => void demo(p).modes.pop()), 'modes demo must follow the Shift+Tab cycle (F4)');
+    });
+    it('rejects a status string that is not the product string (F4)', () => {
+      expectOne(mutated((p) => void (demo(p).modes[1]!.status = '⏸ default mode on')), 'modes demo status for default must be "⏸ manual mode on"');
+    });
+    it('rejects a desktop label that is not the product label (F4)', () => {
+      expectOne(mutated((p) => void (demo(p).modes[0]!.desktop = 'Auto mode')), 'modes demo desktop label for auto must be "Auto"');
     });
   });
 });

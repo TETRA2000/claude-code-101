@@ -3,6 +3,7 @@ import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
 import { choiceLabels, choicesOf } from '../src/content/approve';
 import { outcomeOf } from '../src/rules/match';
+import { AUTO_OUTCOMES } from '../src/content/types';
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
 import { UI } from '../src/i18n/ui';
 import type { Lang } from '../src/i18n/lang';
@@ -91,6 +92,12 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
     case 'precedence': {
       const i = wrong ? item.opts.findIndex((_, k) => k !== item.answer) : item.answer;
       await page.getByTestId('precedence-options').getByRole('button', { name: item.opts[i]?.text[lang] ?? '', exact: true }).click();
+      return;
+    }
+    case 'automode': {
+      const names = { runs: ui.autoRuns, blocked: ui.autoBlocked, asks: ui.autoAsks };
+      const o = wrong ? AUTO_OUTCOMES.find((x) => x !== item.answer)! : item.answer;
+      await btn(names[o]);
       return;
     }
     case 'order': {
