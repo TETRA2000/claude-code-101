@@ -105,10 +105,12 @@ const demoBody: UnitBody = {
       target: 'npm run build',
       reason: { en: 'Build the site', ja: 'サイトをビルドします' },
       alwaysLabel: { en: "Yes, and don't ask again for npm run build", ja: 'はい、今後 npm run build は確認しない' },
+      choices: ['yes', 'always', 'auto', 'no'],
       accept: ['yes', 'always'],
       outcomes: {
         yes: { feedback: { en: 'Fine: it only builds.', ja: '問題ありません。ビルドするだけです。' } },
         always: { feedback: { en: 'Fine: the rule is narrow.', ja: '問題ありません。ルールの範囲は狭いです。' } },
+        auto: { feedback: { en: 'The build was fine, but stay in Manual for now.', ja: 'ビルドは問題ありませんが、今は Manual のままにしましょう。' } },
         no: { feedback: { en: 'This was safe.', ja: 'これは安全でした。' } },
       },
       decode: [

@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import course from '../content/course.json' with { type: 'json' };
+import { choiceLabels, choicesOf } from '../src/content/approve';
 import type { Item, UnitBody, UnitMeta } from '../src/content/types';
 import { UI } from '../src/i18n/ui';
 import type { Lang } from '../src/i18n/lang';
@@ -46,9 +47,11 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
   const btn = (name: string) => page.getByRole('button', { name, exact: true }).first().click();
   switch (item.type) {
     case 'approve': {
-      const labels = [ui.approveYes, item.alwaysLabel[lang], ui.approveNo];
-      const right = item.accept[0] ?? 'yes';
-      const idx = wrong ? [0, 1, 2].find((i) => !item.accept.includes(['yes', 'always', 'no'][i] as 'yes')) ?? 0 : ['yes', 'always', 'no'].indexOf(right);
+      // Same list as the answer buttons: choicesOf(item), labelled by choiceLabels.
+      const choices = choicesOf(item);
+      const labels = choiceLabels(item, lang);
+      const idx = wrong ? choices.findIndex((c) => !item.accept.includes(c)) : choices.indexOf(item.accept[0] ?? 'yes');
+      if (idx < 0) throw new Error(`${item.id}: no ${wrong ? 'wrong' : 'right'} choice`);
       await btn(labels[idx] ?? '');
       return;
     }

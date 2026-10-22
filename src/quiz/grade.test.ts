@@ -9,7 +9,7 @@ const ans = (item: Item, patch: Partial<ReturnType<typeof freshAnswer>>) => ({ .
 
 describe('isCorrect', () => {
   it('approve is correct iff the chosen button is accepted', () => {
-    const harmless = get<ApproveItem>('approve');
+    const harmless: ApproveItem = { ...get<ApproveItem>('approve'), choices: ['yes', 'always', 'no'] };
     expect(isCorrect(harmless, ans(harmless, { sel: 0 }))).toBe(true); // yes
     expect(isCorrect(harmless, ans(harmless, { sel: 1 }))).toBe(true); // always
     expect(isCorrect(harmless, ans(harmless, { sel: 2 }))).toBe(false); // no
@@ -17,6 +17,20 @@ describe('isCorrect', () => {
     expect(isCorrect(dangerous, ans(dangerous, { sel: 0 }))).toBe(false);
     expect(isCorrect(dangerous, ans(dangerous, { sel: 1 }))).toBe(false);
     expect(isCorrect(dangerous, ans(dangerous, { sel: 2 }))).toBe(true);
+  });
+
+  it('approve sel indexes the item\'s own choices (four-option Bash prompt)', () => {
+    const four: ApproveItem = { ...get<ApproveItem>('approve'), choices: ['yes', 'always', 'auto', 'no'], accept: ['no'] };
+    expect(isCorrect(four, ans(four, { sel: 3 }))).toBe(true); // no
+    expect(isCorrect(four, ans(four, { sel: 2 }))).toBe(false); // auto
+    expect(isCorrect(four, ans(four, { sel: 4 }))).toBe(false); // out of range
+  });
+
+  it('approve without choices defaults to yes / always / no', () => {
+    const { choices: _c, ...rest } = get<ApproveItem>('approve');
+    const three = rest as ApproveItem;
+    expect(isCorrect(three, ans(three, { sel: 1 }))).toBe(true); // always
+    expect(isCorrect(three, ans(three, { sel: 2 }))).toBe(false); // no
   });
 
   it('predict and chain compare sel with answer', () => {

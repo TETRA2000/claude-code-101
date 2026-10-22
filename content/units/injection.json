@@ -321,6 +321,7 @@
         "en": "Yes, and don't ask again for: npm run build *",
         "ja": "はい、今後 npm run build * は確認しない"
       },
+      "choices": ["yes", "always", "auto", "no"],
       "accept": ["yes", "always"],
       "outcomes": {
         "yes": {
@@ -333,6 +334,12 @@
           "feedback": {
             "en": "Fine too. The saved rule covers only `npm run build` in this project, a routine step you'll run again and again.",
             "ja": "これも問題ありません。保存されるルールは、このプロジェクトでの `npm run build` だけ。何度も実行する、いつもの手順です。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The command itself was fine: building the site is your task, and `npm run build` is the project's own build step. But this course asks you to stay in Manual mode while you learn. Switching to auto mode would also stop most prompts like this one from reaching you: a classifier model would decide instead of you.",
+            "ja": "コマンド自体は問題ありませんでした。サイトのビルドはあなたのタスクで、`npm run build` はプロジェクト自身のビルド手順です。ただ、このコースでは、学んでいる間は Manual モードのままにしておきましょう。auto モードに切り替えると、今後はこうした確認のほとんどがあなたに表示されなくなり、あなたの代わりに分類モデルが判断します。"
           }
         },
         "no": {
@@ -403,6 +410,7 @@
         "en": "Yes, and don't ask again for: git push *",
         "ja": "はい、今後 git push * は確認しない"
       },
+      "choices": ["yes", "always", "auto", "no"],
       "accept": ["no"],
       "outcomes": {
         "yes": {
@@ -423,6 +431,16 @@
           "feedback": {
             "en": "Same damage: the force push overwrote main. And you saved a rule for every `git push` in this project, so the next push a planted comment asks for won't be asked about.",
             "ja": "同じ被害です。強制プッシュで main が上書きされました。さらにこのプロジェクトのすべての `git push` を許可するルールを保存したので、仕込まれたコメントが次にプッシュを求めても確認されません。"
+          }
+        },
+        "auto": {
+          "headline": {
+            "en": "Week of team's work vanishes after unreviewed force push",
+            "ja": "レビューなしの強制プッシュで、チームの1週間分の作業が消失"
+          },
+          "feedback": {
+            "en": "Same damage: the force push overwrote main, because a planted comment said so. And you switched to auto mode, so from now on most prompts like this one won't reach you: a classifier model decides instead of you, and the docs warn that auto mode does not guarantee safety.",
+            "ja": "同じ被害です。仕込まれたコメントのとおりに、強制プッシュで main が上書きされました。さらに auto モードに切り替えたので、今後はこうした確認のほとんどがあなたに表示されなくなります。代わりに分類モデルが判断しますが、ドキュメントにもあるとおり、auto モードは安全を保証しません。"
           }
         },
         "no": {

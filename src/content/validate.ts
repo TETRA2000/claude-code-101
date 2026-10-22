@@ -1,7 +1,8 @@
 import { DOC_SLUGS, LINK_HOSTS } from './docs';
 import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
-import type { Card, DocRef, Item, UnitBody } from './types';
+import { choicesOf } from './approve';
+import { APPROVE_CHOICES, type ApproveItem, type Card, type DocRef, type Item, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -115,23 +116,51 @@ function checkTry(card: Card): string[] {
   return p;
 }
 
+/** Units where "Yes, and switch to auto mode" is never an accepted answer (design: Grading Approve or deny). */
+export const AUTO_WRONG_UNITS: readonly string[] = ['permissions', 'injection', 'browser'];
+
+/** Approve rules: choices match the real prompt (F1, F8), outcomes match choices, headlines by danger. */
+function checkApprove(it: ApproveItem, unitKey: string): string[] {
+  const p: string[] = [];
+  const choices = choicesOf(it);
+  const ordered = APPROVE_CHOICES.filter((c) => choices.includes(c));
+  if (ordered.join() !== choices.join()) p.push(`approve.choices must be distinct and in the order ${APPROVE_CHOICES.join(', ')}`);
+  if (!choices.includes('yes') || !choices.includes('no')) p.push('approve.choices must offer yes and no');
+
+  const keys = APPROVE_CHOICES.filter((c) => it.outcomes[c] !== undefined);
+  if (keys.join() !== ordered.join()) p.push(`outcomes must match choices (${choices.join(', ')}), has ${keys.join(', ')}`);
+  if (choices.includes('always') && !it.alwaysLabel && it.pane !== 'browser') p.push('always is offered but alwaysLabel is missing');
+
+  const bashPrompt = it.surface === 'terminal' && it.tool === 'Bash';
+  const autoOffered = choices.includes('auto');
+  if (bashPrompt && !it.askRule && !autoOffered) p.push('terminal Bash prompts offer auto (F1)');
+  if (autoOffered && !(bashPrompt && !it.askRule)) p.push('auto is offered only on terminal Bash prompts without an ask rule (F1)');
+  if (it.pane && it.surface !== 'desktop') p.push('pane: "browser" is a desktop card (F8)');
+
+  if (it.accept.length === 0) p.push('approve.accept is empty');
+  const notOffered = it.accept.filter((c) => !choices.includes(c));
+  if (notOffered.length) p.push(`approve.accept names choices not offered (${notOffered.join(', ')})`);
+  if (it.accept.includes('auto') && AUTO_WRONG_UNITS.includes(unitKey)) p.push('auto is never right while learning');
+
+  const dangerous = it.accept.length === 1 && it.accept[0] === 'no';
+  if (dangerous) {
+    const missing = choices.filter((c) => c !== 'no' && !it.outcomes[c]?.headline);
+    if (missing.length) p.push(`dangerous approve needs a headline on ${missing.join(', ')}`);
+  }
+  if (it.accept.includes('yes')) {
+    const withHeadline = APPROVE_CHOICES.filter((c) => it.outcomes[c]?.headline);
+    if (withHeadline.length) p.push(`harmless approve must not have a headline (${withHeadline.join(', ')})`);
+  }
+  return p;
+}
+
 /** Rules 3–11 and 18: type-specific checks. */
-function checkItem(it: Item): string[] {
+function checkItem(it: Item, unitKey: string): string[] {
   const p: string[] = [];
   switch (it.type) {
-    case 'approve': {
-      if (it.accept.length === 0) p.push('approve.accept is empty');
-      const dangerous = it.accept.length === 1 && it.accept[0] === 'no';
-      if (dangerous) {
-        const missing = (['yes', 'always'] as const).filter((c) => !it.outcomes[c]?.headline);
-        if (missing.length) p.push(`dangerous approve needs a headline on ${missing.join(', ')}`);
-      }
-      if (it.accept.includes('yes')) {
-        const withHeadline = (['yes', 'always', 'no'] as const).filter((c) => it.outcomes[c]?.headline);
-        if (withHeadline.length) p.push(`harmless approve must not have a headline (${withHeadline.join(', ')})`);
-      }
+    case 'approve':
+      p.push(...checkApprove(it, unitKey));
       break;
-    }
     case 'predict':
       if (!inRange(it.answer, it.opts.length)) p.push(`predict.answer ${it.answer} out of range`);
       else
@@ -225,7 +254,7 @@ export function validateContent(c: Content): string[] {
       else seenIds.set(it.id, u.key);
       checkText(where, it, structuredUrls(it), out);
       if (it.more) checkRef(where, it.more, out);
-      for (const msg of checkItem(it)) out.push(`${where}: ${msg}`);
+      for (const msg of checkItem(it, u.key)) out.push(`${where}: ${msg}`);
     }
   }
   return out;

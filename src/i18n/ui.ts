@@ -46,6 +46,12 @@ export interface UiStrings {
   /** Generic fallback label; real items supply their own `alwaysLabel`. */
   approveAlways: string;
   approveNo: string;
+  /** Claude Code's option 3 on Bash prompts (F1). Japanese keeps the English label plus a gloss. */
+  approveAuto: string;
+  /** Desktop Browser pane site card (F8). Japanese keeps the English label plus a gloss. */
+  paneAllowOnce: string;
+  paneAlwaysAllow: string;
+  paneDeny: string;
   outTitle: string;
   outBody: string;
   tryAgain: string;
@@ -140,6 +146,10 @@ const en: UiStrings = {
   approveYes: 'Yes',
   approveAlways: 'Yes, always',
   approveNo: 'No',
+  approveAuto: 'Yes, and switch to auto mode',
+  paneAllowOnce: 'Allow once',
+  paneAlwaysAllow: 'Always allow',
+  paneDeny: 'Deny',
   outTitle: 'Out of hearts',
   outBody: 'You ran out of hearts. Take another look at the Learn cards, then try again.',
   tryAgain: 'Try again',
@@ -231,6 +241,10 @@ const ja: UiStrings = {
   approveYes: 'はい',
   approveAlways: '常に許可',
   approveNo: 'いいえ',
+  approveAuto: 'Yes, and switch to auto mode（auto モードに切り替えて許可）',
+  paneAllowOnce: 'Allow once（今回だけ許可）',
+  paneAlwaysAllow: 'Always allow（常に許可）',
+  paneDeny: 'Deny（拒否）',
   outTitle: 'ハートがなくなりました',
   outBody: 'ハートを使い切りました。学ぶカードをもう一度見直してから、再挑戦しましょう。',
   tryAgain: 'もう一度',

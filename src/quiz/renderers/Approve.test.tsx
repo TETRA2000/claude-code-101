@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { ApproveItem } from '../../content/types';
 import { LangProvider } from '../../i18n/LangContext';
@@ -19,14 +19,63 @@ const draw = (item: ApproveItem, answer: Partial<AnswerState> = {}, lang: Lang =
   return act;
 };
 
+/** Same item as the prompt would offer off terminal Bash: no auto (F1). */
+const noAuto = (item: ApproveItem): ApproveItem => {
+  const { auto: _a, ...outcomes } = item.outcomes;
+  return { ...item, choices: ['yes', 'always', 'no'], outcomes };
+};
+const answerButtons = () => screen.getAllByRole('button').filter((b) => b.hasAttribute('aria-pressed'));
+/** The drawn prompt's option lines, without the cursor and number. */
+const promptLines = () =>
+  [...document.querySelectorAll('[data-surface] li')].map((li) => (li.textContent ?? '').replace(/^[❯\s]*\d+\.\s*/, ''));
+
 describe('Approve', () => {
-  it('renders three answer buttons and selects on click', () => {
+  it('renders the four Bash answers in order and selects on click', () => {
     const act = draw(base);
-    const names = [/^Yes$/, /^Yes, and don't ask again for npm run build$/, /^No$/];
+    const names = [/^Yes$/, /^Yes, and don't ask again for npm run build$/, /^Yes, and switch to auto mode$/, /^No$/];
     const btns = names.map((n) => screen.getByRole('button', { name: n }));
-    expect(btns).toHaveLength(3);
+    expect(answerButtons()).toEqual(btns);
+    fireEvent.click(btns[3]!);
+    expect(act).toHaveBeenCalledWith({ type: 'select', sel: 3 });
     fireEvent.click(btns[2]!);
     expect(act).toHaveBeenCalledWith({ type: 'select', sel: 2 });
+  });
+
+  it.each([
+    ['terminal Bash', base],
+    ['terminal Edit', { ...noAuto(base), tool: 'Edit' }],
+    ['desktop', { ...noAuto(base), surface: 'desktop' as const }],
+    ['Browser pane', { ...noAuto(base), surface: 'desktop' as const, tool: 'Browser pane', pane: 'browser' as const }],
+    ['one-time only', { ...noAuto(base), choices: ['yes', 'no'] as ApproveItem['choices'] }],
+  ])('%s: answer buttons equal the prompt option lines in count and order', (_n, item) => {
+    draw(item);
+    expect(answerButtons().map((b) => b.textContent?.replace(/^\d+/, ''))).toEqual(promptLines());
+    cleanup();
+    draw(item, {}, 'ja');
+    expect(answerButtons()).toHaveLength(promptLines().length);
+  });
+
+  it('JA: the auto button keeps the English label with a short gloss', () => {
+    draw(base, {}, 'ja');
+    expect(screen.getByRole('button', { name: 'Yes, and switch to auto mode（auto モードに切り替えて許可）' })).toBeInTheDocument();
+    expect(document.querySelector('[data-surface="terminal"]')).toHaveTextContent('3. Yes, and switch to auto mode');
+  });
+
+  it("pane: 'browser' draws the F8 card with Allow once / Always allow / Deny", () => {
+    const pane: ApproveItem = { ...noAuto(base), surface: 'desktop', tool: 'Browser pane', target: 'portfolio.example', pane: 'browser' };
+    const act = draw(pane);
+    expect(answerButtons().map((b) => b.textContent?.replace(/^\d+/, ''))).toEqual(['Allow once', 'Always allow', 'Deny']);
+    expect(promptLines()).toEqual(['Allow once', 'Always allow', 'Deny']);
+    expect(document.querySelector('[data-pane="browser"]')).toHaveTextContent('portfolio.example');
+    fireEvent.click(screen.getByRole('button', { name: 'Deny' }));
+    expect(act).toHaveBeenCalledWith({ type: 'select', sel: 2 });
+    cleanup();
+    draw(pane, {}, 'ja');
+    expect(answerButtons().map((b) => b.textContent?.replace(/^\d+/, ''))).toEqual([
+      'Allow once（今回だけ許可）',
+      'Always allow（常に許可）',
+      'Deny（拒否）',
+    ]);
   });
 
   it('marks exactly one answer pressed', () => {
@@ -69,7 +118,7 @@ describe('Approve', () => {
   it('terminal follows F1: real options, alwaysLabel, footer; no copy button', () => {
     draw(base);
     expect(screen.getByText('Do you want to proceed?')).toBeInTheDocument();
-    expect(screen.getByText(/Yes, and switch to auto mode/)).toBeInTheDocument();
+    expect(document.querySelector('[data-surface="terminal"]')).toHaveTextContent('3. Yes, and switch to auto mode');
     expect(screen.getByText(/Esc to cancel/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /copy/i })).toBeNull();
   });
@@ -80,7 +129,7 @@ describe('Approve', () => {
         <Approve item={base} answer={freshAnswer(base)} act={vi.fn()} />
       </LangProvider>,
     );
-    expect(screen.getByText(/auto mode/)).toBeInTheDocument();
+    expect(document.querySelector('[data-surface="terminal"]')).toHaveTextContent('auto mode');
     const desc = screen.getByText('Build the site');
     const cmd = screen.getByText('npm run build', { selector: 'span' });
     expect(desc.compareDocumentPosition(cmd) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -88,7 +137,7 @@ describe('Approve', () => {
     for (const tool of ['WebFetch', 'mcp__notes__fetch']) {
       const { unmount: u } = render(
         <LangProvider lang="en">
-          <Approve item={{ ...base, tool }} answer={freshAnswer(base)} act={vi.fn()} />
+          <Approve item={{ ...noAuto(base), tool }} answer={freshAnswer(base)} act={vi.fn()} />
         </LangProvider>,
       );
       expect(screen.queryByText(/auto mode/)).toBeNull();
@@ -99,7 +148,7 @@ describe('Approve', () => {
   });
 
   it('desktop uses neutral course labels, not terminal wording', () => {
-    draw({ ...base, surface: 'desktop' });
+    draw({ ...noAuto(base), surface: 'desktop' });
     expect(screen.queryByText('Do you want to proceed?')).toBeNull();
     expect(screen.queryByText(/auto mode/)).toBeNull();
   });
@@ -113,7 +162,7 @@ describe('Approve', () => {
   });
 
   it('JA: desktop card uses the localized label', () => {
-    draw({ ...base, surface: 'desktop' }, {}, 'ja');
+    draw({ ...noAuto(base), surface: 'desktop' }, {}, 'ja');
     const card = document.querySelector('[data-surface="desktop"]')!;
     expect(card).toHaveTextContent('はい、今後 npm run build は確認しない');
   });
@@ -129,7 +178,7 @@ describe('Approve', () => {
   });
 
   it('non-Bash terminal prompts omit the Bash-only question and footer', () => {
-    draw({ ...base, tool: 'WebFetch' });
+    draw({ ...noAuto(base), tool: 'WebFetch' });
     expect(screen.queryByText('Do you want to proceed?')).toBeNull();
     expect(screen.queryByText(/Esc to cancel/)).toBeNull();
   });

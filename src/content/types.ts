@@ -15,8 +15,13 @@ export const ITEM_TYPES: readonly ItemType[] = [
   'combo',
   'setup',
 ];
-export const APPROVE_CHOICES = ['yes', 'always', 'no'] as const;
+/** Every answer an approve item can offer, in the order Claude Code lists them (F1). */
+export const APPROVE_CHOICES = ['yes', 'always', 'auto', 'no'] as const;
 export type ApproveChoice = (typeof APPROVE_CHOICES)[number];
+export interface ApproveOutcome {
+  feedback: L;
+  headline?: L;
+}
 
 /** A link to the official docs: a slug (+ anchor) on code.claude.com, or a full URL with its language. */
 export type DocRef = { slug: string; anchor?: string } | { url: string; lang: Lang };
@@ -40,9 +45,20 @@ export interface ApproveItem extends Base {
   tool: string;
   target: string;
   reason: L;
-  alwaysLabel: L;
+  /**
+   * The options this prompt shows, in APPROVE_CHOICES order. Defaults to yes / always / no.
+   * `auto` is offered exactly on terminal Bash prompts not forced by an ask rule (F1).
+   */
+  choices?: ApproveChoice[];
+  /** The prompt was forced by an `ask` rule or a hook, so it never offers `auto` (F1). */
+  askRule?: true;
+  /** A desktop Browser pane site card: Allow once / Always allow / Deny (F8). */
+  pane?: 'browser';
+  /** Option 2's wording. Required when `always` is offered, except on a Browser pane card. */
+  alwaysLabel?: L;
   accept: ApproveChoice[];
-  outcomes: Record<ApproveChoice, { feedback: L; headline?: L }>;
+  /** One outcome per offered choice. */
+  outcomes: Partial<Record<ApproveChoice, ApproveOutcome>>;
   decode?: { code: string; means: L }[];
 }
 export interface PredictItem extends Base {

@@ -200,6 +200,12 @@
         "en": "Yes, and don't ask again for: git status *",
         "ja": "はい、今後 git status * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "yes",
         "always"
@@ -215,6 +221,12 @@
           "feedback": {
             "en": "Fine too. The saved rule covers only `git status` in this project, a look-only command. Narrow rules like this are a good way to cut down routine prompts.",
             "ja": "これも問題ありません。保存されるルールは、このプロジェクトでの `git status` だけ。見るだけのコマンドです。こうした範囲の狭いルールは、いつもの確認を減らす良い方法です。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The command itself was fine: `git status` only lists which files changed. But this course asks you to stay in Manual mode while you learn. Switching to auto mode would also stop most prompts like this one from reaching you: a classifier model would decide instead of you.",
+            "ja": "コマンド自体は問題ありませんでした。`git status` は変更されたファイルを一覧にするだけです。ただ、このコースでは、学んでいる間は Manual モードのままにしておきましょう。auto モードに切り替えると、今後はこうした確認のほとんどがあなたに表示されなくなり、あなたの代わりに分類モデルが判断します。"
           }
         },
         "no": {
@@ -255,6 +267,12 @@
         "en": "Yes, and don't ask again for: npm run build *",
         "ja": "はい、今後 npm run build * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "yes",
         "always"
@@ -270,6 +288,12 @@
           "feedback": {
             "en": "Good choice for a command you'll see again and again. It saves one narrow rule, `Bash(npm run build *)`, in `.claude/settings.local.json` for this project. Future builds run without asking; everything else still asks. You can review saved rules with `/permissions`.",
             "ja": "何度も出てくるコマンドには良い選択です。このプロジェクトの `.claude/settings.local.json` に、範囲の狭いルール `Bash(npm run build *)` がひとつ保存されます。今後のビルドは確認なしで動き、それ以外は引き続き確認されます。保存したルールは `/permissions` で見直せます。"
+          }
+        },
+        "auto": {
+          "feedback": {
+            "en": "The command itself was fine: `npm run build` just runs your project's own build script. But this course asks you to stay in Manual mode while you learn. Switching to auto mode would also stop most prompts like this one from reaching you: a classifier model would decide instead of you.",
+            "ja": "コマンド自体は問題ありませんでした。`npm run build` はプロジェクト自身のビルド用スクリプトを実行するだけです。ただ、このコースでは、学んでいる間は Manual モードのままにしておきましょう。auto モードに切り替えると、今後はこうした確認のほとんどがあなたに表示されなくなり、あなたの代わりに分類モデルが判断します。"
           }
         },
         "no": {
@@ -365,6 +389,12 @@
         "en": "Yes, and don't ask again for: curl *",
         "ja": "はい、今後 curl * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "no"
       ],
@@ -387,6 +417,16 @@
           "feedback": {
             "en": "Same leak: `-d @.env` uploaded your `.env` file with your API keys to paste.rs, a public website. Worse, you saved a rule for every `curl` in this project, so the next time Claude sends something, it won't ask.",
             "ja": "同じ流出です。`-d @.env` で、APIキーの入った `.env` ファイルが公開サイト paste.rs にアップロードされました。さらに悪いことに、このプロジェクトのすべての `curl` を許可するルールを保存したので、次に Claude が何かを送るときは確認されません。"
+          }
+        },
+        "auto": {
+          "headline": {
+            "en": "Developer's API keys posted to public paste site",
+            "ja": "開発者のAPIキー、公開ペーストサイトに流出"
+          },
+          "feedback": {
+            "en": "Same leak: `-d @.env` uploaded your `.env` file with your API keys to paste.rs, a public website. And you switched to auto mode, so from now on most prompts like this one won't reach you: a classifier model decides instead of you, and the docs warn that auto mode does not guarantee safety.",
+            "ja": "同じ流出です。`-d @.env` で、APIキーの入った `.env` ファイルが公開サイト paste.rs にアップロードされました。さらに auto モードに切り替えたので、今後はこうした確認のほとんどがあなたに表示されなくなります。代わりに分類モデルが判断しますが、ドキュメントにもあるとおり、auto モードは安全を保証しません。"
           }
         },
         "no": {
@@ -781,6 +821,12 @@
         "en": "Yes, and don't ask again for: curl * and sh *",
         "ja": "はい、今後 curl * と sh * は確認しない"
       },
+      "choices": [
+        "yes",
+        "always",
+        "auto",
+        "no"
+      ],
       "accept": [
         "no"
       ],
@@ -803,6 +849,16 @@
           "feedback": {
             "en": "Same blind run. And you saved rules for `curl` and `sh`, so the next download-and-run in this project won't even ask.",
             "ja": "同じく、中身を見ないままの実行です。しかも `curl` と `sh` のルールを保存したので、このプロジェクトでは次の「ダウンロードして即実行」も確認すらされません。"
+          }
+        },
+        "auto": {
+          "headline": {
+            "en": "Script nobody read runs with full access to developer's laptop",
+            "ja": "誰も読んでいないスクリプト、開発者のパソコンで自由に実行"
+          },
+          "feedback": {
+            "en": "Same blind run: `| sh` ran whatever the server sent, as you, and nobody saw what it did. And you switched to auto mode, so from now on most prompts like this one won't reach you: a classifier model decides instead of you, and the docs warn that auto mode does not guarantee safety.",
+            "ja": "同じく、中身を見ないままの実行です。`| sh` はサーバーから届いたものを、あなたとしてそのまま実行し、何をしたのか誰も見ていません。さらに auto モードに切り替えたので、今後はこうした確認のほとんどがあなたに表示されなくなります。代わりに分類モデルが判断しますが、ドキュメントにもあるとおり、auto モードは安全を保証しません。"
           }
         },
         "no": {

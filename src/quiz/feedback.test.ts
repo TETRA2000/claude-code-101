@@ -21,6 +21,19 @@ const dangerous: ApproveItem = {
   },
 };
 
+const fourOption: ApproveItem = {
+  ...dangerous,
+  id: 'danger4',
+  choices: ['yes', 'always', 'auto', 'no'],
+  outcomes: {
+    ...dangerous.outcomes,
+    auto: {
+      feedback: { en: 'It posts .env, and auto mode stops asking you.', ja: '.env が送信され、auto モードでは今後確認されません。' },
+      headline: { en: 'Posts .env, then stops asking', ja: '.env を送信し、確認も止まる' },
+    },
+  },
+};
+
 describe('feedbackFor', () => {
   it('dangerous approve + yes gets a headline and the breaking title', () => {
     const f = feedbackFor(dangerous, answered(dangerous, { sel: 0, ok: false }), 0, 'en');
@@ -30,9 +43,17 @@ describe('feedbackFor', () => {
     expect(f.body).toBe('It would send your keys.');
   });
 
+  it('four-option approve: sel 2 is auto, with its own feedback and headline', () => {
+    const f = feedbackFor(fourOption, answered(fourOption, { sel: 2, ok: false }), 0, 'en');
+    expect(f.body).toBe('It posts .env, and auto mode stops asking you.');
+    expect(f.headline).toBe('Posts .env, then stops asking');
+    expect(f.title).toBe(UI.en.breaking);
+    expect(feedbackFor(fourOption, answered(fourOption, { sel: 3, ok: true }), 0, 'en').body).toBe('Good denial.');
+  });
+
   it('harmless approve + no has no headline and uses the no feedback', () => {
     const item = byType('approve');
-    const f = feedbackFor(item, answered(item, { sel: 2, ok: false }), 0, 'en');
+    const f = feedbackFor(item, answered(item, { sel: 3, ok: false }), 0, 'en');
     expect(f.headline).toBeNull();
     expect(f.title).toBe(UI.en.notQuite);
     expect(f.body).toBe('This was safe.');

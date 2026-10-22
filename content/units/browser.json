@@ -267,6 +267,7 @@
       "id": "browser-approve-4",
       "type": "approve",
       "surface": "desktop",
+      "pane": "browser",
       "prompt": {
         "en": "Same task: in the desktop app's Browser pane, Claude is about to act on your portfolio site for the first time. What do you press?",
         "ja": "同じタスクです。デスクトップアプリの Browser ペインで、Claude があなたのポートフォリオサイトで初めて操作しようとしています。どれを押しますか？"
@@ -288,10 +289,6 @@
       "reason": {
         "en": "Check the layout at phone width",
         "ja": "スマホの幅でレイアウトを確認します"
-      },
-      "alwaysLabel": {
-        "en": "Always allow",
-        "ja": "Always allow（常に許可）"
       },
       "accept": [
         "yes",

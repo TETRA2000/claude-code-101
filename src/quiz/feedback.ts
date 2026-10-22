@@ -1,5 +1,5 @@
 import type { DocRef, Item } from '../content/types';
-import { APPROVE_CHOICES } from '../content/types';
+import { choicesOf } from '../content/approve';
 import { t, type Lang } from '../i18n/lang';
 import { UI } from '../i18n/ui';
 import type { AnswerState } from './types';
@@ -24,7 +24,7 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
 
   switch (item.type) {
     case 'approve': {
-      const choice = sel === null ? undefined : APPROVE_CHOICES[sel];
+      const choice = sel === null ? undefined : choicesOf(item)[sel];
       const outcome = choice ? item.outcomes[choice] : undefined;
       body = outcome ? t(outcome.feedback, lang) : null;
       if (!a.ok && outcome?.headline) headline = t(outcome.headline, lang);

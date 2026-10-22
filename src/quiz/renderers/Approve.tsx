@@ -1,4 +1,5 @@
-import { APPROVE_CHOICES, type ApproveItem, type Item } from '../../content/types';
+import { choiceLabels, choicesOf } from '../../content/approve';
+import type { ApproveItem, Item } from '../../content/types';
 import { Button } from '../../components/Button';
 import { RichText } from '../../components/RichText';
 import { useLang } from '../../i18n/LangContext';
@@ -16,18 +17,21 @@ export interface RendererProps<I extends Item> {
 }
 
 export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
-  const { ui, t } = useLang();
-  const labels = [ui.approveYes, t(item.alwaysLabel), ui.approveNo];
+  const { ui, t, lang } = useLang();
+  const choices = choicesOf(item);
+  const labels = choiceLabels(item, lang);
   const terminal = item.surface === 'terminal';
-  // Claude Code's own option text stays in English in the terminal (product output);
-  // the desktop card and the answer buttons use the course's localized label.
+  // One list drives both the drawn prompt and the answer buttons. Claude Code's own
+  // option text stays in English in the terminal (product output); the desktop card
+  // and the answer buttons use the course's localized labels.
   const prompt = (
     <PermissionPrompt
       surface={item.surface}
       tool={item.tool}
       target={item.target}
       reason={t(item.reason)}
-      alwaysLabel={terminal ? item.alwaysLabel.en : t(item.alwaysLabel)}
+      options={terminal ? choiceLabels(item, 'en') : labels}
+      pane={item.pane}
     />
   );
   return (
@@ -45,7 +49,7 @@ export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
         </figure>
       </div>
       <div className={styles.answers}>
-        {APPROVE_CHOICES.map((c, i) => (
+        {choices.map((c, i) => (
           <button
             key={c}
             type="button"

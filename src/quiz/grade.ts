@@ -1,4 +1,5 @@
-import { APPROVE_CHOICES, type Item } from '../content/types';
+import { choicesOf } from '../content/approve';
+import type { Item } from '../content/types';
 import type { AnswerState } from './types';
 
 export const isAutoGraded = (item: Item): boolean => item.type === 'pairs' || item.type === 'decode';
@@ -34,9 +35,10 @@ export function canCheck(item: Item, a: AnswerState): boolean {
 
 export function isCorrect(item: Item, a: AnswerState): boolean {
   switch (item.type) {
-    case 'approve':
-      const choice = a.sel === null ? undefined : APPROVE_CHOICES[a.sel];
+    case 'approve': {
+      const choice = a.sel === null ? undefined : choicesOf(item)[a.sel];
       return choice !== undefined && item.accept.includes(choice);
+    }
     case 'predict':
     case 'chain':
       return a.sel === item.answer;

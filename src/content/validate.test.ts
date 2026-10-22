@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fixtureContent, fixtureParts } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, UnitBody } from './types';
-import { CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, validateContent } from './validate';
+import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, UNSAFE_SNIPPET, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -30,7 +30,7 @@ describe('validateContent', () => {
 
   it('1: flags an empty ja anywhere, with its path', () => {
     const problems = mutated((p) => {
-      item<ApproveItem>(p, 'demo-approve').outcomes.no.feedback.ja = '';
+      item<ApproveItem>(p, 'demo-approve').outcomes.no!.feedback.ja = '';
     });
     expect(problems).toEqual(['demo/demo-approve: ja text empty at outcomes.no.feedback']);
   });
@@ -69,16 +69,173 @@ describe('validateContent', () => {
     const problems = mutated((p) => {
       const a = item<ApproveItem>(p, 'demo-approve');
       a.accept = ['no'];
-      a.outcomes.yes.headline = { en: 'BREAKING', ja: '速報' };
+      a.outcomes.yes!.headline = { en: 'BREAKING', ja: '速報' };
     });
     expectOne(problems, 'demo-approve');
   });
 
   it('6: flags a harmless approve with a headline', () => {
     const problems = mutated((p) => {
-      item<ApproveItem>(p, 'demo-approve').outcomes.always.headline = { en: 'BREAKING', ja: '速報' };
+      item<ApproveItem>(p, 'demo-approve').outcomes.always!.headline = { en: 'BREAKING', ja: '速報' };
     });
     expectOne(problems, 'demo-approve');
+  });
+
+  describe('approve choices (F1, F8)', () => {
+    const approve = (p: Parts) => item<ApproveItem>(p, 'demo-approve');
+    const H = { en: 'BREAKING', ja: '速報' };
+    const only = (problems: string[], msg: string) => {
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain('demo/demo-approve');
+      expect(problems[0]).toContain(msg);
+    };
+
+    it('flags outcomes whose keys differ from choices', () => {
+      only(mutated((p) => void delete approve(p).outcomes.auto), 'outcomes must match choices');
+      only(
+        mutated((p) => {
+          const a = approve(p);
+          a.choices = ['yes', 'auto', 'no'];
+          a.accept = ['yes'];
+          delete a.alwaysLabel;
+        }),
+        'outcomes must match choices',
+      );
+    });
+
+    it('defaults choices to yes / always / no', () => {
+      only(
+        mutated((p) => {
+          const a = approve(p);
+          delete a.choices;
+          delete a.outcomes.auto;
+        }),
+        'terminal Bash prompts offer auto (F1)',
+      );
+    });
+
+    it('flags choices out of order or repeated', () => {
+      only(mutated((p) => void (approve(p).choices = ['always', 'yes', 'auto', 'no'])), 'choices');
+      only(mutated((p) => void (approve(p).choices = ['yes', 'yes', 'always', 'auto', 'no'])), 'choices');
+    });
+
+    it('flags always offered without an alwaysLabel', () => {
+      only(mutated((p) => void delete approve(p).alwaysLabel), 'alwaysLabel');
+    });
+
+    it('allows a one-time-only prompt without always or alwaysLabel', () => {
+      const problems = mutated((p) => {
+        const a = approve(p);
+        a.choices = ['yes', 'auto', 'no'];
+        a.accept = ['yes'];
+        delete a.alwaysLabel;
+        delete a.outcomes.always;
+      });
+      expect(problems).toEqual([]);
+    });
+
+    it('flags a terminal Bash item without auto', () => {
+      only(
+        mutated((p) => {
+          const a = approve(p);
+          a.choices = ['yes', 'always', 'no'];
+          delete a.outcomes.auto;
+        }),
+        'terminal Bash prompts offer auto (F1)',
+      );
+    });
+
+    it('flags auto on a desktop item', () => {
+      only(mutated((p) => void (approve(p).surface = 'desktop')), 'auto');
+    });
+
+    it('flags auto on a non-Bash terminal item', () => {
+      only(mutated((p) => void (approve(p).tool = 'Edit')), 'auto');
+    });
+
+    it('flags auto on a prompt forced by an ask rule, and allows askRule without it', () => {
+      only(mutated((p) => void (approve(p).askRule = true)), 'auto');
+      const ok = mutated((p) => {
+        const a = approve(p);
+        a.askRule = true;
+        a.choices = ['yes', 'always', 'no'];
+        delete a.outcomes.auto;
+      });
+      expect(ok).toEqual([]);
+    });
+
+    it('accepts a desktop or non-Bash item with yes / always / no', () => {
+      for (const patch of [{ surface: 'desktop' }, { tool: 'Edit' }] as const) {
+        const problems = mutated((p) => {
+          const a = approve(p);
+          Object.assign(a, patch);
+          a.choices = ['yes', 'always', 'no'];
+          delete a.outcomes.auto;
+        });
+        expect(problems).toEqual([]);
+      }
+    });
+
+    it("flags pane: 'browser' on a terminal item and allows it on desktop without alwaysLabel", () => {
+      only(mutated((p) => void (approve(p).pane = 'browser')), 'pane');
+      const ok = mutated((p) => {
+        const a = approve(p);
+        Object.assign(a, { surface: 'desktop', tool: 'Browser pane', pane: 'browser', choices: ['yes', 'always', 'no'] });
+        delete a.alwaysLabel;
+        delete a.outcomes.auto;
+      });
+      expect(ok).toEqual([]);
+    });
+
+    it('flags accept that names a choice not offered', () => {
+      only(
+        mutated((p) => {
+          const a = approve(p);
+          a.choices = ['yes', 'auto', 'no'];
+          delete a.outcomes.always;
+          delete a.alwaysLabel;
+        }),
+        'accept',
+      );
+    });
+
+    it('flags a dangerous item missing a headline on auto', () => {
+      const problems = mutated((p) => {
+        const a = approve(p);
+        a.accept = ['no'];
+        a.outcomes.yes!.headline = H;
+        a.outcomes.always!.headline = H;
+      });
+      only(problems, 'auto');
+      expect(problems[0]).toContain('headline');
+    });
+
+    it('accepts a dangerous item with headlines on yes, always and auto', () => {
+      const problems = mutated((p) => {
+        const a = approve(p);
+        a.accept = ['no'];
+        a.outcomes.yes!.headline = H;
+        a.outcomes.always!.headline = H;
+        a.outcomes.auto!.headline = H;
+      });
+      expect(problems).toEqual([]);
+    });
+
+    it('flags a harmless item with a headline on auto', () => {
+      only(mutated((p) => void (approve(p).outcomes.auto!.headline = H)), 'headline');
+    });
+
+    it('flags auto in accept in the learning units', () => {
+      expect(AUTO_WRONG_UNITS).toEqual(['permissions', 'injection', 'browser']);
+      const problems = mutated((p) => {
+        p.units[0]!.key = 'permissions';
+        p.bodies.permissions = p.bodies.demo!;
+        delete p.bodies.demo;
+        (p.bodies.permissions.items.find((i) => i.id === 'demo-approve') as ApproveItem).accept.push('auto');
+      });
+      expect(problems).toEqual(['permissions/demo-approve: auto is never right while learning']);
+      expect(mutated((p) => void approve(p).accept.push('auto'))).toEqual([]);
+    });
   });
 
   it('7: flags combo.accept that is not the options with removes', () => {
