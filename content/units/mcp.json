@@ -114,12 +114,12 @@
       },
       "body": [
         {
-          "en": "A project you clone can bring its own `.mcp.json`. In an interactive session, Claude Code asks you before connecting those servers, so a repository can't start programs on your machine without your consent. Settings committed to the repository can't approve them for you.",
-          "ja": "複製したプロジェクトには、独自の `.mcp.json` が入っていることがあります。対話型のセッションでは、Claude Code はそのサーバーにつなぐ前にあなたに確認します。リポジトリが、あなたの同意なしにあなたのマシンでプログラムを起動できないようにするためです。リポジトリにコミットされた設定が、あなたの代わりに承認することはできません。"
+          "en": "A project you clone can bring its own `.mcp.json`. In an interactive session, Claude Code asks you before connecting those servers, so a repository can't start programs on your machine without your consent. Until you trust the folder, settings committed to the repository can't approve them for you.",
+          "ja": "複製したプロジェクトには、独自の `.mcp.json` が入っていることがあります。対話型のセッションでは、Claude Code はそのサーバーにつなぐ前にあなたに確認します。リポジトリが、あなたの同意なしにあなたのマシンでプログラムを起動できないようにするためです。フォルダを信頼するまでは、リポジトリにコミットされた設定があなたの代わりに承認することはできません。"
         },
         {
-          "en": "`claude -p` (one question, no chat) can't show that question, so it connects them without asking. Said yes by mistake? `claude mcp reset-project-choices` resets your answers.",
-          "ja": "`claude -p`（質問を1回だけ投げる、チャットなしの実行）ではその確認を表示できないので、確認なしでつないでしまいます。うっかり承認してしまったら、`claude mcp reset-project-choices` で答えをリセットできます。"
+          "en": "In `claude -p` and other runs with no chat, Claude Code can't show that question, so it connects them without asking. Said yes by mistake? `claude mcp reset-project-choices` resets your answers.",
+          "ja": "`claude -p`（質問を1回だけ投げる実行）など、チャットのない実行ではその確認を表示できないので、Claude Code は確認なしでつないでしまいます。うっかり承認してしまったら、`claude mcp reset-project-choices` で答えをリセットできます。"
         }
       ],
       "key": {
@@ -622,8 +622,8 @@
             "ja": "プロジェクトの `.mcp.json` が追加した"
           },
           "feedback": {
-            "en": "A `.mcp.json` server would be named for that file's entry and would ask for approval first. `from claude.ai` points at your account.",
-            "ja": "`.mcp.json` のサーバーなら、そのファイルの項目どおりの名前になり、まず承認を求めてきます。`from claude.ai` は、あなたのアカウントから来たことを示しています。"
+            "en": "A `.mcp.json` server would carry that file's name and would have asked you for approval. `from claude.ai` points at your account.",
+            "ja": "`.mcp.json` のサーバーなら、そのファイルにある名前が付いていて、あなたに承認を求めていたはずです。`from claude.ai` は、あなたのアカウントから来たことを示しています。"
           }
         },
         {
@@ -762,8 +762,8 @@
             "ja": "承認していないので、読み飛ばされる"
           },
           "feedback": {
-            "en": "Unapproved project servers are skipped only where Claude Code can ask. In a `-p` run it loads them, approved or not.",
-            "ja": "承認していない project のサーバーが読み込まれないのは、Claude Code が確認できる場面だけです。`-p` の実行では、承認の有無にかかわらず読み込まれます。"
+            "en": "Unapproved project servers wait for your answer only where Claude Code can ask. In a `-p` run it loads them, approved or not.",
+            "ja": "承認していない project のサーバーがあなたの答えを待つのは、Claude Code が確認できる場面だけです。`-p` の実行では、承認の有無にかかわらず読み込まれます。"
           }
         }
       ],
