@@ -6,10 +6,10 @@ import { UI } from '../i18n/ui';
 import { DocLink } from './DocLink';
 import type { DocRef } from '../content/types';
 
-const wrap = (ref: DocRef, lang: Lang, label?: string) =>
+const wrap = (ref: DocRef, lang: Lang, label?: string, missing?: readonly string[]) =>
   render(
     <LangProvider lang={lang}>
-      <DocLink docRef={ref} label={label} />
+      <DocLink docRef={ref} label={label} missing={missing} />
     </LangProvider>,
   );
 
@@ -28,6 +28,12 @@ describe('DocLink', () => {
     wrap({ slug: 'permissions' }, 'ja');
     expect(screen.getByRole('link')).toHaveAttribute('href', 'https://code.claude.com/docs/ja/permissions');
     expect(screen.getByRole('link')).toHaveTextContent(UI.ja.learnMore);
+  });
+  it('falls back to the English page for a slug with no Japanese page', () => {
+    wrap({ slug: 'permissions', anchor: 'a' }, 'ja', undefined, ['permissions']);
+    const a = screen.getByRole('link');
+    expect(a).toHaveAttribute('href', 'https://code.claude.com/docs/en/permissions#a');
+    expect(a).toHaveTextContent(UI.ja.englishPage);
   });
   it('labels an English page shown in a Japanese UI', () => {
     wrap({ url: 'https://claude.com/blog/auto-mode', lang: 'en' }, 'ja');
