@@ -493,7 +493,7 @@
   },
   {
     "key": "extensions",
-    "status": "soon",
+    "status": "ready",
     "title": {
       "en": "Skills, plugins and subagents",
       "ja": "スキル、プラグイン、サブエージェント"
@@ -505,8 +505,68 @@
     "chips": [
       "review",
       "settings",
-      "approve"
-    ]
+      "setup",
+      "approve",
+      "predict"
+    ],
+    "lastChecked": "2026-10-22",
+    "docs": [
+      {
+        "ref": {
+          "slug": "features-overview"
+        },
+        "note": {
+          "en": "Read this if you want to know when to use a skill, a subagent, a hook, an MCP server or a plugin.",
+          "ja": "スキル、サブエージェント、フック、MCP サーバー、プラグインを、それぞれどんなときに使うのかを知りたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "skills"
+        },
+        "note": {
+          "en": "Read this if you want to write a skill, or check what its frontmatter fields such as `allowed-tools` do.",
+          "ja": "スキルを書きたいとき、または `allowed-tools` などのフロントマターの項目が何をするのかを確かめたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/install"
+        },
+        "note": {
+          "en": "Read this if you want to install a plugin, pick its scope, or turn auto-update on or off.",
+          "ja": "プラグインをインストールしたり、スコープを選んだり、自動更新をオン・オフしたりしたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "plugins/security"
+        },
+        "note": {
+          "en": "Read this if you are deciding whether to trust a plugin, or want to remove one you no longer trust.",
+          "ja": "プラグインを信頼してよいか判断しているとき、または信頼できなくなったプラグインを取り除きたいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "sub-agents"
+        },
+        "note": {
+          "en": "Read this if you want to limit a subagent's tools or understand which permission mode it runs in.",
+          "ja": "サブエージェントのツールを絞りたいとき、またはどの許可モードで動くのかを理解したいとき。"
+        }
+      },
+      {
+        "ref": {
+          "slug": "hooks-guide"
+        },
+        "note": {
+          "en": "Read this if you want to see what a hook in a plugin or skill can run, and how to check yours with `/hooks`.",
+          "ja": "プラグインやスキルのフックが何を実行できるのか、そして `/hooks` で自分のフックを確かめる方法を知りたいとき。"
+        }
+      }
+    ],
+    "linksChecked": "2026-10-22"
   },
   {
     "key": "installing",

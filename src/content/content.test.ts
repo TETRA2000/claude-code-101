@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { content } from './index';
 import { validateContent } from './validate';
 import { choicesOf } from './approve';
-import type { ApproveItem, AutoModeItem, ChainItem, ChoiceItem, HiddenItem, RuleItem } from './types';
+import type { ApproveItem, AutoModeItem, ChainItem, ChoiceItem, HiddenItem, RuleItem, SettingsItem } from './types';
 
 describe('content', () => {
   it('is valid', () => {
@@ -28,7 +28,7 @@ describe('content', () => {
   });
 
   it('wave 2 and new units are soon', () => {
-    for (const key of ['extensions', 'installing', 'sandboxes', 'boss']) {
+    for (const key of ['installing', 'sandboxes', 'boss']) {
       expect(content.unitByKey(key)?.status, key).toBe('soon');
     }
   });
@@ -282,6 +282,37 @@ describe('unit 7: mcp', () => {
       return text.includes('claude mcp list') && text.includes('/mcp');
     });
     expect(tryCard).toBeDefined();
+  });
+});
+
+describe('unit 8: extensions', () => {
+  it('is ready, with at least 3 review, 2 settings, 2 setup and 2 approve items', () => {
+    expect(content.unitByKey('extensions')?.status).toBe('ready');
+    const items = content.bodyOf('extensions')?.items ?? [];
+    const count = (ty: string) => items.filter((it) => it.type === ty).length;
+    expect(count('review')).toBeGreaterThanOrEqual(3);
+    expect(count('settings')).toBeGreaterThanOrEqual(2);
+    expect(count('setup')).toBeGreaterThanOrEqual(2);
+    expect(count('approve')).toBeGreaterThanOrEqual(2);
+    const reviews = items.filter((it): it is SettingsItem => it.type === 'review');
+    expect(reviews.every((it) => (it.header?.rows.length ?? 0) > 0)).toBe(true);
+  });
+
+  it('has a Try it card that mentions /plugin and Will install', () => {
+    const cards = content.bodyOf('extensions')?.cards ?? [];
+    const tryCard = cards.find((c) => c.try);
+    expect(tryCard).toBeDefined();
+    const steps = [...(tryCard?.try?.terminal ?? []), ...(tryCard?.try?.desktop ?? [])];
+    const text = [...(tryCard?.body ?? []).map((b) => b.en), ...steps.map((s) => `${s.code ?? ''} ${s.text.en}`)].join('\n');
+    expect(text).toContain('/plugin');
+    expect(text).toContain('Will install');
+  });
+
+  it('teaches allowed-tools and disable-model-invocation', () => {
+    const body = content.bodyOf('extensions');
+    const all = JSON.stringify([...(body?.cards ?? []), ...(body?.items ?? [])]);
+    expect(all).toContain('allowed-tools');
+    expect(all).toContain('disable-model-invocation');
   });
 });
 
