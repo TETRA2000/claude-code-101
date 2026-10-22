@@ -140,7 +140,8 @@ export interface UiStrings {
   settingsWins: (key: string, value: string, where: string) => string;
   settingsNoWinner: (key: string) => string;
   bossIntro: (seconds: number, count: number) => string;
-  bossIntroRules: string[];
+  bossIntroRule: string;
+  bossPromptOf: (n: number, total: number) => string;
   bossStart: string;
   bossTimeLabel: string;
   bossSecondsLeft: (n: number) => string;
@@ -305,11 +306,8 @@ const en: UiStrings = {
   settingsWins: (key, value, where) => `${key} is ${value}, set in ${where}.`,
   settingsNoWinner: (key) => `No file sets ${key}.`,
   bossIntro: (seconds, count) => `${seconds} seconds, ${count} permission prompts, in Manual mode. Most of them are harmless.`,
-  bossIntroRules: [
-    'Each prompt gets one answer. Tap it and the next prompt appears.',
-    'No hearts here. When the time runs out, the recap shows what you allowed and denied.',
-    'Need a break? Pause stops the clock.',
-  ],
+  bossIntroRule: 'Tap an answer and the next prompt appears at once. Pause stops the clock; you can still read and answer while paused.',
+  bossPromptOf: (n, total) => `Prompt ${n} of ${total}`,
   bossStart: 'Start',
   bossTimeLabel: 'Time left',
   bossSecondsLeft: (n) => (n <= 0 ? "Time's up" : `${n} seconds left`),
@@ -320,7 +318,7 @@ const en: UiStrings = {
   bossRecapTitle: 'Recap',
   bossTimeUp: "Time's up: recap",
   bossScore: (right, answered, total) =>
-    `${right} of ${answered} answered right. ${total - answered} of ${total} not reached.`,
+    `${right} of ${answered} answered right.` + (answered < total ? ` ${total - answered} left unanswered.` : ''),
   bossNoAnswers: 'You did not answer any prompts this time.',
   bossAllowed: 'You allowed it',
   bossDenied: 'You denied it',
@@ -472,11 +470,8 @@ const ja: UiStrings = {
   settingsWins: (key, value, where) => `${key} は ${value} です（${where} で設定）。`,
   settingsNoWinner: (key) => `${key} を設定しているファイルはありません。`,
   bossIntro: (seconds, count) => `${seconds}秒で${count}個の許可プロンプト。モードは Manual（手動確認）です。ほとんどは無害です。`,
-  bossIntroRules: [
-    '答えられるのは各プロンプトに1回だけ。タップすると次のプロンプトが出ます。',
-    'ここにハートはありません。時間切れになると、振り返り画面で何を許可し、何を拒否したかを確認できます。',
-    '休みたいときは「一時停止」で時計が止まります。',
-  ],
+  bossIntroRule: '答えをタップすると、すぐに次のプロンプトが出ます。「一時停止」で時計が止まります。一時停止中も、読んだり答えたりできます。',
+  bossPromptOf: (n, total) => `${total}問中${n}問目`,
   bossStart: 'スタート',
   bossTimeLabel: '残り時間',
   bossSecondsLeft: (n) => (n <= 0 ? '時間切れ' : `残り${n}秒`),
@@ -487,7 +482,7 @@ const ja: UiStrings = {
   bossRecapTitle: '振り返り',
   bossTimeUp: '時間切れ：振り返り',
   bossScore: (right, answered, total) =>
-    `${answered}問中${right}問正解。${total}問中${total - answered}問は時間内に届きませんでした。`,
+    `${answered}問中${right}問正解。` + (answered < total ? `未回答は${total - answered}問です。` : ''),
   bossNoAnswers: '今回はどのプロンプトにも答えませんでした。',
   bossAllowed: '許可した',
   bossDenied: '拒否した',

@@ -1081,8 +1081,8 @@
       "outcomes": {
         "yes": {
           "headline": {
-            "en": "BREAKING: Project keys posted to a stranger's server during a \"status check\"",
-            "ja": "速報：「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
+            "en": "Project keys posted to a stranger's server during a \"status check\"",
+            "ja": "「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
           },
           "feedback": {
             "en": "`-d @.env` sends the whole `.env` file as the request body. Your deny didn't stop it because `/usr/bin/curl` is a different text from `curl`. Say: \"Don't send any files. Just check whether the page loads.\"",
@@ -1091,8 +1091,8 @@
         },
         "always": {
           "headline": {
-            "en": "BREAKING: Project keys posted to a stranger's server during a \"status check\"",
-            "ja": "速報：「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
+            "en": "Project keys posted to a stranger's server during a \"status check\"",
+            "ja": "「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
           },
           "feedback": {
             "en": "This sends `.env` now, and saves an allow rule for every `/usr/bin/curl` command from now on, quietly undoing your deny.",
@@ -1101,8 +1101,8 @@
         },
         "auto": {
           "headline": {
-            "en": "BREAKING: Project keys posted to a stranger's server during a \"status check\"",
-            "ja": "速報：「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
+            "en": "Project keys posted to a stranger's server during a \"status check\"",
+            "ja": "「状態チェック」の最中に、プロジェクトのキーが見知らぬサーバーへ送信"
           },
           "feedback": {
             "en": "This approves the upload of `.env` right now, then hands every later decision to a checker model. A prompt that sends a secret file somewhere is a No, not a reason to stop reading prompts.",

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { bossParts, bossPicks, bossSourceMetas, fixtureContent, fixtureParts, withWave2 } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, AutoModeItem, RuleItem, SettingsItem, UnitBody } from './types';
-import { AUTO_WRONG_UNITS, BOSS_CARD_RANGE, BOSS_HARMLESS_SHARE, BOSS_ITEM_RANGE, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
+import { AUTO_WRONG_UNITS, BOSS_CARD_RANGE, BREAKING_PREFIX, BOSS_HARMLESS_SHARE, BOSS_ITEM_RANGE, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
 
 type Parts = typeof fixtureParts;
 
@@ -87,6 +87,23 @@ describe('validateContent', () => {
       item<ApproveItem>(p, 'demo-approve').outcomes.always!.headline = { en: 'BREAKING', ja: '速報' };
     });
     expectOne(problems, 'demo-approve');
+  });
+
+  it('flags a headline that starts with BREAKING or 速報 (the badge already says it)', () => {
+    expect(BREAKING_PREFIX.test('Developer keys leak')).toBe(false);
+    for (const headline of [
+      { en: 'BREAKING: Keys leak', ja: '鍵が流出' },
+      { en: 'Keys leak', ja: '速報：鍵が流出' },
+      { en: 'breaking : Keys leak', ja: '鍵が流出' },
+    ]) {
+      const problems = mutated((p) => {
+        const a = item<ApproveItem>(p, 'demo-approve');
+        a.accept = ['no'];
+        for (const c of ['yes', 'always', 'auto'] as const) a.outcomes[c]!.headline = { en: 'Keys leak', ja: '鍵が流出' };
+        a.outcomes.yes!.headline = headline;
+      });
+      expect(problems).toEqual(['demo/demo-approve: headline on yes starts with BREAKING (the badge already says it)']);
+    }
   });
 
   describe('approve choices (F1, F8)', () => {
@@ -463,6 +480,11 @@ describe('validateContent', () => {
       const c = createContent(parts.units, fixtureParts.types, parts.bodies);
       expect(c.bodyOf('boss')!.items.find((it) => it.id === 'bsrc-a-safe-1')).not.toHaveProperty('decode');
       expect(c.bodyOf('bsrc-a')!.items[0]).toHaveProperty('decode');
+    });
+
+    it('flags items written into the boss file itself', () => {
+      const problems = boss((p) => void p.bodies.boss!.items.push({ ...structuredClone(p.bodies['bsrc-a']!.items[0]!), id: 'boss-own-1' }));
+      expect(problems).toEqual(['boss: boss file has its own items (boss-own-1); boss prompts come only from picks']);
     });
 
     it('flags a boss unit without picks', () => {

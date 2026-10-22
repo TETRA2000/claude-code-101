@@ -16,7 +16,12 @@ export interface RendererProps<I extends Item> {
   act: (a: SessionAction) => void;
 }
 
-export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
+interface ApproveProps extends RendererProps<ApproveItem> {
+  /** Each answer acts at once (the boss): plain action buttons, without `aria-pressed`. */
+  immediate?: boolean;
+}
+
+export function Approve({ item, answer, act, immediate = false }: ApproveProps) {
   const { ui, t, lang } = useLang();
   const choices = choicesOf(item);
   const labels = choiceLabels(item, lang);
@@ -54,7 +59,7 @@ export function Approve({ item, answer, act }: RendererProps<ApproveItem>) {
             key={c}
             type="button"
             className={styles.answer}
-            aria-pressed={answer.sel === i}
+            aria-pressed={immediate ? undefined : answer.sel === i}
             disabled={answer.checked}
             onClick={() => act({ type: 'select', sel: i })}
           >

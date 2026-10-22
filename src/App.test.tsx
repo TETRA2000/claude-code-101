@@ -5,6 +5,7 @@ import { App } from './App';
 import { bossParts, fixtureContent, fixtureParts } from './test/fixtures';
 import { createContent } from './content';
 import { UI } from './i18n/ui';
+import { XP_FIRST_TRY } from './state/rules';
 import type { Progress, ProgressStore } from './storage/progress';
 
 const empty = (): Progress => ({ lang: null, learned: {}, practiced: {}, xp: 0 });
@@ -46,19 +47,38 @@ describe('App', () => {
     const parts = bossParts();
     const content = createContent(parts.units, fixtureParts.types, parts.bodies);
     const { store, save } = fakeStore();
-    render(<App store={store} content={content} languages={['en']} bossSeconds={2} />);
+    render(<App store={store} content={content} languages={['en']} bossSeconds={3} />);
     await userEvent.click(screen.getAllByRole('button', { name: 'Practice' }).at(-1)!); // the boss is the last unit
     expect(screen.getByRole('button', { name: UI.en.bossStart })).toBeInTheDocument();
     expect(screen.queryByText(UI.en.heartsLeft(5))).not.toBeInTheDocument();
     vi.useFakeTimers();
     try {
       fireEvent.click(screen.getByRole('button', { name: UI.en.bossStart }));
-      expect(screen.getByRole('timer')).toHaveTextContent('0:02');
-      act(() => void vi.advanceTimersByTime(3000));
+      expect(screen.getByRole('timer')).toHaveTextContent('0:03');
+      act(() => void vi.advanceTimersByTime(400)); // past the activation guard
+      fireEvent.click(screen.getByRole('button', { name: UI.en.approveYes })); // the first pick is harmless: right
+      for (let i = 0; i < 3; i++) act(() => void vi.advanceTimersByTime(1000));
     } finally {
       vi.useRealTimers();
     }
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(UI.en.bossTimeUp);
-    expect(save).toHaveBeenLastCalledWith(expect.objectContaining({ practiced: expect.objectContaining({ boss: true }), xp: 0 }));
+    expect(save).toHaveBeenLastCalledWith(expect.objectContaining({ practiced: expect.objectContaining({ boss: true }), xp: XP_FIRST_TRY }));
+  });
+
+  it('a boss run with no answers does not mark the boss done', async () => {
+    const parts = bossParts();
+    const content = createContent(parts.units, fixtureParts.types, parts.bodies);
+    const { store, save } = fakeStore();
+    render(<App store={store} content={content} languages={['en']} bossSeconds={2} />);
+    await userEvent.click(screen.getAllByRole('button', { name: 'Practice' }).at(-1)!);
+    vi.useFakeTimers();
+    try {
+      fireEvent.click(screen.getByRole('button', { name: UI.en.bossStart }));
+      for (let i = 0; i < 2; i++) act(() => void vi.advanceTimersByTime(1000));
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(UI.en.bossTimeUp);
+    for (const [p] of save.mock.calls) expect((p as Progress).practiced.boss).toBeUndefined();
   });
 });

@@ -697,8 +697,8 @@
             "ja": "秘密鍵が、マシン上のすべてのアカウントやサービスから読める状態になりました。しかも「Permission denied (publickey)」はたいてい、サーバーがあなたの鍵を受け付けなかったという意味で、ファイルの権限では直りません。"
           },
           "headline": {
-            "en": "BREAKING: Laptop's SSH keys left open to every account to \"fix\" a git push",
-            "ja": "速報：git push を「直す」ため、ノート PC の SSH 鍵が全アカウントに開放される"
+            "en": "Laptop's SSH keys left open to every account to \"fix\" a git push",
+            "ja": "git push を「直す」ため、ノート PC の SSH 鍵が全アカウントに開放される"
           }
         },
         "always": {
@@ -707,8 +707,8 @@
             "ja": "「はい」より悪い選択です。鍵は今すでに開放され、さらに保存されたルールによって、今後 Claude はどのフォルダでも同じように確認なしで開放できてしまいます。"
           },
           "headline": {
-            "en": "BREAKING: Assistant now opens folders to everyone without asking",
-            "ja": "速報：アシスタント、確認なしでフォルダを全員に開放するように"
+            "en": "Assistant now opens folders to everyone without asking",
+            "ja": "アシスタント、確認なしでフォルダを全員に開放するように"
           }
         },
         "auto": {
@@ -717,8 +717,8 @@
             "ja": "これでコマンドが今すぐ実行されて鍵が開放され、さらに今後の確認は分類モデルに任されます。このコースでは Manual モードのまま、これには自分で答えましょう。答えは「いいえ」です。"
           },
           "headline": {
-            "en": "BREAKING: SSH keys opened to all, and no one is checking the next step",
-            "ja": "速報：SSH 鍵が全員に開放、次の一手も誰も確認せず"
+            "en": "SSH keys opened to all, and no one is checking the next step",
+            "ja": "SSH 鍵が全員に開放、次の一手も誰も確認せず"
           }
         },
         "no": {

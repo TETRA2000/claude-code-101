@@ -150,9 +150,16 @@ function checkTry(card: Card): string[] {
 /** Units where "Yes, and switch to auto mode" is never an accepted answer (design: Grading Approve or deny). */
 export const AUTO_WRONG_UNITS: readonly string[] = ['permissions', 'injection', 'browser', 'boss'];
 
+/** A headline that repeats the Breaking badge: "BREAKING:" / "速報：" at its start. */
+export const BREAKING_PREFIX = /^\s*(BREAKING|速報)\s*[:：]/i;
+
 /** Approve rules: choices match the real prompt (F1, F8), outcomes match choices, headlines by danger. */
 function checkApprove(it: ApproveItem, unitKey: string): string[] {
   const p: string[] = [];
+  for (const c of APPROVE_CHOICES) {
+    const h = it.outcomes[c]?.headline;
+    if (h && (BREAKING_PREFIX.test(h.en) || BREAKING_PREFIX.test(h.ja))) p.push(`headline on ${c} starts with BREAKING (the badge already says it)`);
+  }
   const choices = choicesOf(it);
   const ordered = APPROVE_CHOICES.filter((c) => choices.includes(c));
   if (ordered.join() !== choices.join()) p.push(`approve.choices must be distinct and in the order ${APPROVE_CHOICES.join(', ')}`);
@@ -411,8 +418,10 @@ export const isHarmless = (it: ApproveItem): boolean => it.accept.includes('yes'
  */
 function checkBossPicks(c: Content, u: UnitMeta, body: UnitBody): string[] {
   const out: string[] = [];
+  const own = body.items.filter((it) => it.type !== 'approve' || !it.fromUnit);
+  if (own.length) out.push(`${u.key}: boss file has its own items (${own.map((it) => it.id).join(', ')}); boss prompts come only from picks`);
   const picks = body.picks;
-  if (!picks) return [`${u.key}: boss unit needs picks`];
+  if (!picks) return [...out, `${u.key}: boss unit needs picks`];
   const bodies: Record<string, UnitBody> = {};
   for (const x of c.units) {
     const b = c.bodyOf(x.key);

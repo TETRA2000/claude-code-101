@@ -57,7 +57,8 @@ test.describe('layout and safety', () => {
         test(`${unit.key}: the boss intro, every prompt and the recap fit (${lang})`, async ({ page }) => {
           const ui = UI[lang];
           const items = bodyOf(unit.key).items;
-          await page.goto('/');
+          // A long clock, so a slow runner can't hit the time-out recap; learn-practice covers time running out.
+          await page.goto('/?bossSeconds=600');
           await setLang(page, lang);
           await openUnit(page, unit, lang, 'practice');
           await expect(page.getByRole('heading', { level: 1 })).toHaveText(unit.title[lang]);
@@ -65,7 +66,7 @@ test.describe('layout and safety', () => {
           await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
           await expect(page.getByRole('timer')).toBeVisible();
           for (const item of items) {
-            await expect(page.getByRole('heading', { level: 1 })).toHaveText(item.prompt[lang]);
+            await expect(page.getByRole('heading', { level: 1 })).toContainText(item.prompt[lang]);
             await expectNoOverflow(page, `${unit.key}/${item.id} ${lang}`);
             await expectNoCopyButtons(page);
             // Say Yes to every prompt, so the recap shows each dangerous one's headline too.

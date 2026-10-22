@@ -995,8 +995,8 @@
       "outcomes": {
         "yes": {
           "headline": {
-            "en": "BREAKING: A morning of the team's work vanishes from main after a \"footer fix\"",
-            "ja": "速報：「フッターの修正」のあと、チームの午前中の作業が main から消失"
+            "en": "A morning of the team's work vanishes from main after a \"footer fix\"",
+            "ja": "「フッターの修正」のあと、チームの午前中の作業が main から消失"
           },
           "feedback": {
             "en": "`--force` replaces `main` on the server with your copy, deleting the newer commits your teammates pushed. Say: \"Don't force-push. Pull the new commits, merge, and push normally.\"",
@@ -1005,8 +1005,8 @@
         },
         "always": {
           "headline": {
-            "en": "BREAKING: A morning of the team's work vanishes from main after a \"footer fix\"",
-            "ja": "速報：「フッターの修正」のあと、チームの午前中の作業が main から消失"
+            "en": "A morning of the team's work vanishes from main after a \"footer fix\"",
+            "ja": "「フッターの修正」のあと、チームの午前中の作業が main から消失"
           },
           "feedback": {
             "en": "This force-pushes now, and saves an allow rule for every `git push`. Your ask rule still wins next time, but if it's ever removed, every push would run unasked.",

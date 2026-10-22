@@ -24,7 +24,8 @@ export function bossCopy(item: ApproveItem, unit: UnitMeta): ApproveItem {
 
 /**
  * `bodies` with each boss unit's `items` set to copies of its picks, in pick order. Picks that are
- * missing or not approve items are left out here; the validator reports them.
+ * missing or not approve items are left out here; the validator reports them, and any items the
+ * boss file wrote itself (copies always carry `fromUnit`).
  */
 export function resolvePicks(units: readonly UnitMeta[], bodies: Record<string, UnitBody>): Record<string, UnitBody> {
   const out: Record<string, UnitBody> = { ...bodies };
@@ -36,7 +37,8 @@ export function resolvePicks(units: readonly UnitMeta[], bodies: Record<string, 
       const found = findPick(units, bodies, id);
       if (found?.item.type === 'approve') items.push(bossCopy(found.item, found.unit));
     }
-    out[u.key] = { ...body, items };
+    // Items written into the boss file itself are kept (ahead of the copies) so the validator can flag them.
+    out[u.key] = { ...body, items: [...(body.items ?? []), ...items] };
   }
   return out;
 }

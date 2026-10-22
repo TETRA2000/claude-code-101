@@ -8,8 +8,8 @@
       },
       "body": [
         {
-          "en": "Twenty permission prompts from the units you finished, and 60 seconds. Claude Code is in Manual mode (ask before acting), so each of these actions stops and waits for your answer.",
-          "ja": "これまでに終えたユニットから集めた20個の許可プロンプトに、60秒で答えます。Claude Code は Manual モード（実行前に確認）なので、ここに出る操作はどれも止まってあなたの答えを待ちます。"
+          "en": "A run of permission prompts from the earlier units, and 60 seconds. Claude Code is in Manual mode (ask before acting), so each of these actions stops and waits for your answer.",
+          "ja": "前のユニットから集めた許可プロンプトに、60秒で答えます。Claude Code は Manual モード（実行前に確認）なので、ここに出る操作はどれも止まってあなたの答えを待ちます。"
         },
         {
           "en": "There are no hearts. Each prompt gets one answer, then the next one appears. Need a break? Pause stops the clock.",

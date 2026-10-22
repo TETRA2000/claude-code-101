@@ -36,12 +36,13 @@ interface Props {
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-/** The live-region text: silent except at 30, 10 and 0 seconds (and only for marks inside the run). */
+/**
+ * The live-region text: "30 seconds left" and "10 seconds left", each only during that second, so the
+ * region never holds a stale time. Time running out is announced by the recap heading, which takes focus.
+ */
 function announcement(s: BossState, say: (n: number) => string): string {
-  if (s.phase === 'intro') return '';
-  if (s.left <= 0) return say(0);
-  if (s.left <= 10 && s.seconds > 10) return say(10);
-  if (s.left <= 30 && s.seconds > 30) return say(30);
+  if (s.phase !== 'run') return '';
+  if ((s.left === 30 && s.seconds > 30) || (s.left === 10 && s.seconds > 10)) return say(s.left);
   return '';
 }
 
@@ -51,24 +52,35 @@ export function Boss({ unitKey, title, items, seconds = BOSS_SECONDS, onExit, on
   const [s, dispatch] = useReducer(bossReducer, undefined, () => startBoss(prompts, seconds));
   const [paused, setPaused] = useState(false);
 
-  // One tick a second while running. Pausing clears the interval, so no tick is lost or doubled.
+  // One tick a second while running. Pausing keeps what was left of the current second (`carry`),
+  // so toggling Pause quickly can't hold the clock still, and no tick is lost or doubled.
+  const carry = useRef(1000);
   useEffect(() => {
     if (s.phase !== 'run' || paused) return;
-    const timer = setInterval(() => dispatch({ type: 'tick' }), 1000);
-    return () => clearInterval(timer);
-  }, [s.phase, paused]);
+    const began = Date.now();
+    const timer = setTimeout(() => {
+      carry.current = 1000;
+      dispatch({ type: 'tick' });
+    }, carry.current);
+    return () => {
+      clearTimeout(timer);
+      carry.current = Math.max(0, carry.current - (Date.now() - began));
+    };
+  }, [s.phase, s.left, paused]);
 
   // A recap state never changes again (the reducer ignores everything but 'start'), so this reports once per run.
+  // A run with no answers is not a finished unit, so it is not reported.
   const reported = useRef<BossState | null>(null);
   useEffect(() => {
     if (s.phase === 'recap' && reported.current !== s) {
       reported.current = s;
-      onComplete({ unitKey, xp: bossXp(s) });
+      if (s.answers.length > 0) onComplete({ unitKey, xp: bossXp(s) });
     }
   }, [s, unitKey, onComplete]);
 
   const start = () => {
     setPaused(false);
+    carry.current = 1000;
     dispatch({ type: 'start' });
   };
 
@@ -81,7 +93,7 @@ export function Boss({ unitKey, title, items, seconds = BOSS_SECONDS, onExit, on
       {s.phase === 'run' && (
         <Run state={s} dispatch={dispatch} paused={paused} onPause={() => setPaused((p) => !p)} onExit={onExit} onLang={onLang} guardMs={guardMs} />
       )}
-      {s.phase === 'recap' && <Recap state={s} onHome={onExit} onRetry={start} unitTitle={unitTitle} />}
+      {s.phase === 'recap' && <Recap state={s} onHome={onExit} onRetry={start} onLang={onLang} unitTitle={unitTitle} />}
     </div>
   );
 }
@@ -118,11 +130,7 @@ function Intro({ title, state, onStart, onExit, onLang }: { title: Localized; st
           {t(title)}
         </h1>
         <p className={styles.lead}>{ui.bossIntro(state.seconds, state.queue.length)}</p>
-        <ul className={styles.rules}>
-          {ui.bossIntroRules.map((r, i) => (
-            <li key={i}>{r}</li>
-          ))}
-        </ul>
+        <p className={styles.lead}>{ui.bossIntroRule}</p>
         <Button className={styles.wide} onClick={onStart}>
           {ui.bossStart}
         </Button>
@@ -179,6 +187,7 @@ function Run({ state, dispatch, paused, onPause, onExit, onLang, guardMs }: RunP
       )}
       <div className={styles.titleBlock}>
         <h1 ref={heading} tabIndex={-1} className={styles.prompt}>
+          <span className={styles.count}>{ui.bossPromptOf(state.idx + 1, state.queue.length)}</span>{' '}
           <RichText text={t(item.prompt)} />
         </h1>
       </div>
@@ -187,6 +196,7 @@ function Run({ state, dispatch, paused, onPause, onExit, onLang, guardMs }: RunP
           key={state.idx}
           item={item}
           answer={answer}
+          immediate
           act={(a) => {
             if (a.type !== 'select' || !armed) return;
             const choice = choices[a.sel];
@@ -202,17 +212,21 @@ function Recap({
   state,
   onHome,
   onRetry,
+  onLang,
   unitTitle,
 }: {
   state: BossState;
   onHome: () => void;
   onRetry: () => void;
+  onLang: (l: Lang) => void;
   unitTitle?: (key: string) => Localized | undefined;
 }) {
   const { ui, t } = useLang();
   const heading = useFocusOn<HTMLHeadingElement>('recap');
   const answered = state.answers.length;
   return (
+    <div className={styles.screen}>
+      <Header onExit={onHome} onLang={onLang} />
     <main className={styles.recap}>
       <h1 ref={heading} tabIndex={-1} className={styles.bigTitle}>
         {state.left <= 0 ? ui.bossTimeUp : ui.bossRecapTitle}
@@ -260,5 +274,6 @@ function Recap({
         </Button>
       </div>
     </main>
+    </div>
   );
 }

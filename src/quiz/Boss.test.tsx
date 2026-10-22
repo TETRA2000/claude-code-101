@@ -36,10 +36,10 @@ function Host(p: {
 }
 
 const btn = (name: string | RegExp) => screen.getByRole('button', { name });
-const tickSeconds = (n: number) =>
-  act(() => {
-    vi.advanceTimersByTime(n * 1000);
-  });
+/** One act per second, so React re-arms the one-second timer between ticks, as it does in a browser. */
+const tickSeconds = (n: number) => {
+  for (let i = 0; i < n; i++) act(() => void vi.advanceTimersByTime(1000));
+};
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -99,6 +99,8 @@ describe('Boss', () => {
     tickSeconds(3);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.bossTimeUp);
     expect(screen.getByText(en.bossScore(0, 1, 2))).toBeInTheDocument();
+    expect(en.bossScore(0, 1, 2)).toBe('0 of 1 answered right. 1 left unanswered.');
+    expect(UI.ja.bossScore(0, 1, 2)).toBe('1問中0問正解。未回答は1問です。');
     expect(onComplete).toHaveBeenCalledWith({ unitKey: 'boss', xp: 0 });
   });
 
@@ -116,7 +118,7 @@ describe('Boss', () => {
     expect(screen.getByRole('timer')).toHaveTextContent('0:03');
   });
 
-  it('announces the time only at 30, 10 and 0 seconds', () => {
+  it('announces the time only at 30 and 10 seconds, and never keeps a stale time', () => {
     render(<Host seconds={31} items={[bossSafe, bossDanger]} />);
     fireEvent.click(btn(en.bossStart));
     const live = screen.getByTestId('boss-announce');
@@ -124,10 +126,53 @@ describe('Boss', () => {
     expect(live).toHaveTextContent('');
     tickSeconds(1);
     expect(live).toHaveTextContent(en.bossSecondsLeft(30));
-    tickSeconds(5);
-    expect(live).toHaveTextContent(en.bossSecondsLeft(30));
-    tickSeconds(15);
+    tickSeconds(1);
+    expect(live).toHaveTextContent('');
+    tickSeconds(19);
     expect(live).toHaveTextContent(en.bossSecondsLeft(10));
+    tickSeconds(1);
+    expect(live).toHaveTextContent('');
+    tickSeconds(9);
+    // Time's up: the recap heading announces it, the live region is empty.
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.bossTimeUp);
+    expect(live).toHaveTextContent('');
+  });
+
+  it('a run with no answers is not reported as done', () => {
+    const onComplete = vi.fn();
+    render(<Host seconds={2} onComplete={onComplete} />);
+    fireEvent.click(btn(en.bossStart));
+    tickSeconds(2);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.bossTimeUp);
+    expect(screen.getByText(en.bossNoAnswers)).toBeInTheDocument();
+    expect(onComplete).not.toHaveBeenCalled();
+  });
+
+  it('quick Pause/Resume toggles cannot hold the clock still', () => {
+    render(<Host seconds={5} />);
+    fireEvent.click(btn(en.bossStart));
+    for (let i = 0; i < 4; i++) {
+      act(() => void vi.advanceTimersByTime(300));
+      fireEvent.click(btn(en.bossPause));
+      fireEvent.click(btn(en.bossResume));
+    }
+    expect(screen.getByRole('timer')).toHaveTextContent('0:04');
+  });
+
+  it('answer buttons act at once, so they are plain buttons without aria-pressed', () => {
+    render(<Host />);
+    fireEvent.click(btn(en.bossStart));
+    expect(btn(en.approveYes)).not.toHaveAttribute('aria-pressed');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.bossPromptOf(1, 2));
+  });
+
+  it('the recap has the header, with Close and the language switch', () => {
+    render(<Host items={[bossSafe]} />);
+    fireEvent.click(btn(en.bossStart));
+    fireEvent.click(btn(en.approveYes));
+    expect(btn(en.quit)).toBeInTheDocument();
+    expect(screen.getByText(en.bossScore(1, 1, 1))).toBeInTheDocument();
+    expect(en.bossScore(1, 1, 1)).toBe('1 of 1 answered right.');
   });
 
   it('ignores a second tap right after a new prompt appears', () => {

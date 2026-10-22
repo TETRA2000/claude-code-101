@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { STORAGE_KEY } from '../src/storage/progress';
 import { UI } from '../src/i18n/ui';
-import { answerItem, bodyOf, card, openUnit, READY } from './helpers';
+import { answerItem, bodyOf, card, GUARD_WAIT, openUnit, READY, selectAnswer } from './helpers';
 
 const unit = READY[0]!; // unit 1: computer
 const ui = UI.en;
@@ -48,21 +48,32 @@ test('learn unit 1, practice it with one miss, finish, and keep the XP', async (
   await expect(card(page, unit, 'en').getByText(ui.done, { exact: true })).toBeVisible();
 });
 
-test('the boss shows the recap when time runs out (?bossSeconds=3, dev and test builds only)', async ({ page }) => {
+test('the boss shows the recap when time runs out, and counts as done only with an answer (?bossSeconds=3)', async ({ page }) => {
   const boss = READY.find((u) => u.mode === 'boss')!;
-  const first = bodyOf(boss.key).items[0]!;
+  const [first, second] = bodyOf(boss.key).items;
   await page.goto('/?bossSeconds=3');
   await page.evaluate((k) => localStorage.removeItem(k), STORAGE_KEY);
   await page.reload();
 
+  // Run 1: no answers. Time runs out, the recap shows, and the boss is not done.
   await openUnit(page, boss, 'en', 'practice');
   await expect(page.getByText(ui.heartsLeft(5))).not.toBeAttached();
   await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
   await expect(page.getByRole('timer')).toHaveText('0:03');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(first.prompt.en);
-
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(first!.prompt.en);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 6000 });
   await expect(page.getByText(ui.bossNoAnswers)).toBeVisible();
+  await page.getByRole('button', { name: ui.continue, exact: true }).click();
+  await expect(card(page, boss, 'en').getByText(ui.done, { exact: true })).toHaveCount(0);
+
+  // Run 2: answer one prompt, then let time run out. Now the boss is done.
+  await openUnit(page, boss, 'en', 'practice');
+  await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
+  await page.waitForTimeout(GUARD_WAIT);
+  await selectAnswer(page, first!, 'en');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(second!.prompt.en);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 6000 });
+  await expect(page.getByRole('listitem')).toHaveCount(1);
   await page.getByRole('button', { name: ui.continue, exact: true }).click();
   await expect(card(page, boss, 'en').getByText(ui.done, { exact: true })).toBeVisible();
 });
