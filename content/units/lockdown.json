@@ -410,8 +410,8 @@
           "ja": "取り消しにくい操作には ask ルール：`Bash(git push *)` やデプロイ（公開）のコマンドなど。"
         },
         {
-          "en": "The sandbox on (`/sandbox`): commands can write only inside the project and reach only sites you've allowed.",
-          "ja": "サンドボックスをオンに（`/sandbox`）：コマンドが書き込めるのはプロジェクトの中だけ、接続できるのはあなたが許可したサイトだけになります。"
+          "en": "The sandbox on (`/sandbox`): commands write only to the project and a temp folder, and reach only allowed sites.",
+          "ja": "サンドボックスをオンに（`/sandbox`）：コマンドが書き込めるのはプロジェクトと一時フォルダだけ、接続できるのはあなたが許可したサイトだけになります。"
         },
         {
           "en": "A separate browser profile with no logins, like the desktop app's Browser pane, unless Claude truly needs your accounts.",

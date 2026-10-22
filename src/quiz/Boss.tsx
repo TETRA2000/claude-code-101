@@ -58,13 +58,18 @@ export function Boss({ unitKey, title, items, seconds = BOSS_SECONDS, onExit, on
   useEffect(() => {
     if (s.phase !== 'run' || paused) return;
     const began = Date.now();
+    let fired = false;
     const timer = setTimeout(() => {
+      fired = true;
       carry.current = 1000;
       dispatch({ type: 'tick' });
     }, carry.current);
     return () => {
       clearTimeout(timer);
-      carry.current = Math.max(0, carry.current - (Date.now() - began));
+      // Only a timer cancelled before it fired (Pause, leaving the run) keeps the rest of its second.
+      // After a tick, `carry` is already a fresh 1000 ms; subtracting here would make the next tick
+      // fire at once and run the clock at double speed.
+      if (!fired) carry.current = Math.max(0, carry.current - (Date.now() - began));
     };
   }, [s.phase, s.left, paused]);
 

@@ -1,6 +1,6 @@
 # Claude Code facts sheet
 
-The single source for every claim about Claude Code in units 2–5 and for the look of simulated permission prompts. Content cites sections by number (e.g. `F4`). Bullets starting `UNVERIFIED:` are not settled by official docs; content must not state them as true.
+The single source for every claim about Claude Code in every unit and for the look of simulated permission prompts. Content cites sections by number (e.g. `F4`). Bullets starting `UNVERIFIED:` are not settled by official docs; content must not state them as true.
 
 Docs describe Claude Code v2.1.306 era (installed CLI: `claude` 2.1.306). Exact UI wording is in backticks or bold as the docs give it.
 

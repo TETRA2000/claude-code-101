@@ -159,6 +159,42 @@ describe('Boss', () => {
     expect(screen.getByRole('timer')).toHaveTextContent('0:04');
   });
 
+  it('the clock runs at real speed when time advances in small steps (regression: it once ran at double speed)', () => {
+    render(<Host seconds={60} items={[bossSafe, bossDanger]} />);
+    fireEvent.click(btn(en.bossStart));
+    // 100 ms per act, so React re-arms the timer between steps as a browser would.
+    const steps = (n: number) => {
+      for (let i = 0; i < n; i++) act(() => void vi.advanceTimersByTime(100));
+    };
+    steps(10);
+    expect(screen.getByRole('timer')).toHaveTextContent('0:59');
+    steps(10);
+    expect(screen.getByRole('timer')).toHaveTextContent('0:58');
+    steps(280); // 30 s in total
+    expect(screen.getByRole('timer')).toHaveTextContent('0:30');
+    steps(295); // 59.5 s in total: still running
+    expect(screen.getByRole('timer')).toHaveTextContent('0:01');
+    steps(5); // 60 s in total
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.bossTimeUp);
+  });
+
+  it('Pause keeps the rest of the current second exactly', () => {
+    render(<Host seconds={5} />);
+    fireEvent.click(btn(en.bossStart));
+    act(() => void vi.advanceTimersByTime(700));
+    fireEvent.click(btn(en.bossPause));
+    act(() => void vi.advanceTimersByTime(5000));
+    fireEvent.click(btn(en.bossResume));
+    act(() => void vi.advanceTimersByTime(299));
+    expect(screen.getByRole('timer')).toHaveTextContent('0:05');
+    act(() => void vi.advanceTimersByTime(1));
+    expect(screen.getByRole('timer')).toHaveTextContent('0:04');
+    act(() => void vi.advanceTimersByTime(999));
+    expect(screen.getByRole('timer')).toHaveTextContent('0:04');
+    act(() => void vi.advanceTimersByTime(1));
+    expect(screen.getByRole('timer')).toHaveTextContent('0:03');
+  });
+
   it('answer buttons act at once, so they are plain buttons without aria-pressed', () => {
     render(<Host />);
     fireEvent.click(btn(en.bossStart));

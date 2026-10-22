@@ -366,8 +366,8 @@
       },
       "body": [
         {
-          "en": "A sandbox is a wall your operating system puts around the commands Claude runs: they can write only inside your project and reach only websites you've allowed, though they can still read most files. Turn it on with `/sandbox`.",
-          "ja": "サンドボックスとは、Claude が実行するコマンドの周りに OS が立てる壁です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのはあなたが許可した Webサイトだけになります。ただし、ほとんどのファイルは読めてしまいます。`/sandbox` でオンにします。"
+          "en": "A sandbox is a wall your operating system puts around the commands Claude runs: they can write only inside your project (and a temp folder) and reach only websites you've allowed, though they can still read most files. Turn it on with `/sandbox`.",
+          "ja": "サンドボックスとは、Claude が実行するコマンドの周りに OS が立てる壁です。コマンドが書き込めるのはプロジェクトの中（と一時フォルダ）だけ、接続できるのはあなたが許可した Webサイトだけになります。ただし、ほとんどのファイルは読めてしまいます。`/sandbox` でオンにします。"
         },
         {
           "en": "The classifier decides whether a command runs; the sandbox limits what it can reach. With both on, Claude lists the websites a command needs, the classifier reviews them with it, and only those open, for that command alone.",
@@ -1125,8 +1125,8 @@
             "ja": "`/sandbox` でサンドボックスをオンにする"
           },
           "feedback": {
-            "en": "Right. Commands can then write only inside the project and reach only the websites allowed for them, though they can still read most files. It covers shell commands, not Claude's file and web tools.",
-            "ja": "正解です。コマンドが書き込めるのはプロジェクトの中だけ、接続できるのは許可された Webサイトだけになります（ほとんどのファイルは読めます）。囲むのはシェルのコマンドで、Claude のファイル用ツールや Web用ツールは対象外です。"
+            "en": "Right. Commands can then write only inside the project (and a temp folder) and reach only the websites allowed for them, though they can still read most files. It covers shell commands, not Claude's file and web tools.",
+            "ja": "正解です。コマンドが書き込めるのはプロジェクトの中（と一時フォルダ）だけ、接続できるのは許可された Webサイトだけになります（ほとんどのファイルは読めます）。囲むのはシェルのコマンドで、Claude のファイル用ツールや Web用ツールは対象外です。"
           }
         },
         {

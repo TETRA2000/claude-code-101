@@ -24,7 +24,7 @@ A bilingual (English/Japanese) Vite + React + TypeScript course app that teaches
   - `prefers-reduced-motion` respected.
 - Laptop first, but no horizontal page scroll at 390px width. Long commands and URLs wrap (`overflow-wrap: anywhere`).
 - Each item says which app it shows: `surface: 'terminal' | 'desktop'`. Unit 3 recommends Manual (ask before acting); unit 12 teaches auto mode. Turning permissions off is always wrong in setup items.
-- Approve `auto` ("Yes, and switch to auto mode"): offered exactly for terminal Bash prompts without an `askRule` (the validator enforces it), and never an accepted answer in units `permissions`, `injection` and `browser`.
+- Approve `auto` ("Yes, and switch to auto mode"): offered exactly for terminal Bash prompts without an `askRule` (the validator enforces it), and never an accepted answer in units `permissions`, `injection`, `browser` and `boss`.
 
 ## Commands
 

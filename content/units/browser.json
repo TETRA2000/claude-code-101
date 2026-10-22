@@ -1239,10 +1239,10 @@
         },
         {
           "tool": "click",
-          "target": "Unsubscribe (link in the Weekly Deals email)",
+          "target": "Unsubscribe",
           "why": {
-            "en": "Following the unsubscribe link",
-            "ja": "配信停止のリンクをたどる"
+            "en": "Following the unsubscribe link in the Weekly Deals email",
+            "ja": "Weekly Deals のメールにある配信停止のリンクをたどる"
           }
         },
         {

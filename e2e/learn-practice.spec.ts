@@ -59,9 +59,12 @@ test('the boss shows the recap when time runs out, and counts as done only with 
   await openUnit(page, boss, 'en', 'practice');
   await expect(page.getByText(ui.heartsLeft(5))).not.toBeAttached();
   await page.getByRole('button', { name: ui.bossStart, exact: true }).click();
+  const began = Date.now();
   await expect(page.getByRole('timer')).toHaveText('0:03');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(first!.prompt.en);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 6000 });
+  // A 3 s clock: not much later (time-out bound), and not early (a double-speed clock ends after ~1.5 s).
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 4500 });
+  expect(Date.now() - began).toBeGreaterThanOrEqual(2500);
   await expect(page.getByText(ui.bossNoAnswers)).toBeVisible();
   await page.getByRole('button', { name: ui.continue, exact: true }).click();
   await expect(card(page, boss, 'en').getByText(ui.done, { exact: true })).toHaveCount(0);
@@ -72,7 +75,7 @@ test('the boss shows the recap when time runs out, and counts as done only with 
   await page.waitForTimeout(GUARD_WAIT);
   await selectAnswer(page, first!, 'en');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(second!.prompt.en);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 6000 });
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ui.bossTimeUp, { timeout: 4500 });
   await expect(page.getByRole('listitem')).toHaveCount(1);
   await page.getByRole('button', { name: ui.continue, exact: true }).click();
   await expect(card(page, boss, 'en').getByText(ui.done, { exact: true })).toBeVisible();

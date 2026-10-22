@@ -6,17 +6,17 @@ import { findPick } from './picks';
 import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
 import { APPROVE_CHOICES, AUTO_OUTCOMES, ITEM_TYPES, type AutoModeItem, type ApproveItem, type Card, type ChoiceItem, type DocRef, type HiddenItem, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody, type UnitMeta } from './types';
 
-const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
-const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
+const SECRET = /sk-ant-|sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
+const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/gi;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
- * A bare hostname with no scheme (`collect.example`, `*.evil.example`, `api.example.com:443`): 2+ lowercase labels
+ * A bare hostname with no scheme (`collect.example`, `*.evil.example`, `API.Example.COM:443`): 2+ labels, any case,
  * ending in a 2+ letter label. Not matched: part of a longer word or path label, a dotted key followed by `:`
  * (`"sandbox.network": …`, `scripts.postinstall: …`), file names (see FILE_EXTS), and names whose last label is
  * not a known top-level domain (see HOST_TLDS), so settings keys like `sandbox.credentials` pass.
  */
-const BARE_HOST = /(?<![\w.-])(?:\*\.)?((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,})(?![\w-]|\.[\w-]|["']?\s*:(?!\d))/g;
+const BARE_HOST = /(?<![\w.-])(?:\*\.)?((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,})(?![\w-]|\.[\w-]|["']?\s*:(?!\d))/gi;
 /** Last labels that mean a file name, not a host (`settings.json`, `CLAUDE.md`, `history.jsonl`). */
 export const FILE_EXTS: ReadonlySet<string> = new Set(
   ('json jsonl ndjson md mdx ts tsx js jsx mjs cjs sh bash zsh txt yml yaml toml lock lockb env log py css html htm ' +
@@ -27,14 +27,29 @@ export const FILE_EXTS: ReadonlySet<string> = new Set(
 /** Last labels treated as a host's top-level domain: the reserved ones plus common real ones. */
 export const HOST_TLDS: ReadonlySet<string> = new Set(
   ('example test invalid localhost com net org io dev app ai co me info biz xyz site online tech cloud page ' +
-    'us uk jp de fr cn ru in br au ca eu nl se no es it ch kr tw hk sg nz ly gg to tv cc').split(' '),
+    'us uk jp de fr cn ru in br au ca eu nl se no es it ch kr tw hk sg nz ly gg to tv cc ' +
+    // Real TLDs that are also file extensions (FILE_EXTS); see bareHosts for how they are told apart.
+    'sh rs zip md py pub').split(' '),
 );
 
-/** Hosts written without a scheme in `s`, wildcards stripped (`*.collect.example` → `collect.example`). */
+/**
+ * Hosts written without a scheme in `s`, lowercased, wildcards stripped (`*.Collect.example` → `collect.example`).
+ *
+ * A last label that is both a TLD and a file extension (`sh`, `rs`, `zip`, `md`, `py`, `pub`) is ambiguous:
+ * `get.tool.sh` is a host, `install.sh` and `scripts/setup.sh` are files. Such a name counts as a host only when
+ * it has 3+ labels and is not part of a path (not right after `/`, `~` or `\\`). Known limitation: a 2-label host
+ * on one of these TLDs (`tool.sh`) passes as a file name, and a dotted 3-label file name outside a path
+ * (`deploy.prod.sh`) is checked as a host, so name such files without the extra dot or show them with a path.
+ */
 export function bareHosts(s: string): string[] {
-  return [...s.matchAll(BARE_HOST)].map((m) => m[1] ?? '').filter((h) => {
-    const tld = h.slice(h.lastIndexOf('.') + 1);
-    return HOST_TLDS.has(tld) && !FILE_EXTS.has(tld);
+  return [...s.matchAll(BARE_HOST)].flatMap((m) => {
+    const h = (m[1] ?? '').toLowerCase();
+    const labels = h.split('.');
+    const tld = labels[labels.length - 1] ?? '';
+    if (!HOST_TLDS.has(tld)) return [];
+    if (!FILE_EXTS.has(tld)) return [h];
+    const before = s[(m.index ?? 0) - 1] ?? '';
+    return labels.length >= 3 && !/[/~\\]/.test(before) ? [h] : [];
   });
 }
 
@@ -58,6 +73,11 @@ function walkLocalized(v: unknown, path: string, fn: (l: Record<string, unknown>
 const join = (a: string, b: string) => (a ? `${a}.${b}` : b);
 const nonEmpty = (s: unknown) => typeof s === 'string' && s.trim() !== '';
 const inRange = (n: number, len: number) => Number.isInteger(n) && n >= 0 && n < len;
+/** "has duplicate entries (x, y)" for a list with repeats, else nothing. */
+const dupes = (what: string, xs: readonly (string | number)[]): string[] => {
+  const repeated = [...new Set(xs.filter((x, i) => xs.indexOf(x) !== i))];
+  return repeated.length ? [`${what} has duplicate entries (${repeated.join(', ')})`] : [];
+};
 const isPermutation = (xs: readonly string[], ids: readonly string[]) =>
   xs.length === ids.length && new Set(xs).size === xs.length && xs.every((x) => ids.includes(x));
 
@@ -176,6 +196,7 @@ function checkApprove(it: ApproveItem, unitKey: string): string[] {
   if (it.pane && it.surface !== 'desktop') p.push('pane: "browser" is a desktop card (F8)');
 
   if (it.accept.length === 0) p.push('approve.accept is empty');
+  p.push(...dupes('approve.accept', it.accept));
   const notOffered = it.accept.filter((c) => !choices.includes(c));
   if (notOffered.length) p.push(`approve.accept names choices not offered (${notOffered.join(', ')})`);
   if (it.accept.includes('auto') && AUTO_WRONG_UNITS.includes(unitKey)) p.push('auto is never right while learning');
@@ -221,6 +242,7 @@ function checkRule(it: RuleItem): string[] {
   if (it.tests.length === 0) p.push('rule.tests is empty');
   if (it.lists.length === 0) p.push('rule.lists is empty');
   if (it.patterns.length === 0) p.push('rule.patterns is empty');
+  p.push(...dupes('rule.lists', it.lists), ...dupes('rule.patterns', it.patterns));
   for (const pat of it.patterns) if (!parseRule(pat)) p.push(`rule pattern "${pat}" does not parse`);
   for (const r of it.existing ?? []) if (!parseRule(r.text)) p.push(`existing rule "${r.text}" does not parse`);
   p.push(...checkCalls(it.tests.map((t) => t.call)));
@@ -256,6 +278,7 @@ function checkSettings(it: SettingsItem): string[] {
   if (it.lines.length === 0) p.push('settings.lines is empty');
   if (it.answer.length === 0) p.push('settings.answer is empty');
   else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push('settings.answer out of range');
+  p.push(...dupes(`${it.type}.answer`, it.answer));
   for (const k of Object.keys(it.notes ?? {})) {
     if (!/^\d+$/.test(k) || !inRange(Number(k), it.lines.length)) p.push(`settings.notes key "${k}" is not a line index`);
   }
@@ -267,6 +290,7 @@ function checkChoice(it: ChoiceItem): string[] {
   const p: string[] = [];
   if (it.accept.length === 0) p.push(`${it.type}.accept is empty`);
   else if (!it.accept.every((n) => inRange(n, it.opts.length))) p.push(`${it.type}.accept out of range`);
+  p.push(...dupes(`${it.type}.accept`, it.accept));
   if (it.panel && it.panel.lines.length === 0) p.push('panel needs lines');
   return p;
 }
@@ -276,6 +300,7 @@ function checkHidden(it: HiddenItem): string[] {
   const p: string[] = [];
   if (it.answer.length === 0) p.push(`${it.type}.answer is empty`);
   else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push(`${it.type}.answer out of range`);
+  p.push(...dupes(`${it.type}.answer`, it.answer));
   if (it.type === 'poisoned' && it.source !== 'tools') p.push('poisoned needs source "tools"');
   it.lines.forEach((l, i) => {
     if (it.source === 'tools' && !nonEmpty(l.tool)) p.push(`tools line ${i} needs a tool name`);
@@ -516,6 +541,7 @@ export function validateContent(c: Content): string[] {
     }
     if (!body) continue;
 
+    for (const msg of dupes('card ids', body.cards.map((card) => card.id))) out.push(`${u.key}: ${msg}`);
     for (const card of body.cards) {
       checkText(`${u.key}/${card.id}`, card, [], out);
       const words = cardWords(card);
@@ -524,7 +550,10 @@ export function validateContent(c: Content): string[] {
       for (const msg of checkTry(card)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'modes') for (const msg of checkModesDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
       if (card.demo?.kind === 'settings') for (const msg of checkSettingsDemo(card.demo)) out.push(`${u.key}/${card.id}: ${msg}`);
-      if (card.demo?.kind === 'rules') for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
+      if (card.demo?.kind === 'rules') {
+        for (const msg of checkCalls(card.demo.calls)) out.push(`${u.key}/${card.id}: ${msg}`);
+        for (const r of card.demo.rules) if (!parseRule(r.text)) out.push(`${u.key}/${card.id}: rules demo rule "${r.text}" does not parse`);
+      }
     }
     if (u.mode === 'boss') {
       // Boss items are copies of published items, already checked in their own unit.

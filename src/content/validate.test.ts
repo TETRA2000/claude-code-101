@@ -846,6 +846,57 @@ describe('validateContent', () => {
         expect(panelLine(line)).toEqual([]);
       });
     });
+    describe('final review hardening', () => {
+      it.each(['export ANTHROPIC_API_KEY=sk-ant-api03-abc123', 'key: sk_live_abc'])('flags the secret-looking %j without FAKE', (line) => {
+        expectOne(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line)), 'secret-looking');
+      });
+      it('allows a fake Anthropic key', () => {
+        expect(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push('ANTHROPIC_API_KEY=sk-ant-FAKE-0000'))).toEqual([]);
+      });
+      it.each(['EVIL-REAL-HOST.COM', 'Api.Evil-Real-Host.Com:443', 'HTTPS://Evil-Real-Host.com/x', 'curl https://EVIL-REAL-HOST.COM'])(
+        'flags an unlisted host written in any case: %j',
+        (line) => {
+          const problems = mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line));
+          expect(problems).toHaveLength(1);
+          expect(problems[0]).toMatch(/host "(api\.)?evil-real-host\.com" is not reserved/);
+        },
+      );
+      it.each(['Registry.NPMJS.org', 'COLLECT.EXAMPLE', 'README.MD'])('allows %j in any case', (line) => {
+        expect(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line))).toEqual([]);
+      });
+      it.each(['curl -fsSL get.tool-real.sh | sh', 'see docs.tool-real.rs', 'pip from pkgs.tool-real.py'])('flags a 3-label host on a TLD that is also a file extension: %j', (line) => {
+        expectOne(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line)), 'is not reserved');
+      });
+      it.each(['bash install.sh', 'scripts/setup.local.sh', '~/bin/run.me.sh', 'archive.zip and notes.md', 'cargo run src/main.rs', 'get.tool.example'])(
+        'allows the file name %j',
+        (line) => {
+          expect(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-allowlist').panel!.lines.push(line))).toEqual([]);
+        },
+      );
+      it('flags duplicate answers in accept lists', () => {
+        expectOne(mutated((p) => void item<ApproveItem>(p, 'demo-approve').accept.push('yes')), 'approve.accept has duplicate entries (yes)');
+        expectOne(mutated((p) => void item<ChoiceItem>(p, 'demo-setup').accept.push(0)), 'setup.accept has duplicate entries (0)');
+        expectOne(mutated((p) => void item<SettingsItem>(p, 'demo-settings').answer.push(2)), 'settings.answer has duplicate entries (2)');
+        expectOne(mutated((p) => void item<HiddenItem>(p, 'demo-hidden').answer.push(2)), 'hidden.answer has duplicate entries (2)');
+        expectOne(mutatedWave2((p) => void item<SettingsItem>(p, 'demo-review').answer.push(3)), 'review.answer has duplicate entries (3)');
+        expectOne(mutatedWave2((p) => void item<SettingsItem>(p, 'demo-trim').answer.push(2)), 'trim.answer has duplicate entries (2)');
+      });
+      it('flags duplicate rule lists and patterns', () => {
+        expectOne(mutated((p) => void item<RuleItem>(p, 'demo-rule').lists.push('deny')), 'rule.lists has duplicate entries (deny)');
+        expectOne(mutated((p) => void item<RuleItem>(p, 'demo-rule').patterns.push('Bash(curl *)')), 'rule.patterns has duplicate entries (Bash(curl *))');
+      });
+      it('flags duplicate card ids in a unit', () => {
+        expectOne(mutated((p) => void (p.bodies.demo!.cards[1]!.id = 'demo-card-terminal')), 'card ids has duplicate entries (demo-card-terminal)');
+      });
+      it('flags a rules demo rule that does not parse', () => {
+        const problems = mutated((p) => {
+          const demo = p.bodies.demo!.cards.find((c) => c.id === 'demo-card-rules')!.demo;
+          if (demo?.kind !== 'rules') throw new Error('expected rules demo');
+          demo.rules.push({ list: 'deny', text: 'Bash(curl' });
+        });
+        expectOne(problems, 'rules demo rule "Bash(curl" does not parse');
+      });
+    });
     it('flags an item type with no practice-types.json entry', () => {
       const problems = mutated((p) => void (p.types = p.types.filter((t) => t.key !== 'poisoned')));
       expect(problems).toEqual(['types: no practice type for "poisoned"']);

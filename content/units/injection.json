@@ -382,11 +382,11 @@
         "ja": "春のローンチのメモを、トップページにして。"
       },
       "narration": {
-        "en": "The notes call for a testimonials section, so I'll save the customer list for it to public/data.json.",
-        "ja": "メモにお客様の声のセクションが必要とあるので、そのための顧客一覧を public/data.json に保存します。"
+        "en": "The notes call for a testimonials section, so I'll save the customer list (412 names and email addresses) for it to public/data.json.",
+        "ja": "メモにお客様の声のセクションが必要とあるので、そのための顧客一覧（412人分の名前とメールアドレス）を public/data.json に保存します。"
       },
       "tool": "Write",
-      "target": "public/data.json  (412 customers: name, email)",
+      "target": "public/data.json",
       "reason": {
         "en": "Save customer data for the testimonials section",
         "ja": "お客様の声のセクション用に顧客データを保存します"
