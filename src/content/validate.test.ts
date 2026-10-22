@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fixtureContent, fixtureParts } from '../test/fixtures';
+import { fixtureContent, fixtureParts, withWave2 } from '../test/fixtures';
 import { createContent } from './index';
 import type { ApproveItem, ChainItem, ChoiceItem, DecodeItem, HiddenItem, Item, OrderItem, PairsItem, PredictItem, PrecedenceItem, AutoModeItem, RuleItem, SettingsItem, UnitBody } from './types';
 import { AUTO_WRONG_UNITS, CARD_RANGE, ITEM_RANGE, MAX_CARD_WORDS, UNSAFE_SNIPPET, usesUnmodeledShell, validateContent } from './validate';
@@ -10,6 +10,14 @@ function mutated(fn: (p: Parts) => void) {
   const p = structuredClone(fixtureParts);
   fn(p);
   return validateContent(createContent(p.units, p.types, p.bodies));
+}
+
+/** Like `mutated`, with the wave 2 items swapped into the demo unit first. */
+function mutatedWave2(fn: (p: Parts) => void) {
+  return mutated((p) => {
+    p.bodies.demo = withWave2(p.bodies.demo!);
+    fn(p);
+  });
 }
 
 function item<T extends Item>(p: Parts, id: string): T {
@@ -619,6 +627,41 @@ describe('validateContent', () => {
     });
     it('rejects a desktop label that is not the product label (F4)', () => {
       expectOne(mutated((p) => void (demo(p).modes[0]!.desktop = 'Auto mode')), 'modes demo desktop label for auto must be "Auto"');
+    });
+  });
+
+  describe('wave 2 item shapes', () => {
+    it('accepts the wave 2 fixture items', () => {
+      expect(mutatedWave2(() => {})).toEqual([]);
+    });
+    it('flags a poisoned item whose source is not a tool list', () => {
+      expectOne(mutatedWave2((p) => void (item<HiddenItem>(p, 'demo-poisoned').source = 'web')), 'poisoned needs source "tools"');
+    });
+    it('flags a tool list line without a tool name', () => {
+      expectOne(mutatedWave2((p) => void delete item<HiddenItem>(p, 'demo-poisoned').lines[0]!.tool), 'tools line 0 needs a tool name');
+    });
+    it('checks a poisoned answer like a hidden one', () => {
+      expectOne(mutatedWave2((p) => void (item<HiddenItem>(p, 'demo-poisoned').answer = [5])), 'answer out of range');
+    });
+    it('flags a review item without a header', () => {
+      expectOne(mutatedWave2((p) => void delete item<SettingsItem>(p, 'demo-review').header), 'review needs a header');
+    });
+    it('flags a review header with no rows', () => {
+      expectOne(mutatedWave2((p) => void (item<SettingsItem>(p, 'demo-review').header!.rows = [])), 'review header needs rows');
+    });
+    it.each(['demo-scopes', 'demo-package', 'demo-inside', 'demo-allowlist'])('flags %s with accept out of range or empty', (id) => {
+      expectOne(mutatedWave2((p) => void (item<ChoiceItem>(p, id).accept = [7])), 'accept out of range');
+      expectOne(mutatedWave2((p) => void (item<ChoiceItem>(p, id).accept = [])), 'accept is empty');
+    });
+    it('flags a panel with no lines', () => {
+      expectOne(mutatedWave2((p) => void (item<ChoiceItem>(p, 'demo-scopes').panel!.lines = [])), 'panel needs lines');
+    });
+    it('flags a panel line with a real, unlisted host', () => {
+      expectOne(mutatedWave2((p) => void item<ChoiceItem>(p, 'demo-scopes').panel!.lines.push('https://evil-real-host.com/x')), 'host "evil-real-host.com"');
+    });
+    it('flags an item type with no practice-types.json entry', () => {
+      const problems = mutated((p) => void (p.types = p.types.filter((t) => t.key !== 'poisoned')));
+      expect(problems).toEqual(['types: no practice type for "poisoned"']);
     });
   });
 });

@@ -3,7 +3,7 @@ import { isReservedHost, REAL_HOSTS } from './hosts';
 import type { Content } from './index';
 import { choicesOf } from './approve';
 import { outcomeOf, parseRule, splitCompound, type Call } from '../rules/match';
-import { APPROVE_CHOICES, AUTO_OUTCOMES, type AutoModeItem, type ApproveItem, type Card, type DocRef, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
+import { APPROVE_CHOICES, AUTO_OUTCOMES, ITEM_TYPES, type AutoModeItem, type ApproveItem, type Card, type ChoiceItem, type DocRef, type HiddenItem, type Item, type PrecedenceItem, type RuleItem, type SettingsItem, type UnitBody } from './types';
 
 const SECRET = /sk_live_|sk_test_|ntn_|secret_|ghp_|github_pat_|xox[bp]-|AKIA|PRIVATE KEY/;
 const URL_IN_TEXT = /https?:\/\/[^\s/?#"'`<>()[\]]+/g;
@@ -225,6 +225,29 @@ function checkSettings(it: SettingsItem): string[] {
   return p;
 }
 
+/** Pick the setup and the wave 2 choice types: a non-empty accept in range, and a panel with lines. */
+function checkChoice(it: ChoiceItem): string[] {
+  const p: string[] = [];
+  if (it.accept.length === 0) p.push(`${it.type}.accept is empty`);
+  else if (!it.accept.every((n) => inRange(n, it.opts.length))) p.push(`${it.type}.accept out of range`);
+  if (it.panel && it.panel.lines.length === 0) p.push('panel needs lines');
+  return p;
+}
+
+/** Find the hidden order (and poisoned): answer lines exist; a tool list names every tool; poisoned is a tool list. */
+function checkHidden(it: HiddenItem): string[] {
+  const p: string[] = [];
+  if (it.answer.length === 0) p.push(`${it.type}.answer is empty`);
+  else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push(`${it.type}.answer out of range`);
+  if (it.type === 'poisoned' && it.source !== 'tools') p.push('poisoned needs source "tools"');
+  if (it.source === 'tools') {
+    it.lines.forEach((l, i) => {
+      if (!nonEmpty(l.tool)) p.push(`tools line ${i} needs a tool name`);
+    });
+  }
+  return p;
+}
+
 /** Which file wins: answer in range, every wrong option explains itself, one file per scope. */
 function checkPrecedence(it: PrecedenceItem): string[] {
   const p: string[] = [];
@@ -301,8 +324,8 @@ function checkItem(it: Item, unitKey: string): string[] {
       break;
     }
     case 'hidden':
-      if (it.answer.length === 0) p.push('hidden.answer is empty');
-      else if (!it.answer.every((n) => inRange(n, it.lines.length))) p.push('hidden.answer out of range');
+    case 'poisoned':
+      p.push(...checkHidden(it));
       break;
     case 'chain':
       if (!inRange(it.answer, it.steps.length)) p.push(`chain.answer ${it.answer} out of range`);
@@ -322,6 +345,11 @@ function checkItem(it: Item, unitKey: string): string[] {
       if (!isPermutation(it.order, it.parts.map((x) => x.id))) p.push('decode.order is not a permutation of ids');
       break;
     case 'setup':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist':
+      p.push(...checkChoice(it));
       break;
     case 'rule':
       p.push(...checkRule(it));
@@ -330,6 +358,10 @@ function checkItem(it: Item, unitKey: string): string[] {
     case 'review':
     case 'trim':
       p.push(...checkSettings(it));
+      if (it.type === 'review') {
+        if (!it.header) p.push('review needs a header (the plugin\'s "Will install" pane)');
+        else if (it.header.rows.length === 0) p.push('review header needs rows');
+      }
       break;
     case 'precedence':
       p.push(...checkPrecedence(it));
@@ -359,6 +391,7 @@ export function validateContent(c: Content): string[] {
   const seenIds = new Map<string, string>();
 
   for (const pt of c.practiceTypes) checkText(`types/${pt.key}`, pt, [], out);
+  for (const type of ITEM_TYPES) if (!typeKeys.has(type)) out.push(`types: no practice type for "${type}"`);
 
   for (const u of c.units) {
     checkText(u.key, u, [], out);

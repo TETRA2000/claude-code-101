@@ -37,7 +37,11 @@ export function feedbackFor(item: Item, a: AnswerState, index: number, lang: Lan
     case 'predict':
     case 'precedence':
     case 'setup':
-    case 'combo': {
+    case 'combo':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist': {
       const fb = sel === null ? undefined : item.opts[sel]?.feedback;
       body = fb ? t(fb, lang) : null;
       break;

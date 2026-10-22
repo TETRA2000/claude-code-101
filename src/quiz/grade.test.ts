@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { AUTO_OUTCOMES, type ApproveItem, type AutoModeItem, type ChoiceItem, type Item, type SettingsItem } from '../content/types';
-import { fixtureContent } from '../test/fixtures';
+import { AUTO_OUTCOMES, type ApproveItem, type AutoModeItem, type ChoiceItem, type HiddenItem, type Item, type SettingsItem } from '../content/types';
+import { fixtureContent, wave2Items } from '../test/fixtures';
 import { canCheck, freshAnswer, isAutoGraded, isCorrect } from './grade';
 
 const items = fixtureContent.bodyOf('demo')!.items;
@@ -48,8 +48,25 @@ describe('isCorrect', () => {
     }
   });
 
+  it('scopes, package, inside and allowlist grade like setup', () => {
+    for (const type of ['scopes', 'package', 'inside', 'allowlist'] as const) {
+      const it = wave2Items.find((i) => i.type === type) as ChoiceItem;
+      expect(canCheck(it, ans(it, {}))).toBe(false);
+      expect(canCheck(it, ans(it, { sel: 0 }))).toBe(true);
+      for (let i = 0; i < it.opts.length; i++) expect(isCorrect(it, ans(it, { sel: i }))).toBe(it.accept.includes(i));
+    }
+  });
+
+  it('poisoned grades like hidden: exactly the answer set', () => {
+    const it = wave2Items.find((i) => i.type === 'poisoned')!;
+    expect(canCheck(it, ans(it, {}))).toBe(false);
+    expect(canCheck(it, ans(it, { picked: [1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(true);
+    expect(isCorrect(it, ans(it, { picked: [0, 1] }))).toBe(false);
+  });
+
   it('hidden needs exactly the answer set, in any order', () => {
-    const base = get<Extract<Item, { type: 'hidden' }>>('hidden');
+    const base = get<HiddenItem>('hidden');
     const it = { ...base, answer: [1, 2] };
     expect(isCorrect(it, ans(it, { picked: [2, 1] }))).toBe(true);
     expect(isCorrect(it, ans(it, { picked: [1] }))).toBe(false);
@@ -99,7 +116,7 @@ describe('canCheck', () => {
     const p = get<Extract<Item, { type: 'predict' }>>('predict');
     expect(canCheck(p, freshAnswer(p))).toBe(false);
     expect(canCheck(p, ans(p, { sel: 0 }))).toBe(true);
-    const h = get<Extract<Item, { type: 'hidden' }>>('hidden');
+    const h = get<HiddenItem>('hidden');
     expect(canCheck(h, freshAnswer(h))).toBe(false);
     expect(canCheck(h, ans(h, { picked: [0] }))).toBe(true);
   });

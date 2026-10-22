@@ -11,9 +11,14 @@ export type ItemType =
   | 'pairs'
   | 'order'
   | 'hidden'
+  | 'poisoned'
   | 'chain'
   | 'combo'
   | 'setup'
+  | 'scopes'
+  | 'package'
+  | 'inside'
+  | 'allowlist'
   | 'rule'
   | 'settings'
   | 'review'
@@ -27,9 +32,14 @@ export const ITEM_TYPES: readonly ItemType[] = [
   'pairs',
   'order',
   'hidden',
+  'poisoned',
   'chain',
   'combo',
   'setup',
+  'scopes',
+  'package',
+  'inside',
+  'allowlist',
   'rule',
   'settings',
   'review',
@@ -106,21 +116,29 @@ export interface OrderItem extends Base {
   steps: { id: string; text: L }[];
   start: string[];
 }
+/** Pick one or more right options. `setup` and the wave 2 types grade alike; `combo` also names ingredients. */
+export const CHOICE_TYPES = ['setup', 'combo', 'scopes', 'package', 'inside', 'allowlist'] as const;
 export interface ChoiceItem extends Base {
-  type: 'setup' | 'combo';
+  type: (typeof CHOICE_TYPES)[number];
   surface?: Surface;
   scenario: L;
+  /** A screen to read before choosing (an install or login screen, a package page, a sandbox config). Mono, untranslated. */
+  panel?: { title: string; lines: string[] };
   ingredients?: { private: L; untrusted: L; exit: L }; // combo only
   opts: { text: L; feedback: L; removes?: 'private' | 'untrusted' | 'exit' }[];
   accept: number[];
 }
-export type DocSource = 'notes' | 'web' | 'design' | 'readme' | 'issue' | 'email';
+/** `tools` is an MCP server's tool list (name + description per line); `poisoned` items require it. */
+export type DocSource = 'notes' | 'web' | 'design' | 'readme' | 'issue' | 'email' | 'tools';
+/** Find the hidden order; `poisoned` is the same task on a tool list. */
 export interface HiddenItem extends Base {
-  type: 'hidden';
+  type: 'hidden' | 'poisoned';
   source: DocSource;
   title: L;
   location: string;
   lines: {
+    /** The tool's name, untranslated. Required on every line of a `tools` source; `text` is its description. */
+    tool?: string;
     text: L;
     style: 'h1' | 'h2' | 'p' | 'button' | 'small';
     hidden?: 'white' | 'comment' | 'alt' | 'tiny';
@@ -168,7 +186,7 @@ export interface SettingsItem extends Base {
   type: 'settings' | 'review' | 'trim';
   file: string;
   scope?: Scope;
-  /** wave 2 `review`: a details pane shown above the file. */
+  /** `review` (required there): the plugin's details pane, e.g. its "Will install" rows, shown above the file. */
   header?: { title: string; rows: L[] };
   lines: string[];
   /** Feedback for a picked line, keyed by line index as a string. */

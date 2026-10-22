@@ -15,6 +15,9 @@
 .readme .location { font-weight: 600; }
 .issue .chrome { background: var(--primary-soft); }
 .email .chrome { background: var(--surface); flex-direction: column; align-items: flex-start; }
+.tools .chrome { background: var(--ink); }
+.tools .chromeTitle, .tools .glyph, .tools .location { color: var(--code-punct); }
+.toolName { flex: none; max-width: 100%; font-family: var(--font-code); font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
 .body, .rawBody { padding: 20px; display: flex; flex-direction: column; gap: 6px; }
 .line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; text-align: left; min-height: var(--touch); padding: 8px 12px; font: inherit; color: var(--ink); background: transparent; border: 2px solid transparent; border-radius: var(--radius-chip); cursor: pointer; }
 .line:disabled { cursor: default; }

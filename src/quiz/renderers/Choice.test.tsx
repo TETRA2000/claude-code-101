@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { ChoiceItem, PredictItem } from '../../content/types';
 import { LangProvider } from '../../i18n/LangContext';
-import { fixtureParts } from '../../test/fixtures';
+import { fixtureParts, wave2Items } from '../../test/fixtures';
 import { freshAnswer } from '../grade';
 import type { AnswerState } from '../types';
 import { Choice } from './Choice';
@@ -11,6 +11,7 @@ const items = fixtureParts.bodies.demo!.items;
 const predict = items.find((i) => i.type === 'predict') as PredictItem;
 const combo = items.find((i) => i.type === 'combo') as ChoiceItem;
 const setup = items.find((i) => i.type === 'setup') as ChoiceItem;
+const scopes = wave2Items.find((i) => i.type === 'scopes') as ChoiceItem;
 const draw = (item: PredictItem | ChoiceItem, answer: Partial<AnswerState> = {}) => {
   const act = vi.fn();
   render(
@@ -72,5 +73,27 @@ describe('Choice', () => {
       </LangProvider>,
     );
     expect(screen.getByText('ターミナルの場合')).toBeInTheDocument();
+  });
+
+  it('draws a panel as a mono frame titled panel.title, above the options', () => {
+    draw(scopes);
+    const panel = screen.getByRole('group', { name: '.mcp.json' });
+    expect(panel).toHaveAttribute('data-panel');
+    for (const line of scopes.panel!.lines) expect(within(panel).getByText(line, { normalizer: (s) => s })).toBeInTheDocument();
+    const first = screen.getAllByRole('button')[0]!;
+    expect(panel.compareDocumentPosition(first) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(panel).queryAllByRole('button')).toHaveLength(0);
+  });
+
+  it('draws no panel when the item has none', () => {
+    draw(setup);
+    expect(document.querySelector('[data-panel]')).toBeNull();
+  });
+
+  it.each(['scopes', 'package', 'inside', 'allowlist'] as const)('renders a %s item with its options', (type) => {
+    const it = wave2Items.find((i) => i.type === type) as ChoiceItem;
+    draw(it);
+    expect(screen.getAllByRole('button')).toHaveLength(it.opts.length);
+    expect(screen.getByText(it.scenario.en)).toBeInTheDocument();
   });
 });

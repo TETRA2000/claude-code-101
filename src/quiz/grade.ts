@@ -27,6 +27,7 @@ export function canCheck(item: Item, a: AnswerState): boolean {
   if (a.checked || isAutoGraded(item)) return false;
   switch (item.type) {
     case 'hidden':
+    case 'poisoned':
     case 'settings':
     case 'review':
     case 'trim':
@@ -54,8 +55,13 @@ export function isCorrect(item: Item, a: AnswerState): boolean {
       return a.sel !== null && AUTO_OUTCOMES[a.sel] === item.answer;
     case 'setup':
     case 'combo':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist':
       return a.sel !== null && item.accept.includes(a.sel);
     case 'hidden':
+    case 'poisoned':
     case 'settings':
     case 'review':
     case 'trim': {

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { HiddenItem } from '../../content/types';
 import { LangProvider } from '../../i18n/LangContext';
 import type { Lang } from '../../i18n/lang';
-import { fixtureParts } from '../../test/fixtures';
+import { fixtureParts, wave2Items } from '../../test/fixtures';
 import { freshAnswer } from '../grade';
 import type { AnswerState } from '../types';
 import { HiddenDoc } from './HiddenDoc';
@@ -21,6 +21,7 @@ const draw = (item: HiddenItem, answer: Partial<AnswerState> = {}, lang: Lang = 
   const r = render(ui(answer));
   return { act, rerender: (a: Partial<AnswerState>) => r.rerender(ui(a)) };
 };
+const poisoned = wave2Items.find((i) => i.type === 'poisoned') as HiddenItem;
 const hiddenLine = () => screen.getByRole('button', { name: /collect\.example|Line 3/ });
 
 describe('HiddenDoc', () => {
@@ -103,5 +104,34 @@ describe('HiddenDoc', () => {
   it('localizes to Japanese', () => {
     draw(base, {}, 'ja');
     expect(screen.getByRole('button', { name: 'Claude に見える姿' })).toBeInTheDocument();
+  });
+
+  it("draws a 'tools' source as a tool list: name and description per line", () => {
+    const { container } = render(
+      <LangProvider lang="en">
+        <HiddenDoc item={poisoned} answer={freshAnswer(poisoned)} act={vi.fn()} />
+      </LangProvider>,
+    );
+    expect(container.querySelector('[data-source="tools"]')).not.toBeNull();
+    const lines = container.querySelectorAll('[data-source] button');
+    expect(lines).toHaveLength(poisoned.lines.length);
+    poisoned.lines.forEach((l, i) => {
+      const name = lines[i]!.querySelector('[data-tool-name]');
+      expect(name).toHaveTextContent(l.tool!);
+      expect(lines[i]).toHaveTextContent(l.text.en);
+    });
+    expect(screen.getByRole('button', { name: /^add_note/ })).toBeInTheDocument();
+  });
+
+  it('keeps tool names in the Claude view and after Check', () => {
+    const { container } = render(
+      <LangProvider lang="ja">
+        <HiddenDoc item={poisoned} answer={{ ...freshAnswer(poisoned), checked: true, picked: [1] }} act={vi.fn()} />
+      </LangProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Claude に見える姿' }));
+    const names = [...container.querySelectorAll('[data-tool-name]')].map((n) => n.textContent);
+    expect(names).toEqual(['search_notes', 'add_note']);
+    expect(screen.getByRole('button', { name: /add_note/ })).toHaveTextContent('collect.example/FAKE');
   });
 });

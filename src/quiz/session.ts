@@ -17,7 +17,7 @@ export type SessionAction =
   | { type: 'next' };
 
 /** Items answered by tapping lines. */
-const PICK_TYPES: readonly Item['type'][] = ['hidden', 'settings', 'review', 'trim'];
+const PICK_TYPES: readonly Item['type'][] = ['hidden', 'poisoned', 'settings', 'review', 'trim'];
 
 export { canCheck, freshAnswer, isAutoGraded, isCorrect };
 

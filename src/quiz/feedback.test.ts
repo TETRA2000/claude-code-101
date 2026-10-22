@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ApproveItem, ChainItem, Item } from '../content/types';
 import { UI } from '../i18n/ui';
-import { fixtureParts } from '../test/fixtures';
+import { fixtureParts, wave2Items } from '../test/fixtures';
 import { feedbackFor } from './feedback';
 import { freshAnswer } from './grade';
 import type { AnswerState } from './types';
@@ -90,6 +90,14 @@ describe('feedbackFor', () => {
   it('setup and combo use the chosen option feedback', () => {
     const setup = byType('setup');
     expect(feedbackFor(setup, answered(setup, { sel: 1, ok: false }), 0, 'en').body).toBe('Nothing would stop a bad command.');
+  });
+
+  it('wave 2 choice items use the chosen option feedback', () => {
+    for (const type of ['scopes', 'package', 'inside', 'allowlist']) {
+      const it = wave2Items.find((i) => i.type === type)!;
+      if (!('opts' in it)) throw new Error('expected options');
+      expect(feedbackFor(it, answered(it, { sel: 1 }), 0, 'en').body).toBe(it.opts[1]!.feedback!.en);
+    }
   });
 
   it('returns Japanese strings for ja', () => {

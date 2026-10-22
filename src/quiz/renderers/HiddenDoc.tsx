@@ -5,8 +5,8 @@ import { useLang } from '../../i18n/LangContext';
 import type { RendererProps } from './Approve';
 import styles from './HiddenDoc.module.css';
 
-/** Decorative glyph per source; the frame is generic chrome, never a real product look. */
-const GLYPH: Record<DocSource, string> = { notes: '▤', web: '◎', design: '◫', readme: '≡', issue: '●', email: '✉' };
+/** Decorative glyph per source; the frame is generic chrome, never a real product look. `tools` is an MCP tool list. */
+const GLYPH: Record<DocSource, string> = { notes: '▤', web: '◎', design: '◫', readme: '≡', issue: '●', email: '✉', tools: '⚙' };
 
 export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
   const { ui, t } = useLang();
@@ -59,6 +59,11 @@ export function HiddenDoc({ item, answer, act }: RendererProps<HiddenItem>) {
                 data-concealed={concealed ? 'true' : undefined}
                 onClick={() => act({ type: 'togglePick', line: i })}
               >
+                {l.tool !== undefined && (
+                  <code className={styles.toolName} data-tool-name aria-hidden={concealed ? 'true' : undefined}>
+                    {l.tool}
+                  </code>
+                )}
                 <span className={styles.text} aria-hidden={concealed ? 'true' : undefined}>{text}</span>
                 {right && (
                   <span className={styles.mark}>

@@ -63,7 +63,11 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
       return;
     }
     case 'setup':
-    case 'combo': {
+    case 'combo':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist': {
       const i = wrong ? item.opts.findIndex((_, k) => !item.accept.includes(k)) : (item.accept[0] ?? 0);
       await btn(item.opts[i]?.text[lang] ?? '');
       return;
@@ -74,7 +78,8 @@ export async function selectAnswer(page: Page, item: Item, lang: Lang, wrong = f
       await page.locator('button[aria-pressed]').filter({ hasText: `${i + 1}. ${s?.tool} ${s?.target}` }).first().click();
       return;
     }
-    case 'hidden': {
+    case 'hidden':
+    case 'poisoned': {
       await page.getByRole('button', { name: ui.asClaudeSees, exact: true }).click();
       const lines = page.locator('[data-source] button');
       const picks = wrong ? [item.lines.findIndex((_, k) => !item.answer.includes(k))] : item.answer;

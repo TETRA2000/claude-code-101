@@ -20,6 +20,10 @@ export function ItemBody(p: RendererProps<Item>): ReactElement {
     case 'predict':
     case 'setup':
     case 'combo':
+    case 'scopes':
+    case 'package':
+    case 'inside':
+    case 'allowlist':
       return <Choice item={item} answer={answer} act={act} />;
     case 'pairs':
     case 'decode':
@@ -27,6 +31,7 @@ export function ItemBody(p: RendererProps<Item>): ReactElement {
     case 'order':
       return <OrderList item={item} answer={answer} act={act} />;
     case 'hidden':
+    case 'poisoned':
       return <HiddenDoc item={item} answer={answer} act={act} />;
     case 'chain':
       return <Chain item={item} answer={answer} act={act} />;
