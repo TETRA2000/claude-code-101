@@ -89,6 +89,12 @@ export function App({ store = defaultStore, content = defaultContent, languages,
 function useUnitBody(content: Content, key: string | null): { status: 'ready' | 'loading' | 'failed'; retry(): void } {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ key: string; attempt: number; ok: boolean } | null>(null);
+  // Leaving the unit (even for home) forgets an old failure, so reopening it shows loading again.
+  const [openKey, setOpenKey] = useState(key);
+  if (key !== openKey) {
+    setOpenKey(key);
+    setResult(null);
+  }
   const loaded = key === null || content.isLoaded(key);
   useEffect(() => {
     if (key === null || content.isLoaded(key)) return;

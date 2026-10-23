@@ -106,3 +106,23 @@ describe('App with lazily loaded units', () => {
     expect(load).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('App reopening a unit after a failed load', () => {
+  it('shows loading, not the old failure, while the unit loads again', async () => {
+    let resolve!: (b: (typeof fixtureParts.bodies)['demo']) => void;
+    const load = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockImplementation(() => new Promise((r) => (resolve = r)));
+    const content = createContent(fixtureParts.units, fixtureParts.types, {}, { demo: load });
+    render(<App store={fakeStore().store} content={content} languages={['en']} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Learn' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(UI.en.loadFailed);
+    await userEvent.click(screen.getByRole('button', { name: UI.en.backToHome }));
+    await userEvent.click(screen.getByRole('button', { name: 'Learn' }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent(UI.en.loadingUnit);
+    await act(async () => resolve(fixtureParts.bodies.demo!));
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(fixtureParts.bodies.demo!.cards[0]!.title.en);
+  });
+});
