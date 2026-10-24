@@ -4,7 +4,14 @@ import { validateContent } from './validate';
 import { choicesOf } from './approve';
 import type { ApproveItem, AutoModeItem, ChainItem, ChoiceItem, HiddenItem, RuleItem, SettingsItem } from './types';
 
+// Unit bodies load lazily in the app; validate every one of them.
+await content.loadAll();
+
 describe('content', () => {
+  it('loads every unit body', () => {
+    expect(content.units.filter((u) => !content.isLoaded(u.key) || !content.bodyOf(u.key)).map((u) => u.key)).toEqual([]);
+  });
+
   it('is valid', () => {
     expect(validateContent(content)).toEqual([]);
   });

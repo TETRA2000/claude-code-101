@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, type Dispatch } from 'react';
+import { useEffect, useMemo, useReducer, useState, type Dispatch } from 'react';
 import { content as defaultContent, type Content } from './content';
 import { LangProvider, useLang } from './i18n/LangContext';
 import type { Lang } from './i18n/lang';
@@ -6,6 +6,7 @@ import { Boss } from './quiz/Boss';
 import { Quiz } from './quiz/Quiz';
 import { Home } from './screens/Home';
 import { Learn } from './screens/Learn';
+import { Loading } from './screens/Loading';
 import { appReducer, initState, type Action } from './state/app';
 import { localProgressStore, type ProgressStore } from './storage/progress';
 
@@ -43,37 +44,71 @@ export function App({ store = defaultStore, content = defaultContent, languages,
     document.documentElement.lang = state.lang;
   }, [state.lang]);
 
+  const openKey = state.screen.name === 'home' ? null : state.screen.unitKey;
+  const unit = useUnitBody(content, openKey);
+
   return (
     <LangProvider lang={state.lang}>
       <Title />
       {state.screen.name === 'home' && <Home content={content} state={state} dispatch={dispatch} />}
-      {state.screen.name === 'practice' && content.unitByKey(state.screen.unitKey)?.mode === 'boss' && (
-        <Boss
-          key={state.screen.unitKey}
-          unitKey={state.screen.unitKey}
-          title={content.unitByKey(state.screen.unitKey)!.title}
-          items={content.bodyOf(state.screen.unitKey)?.items ?? []}
-          seconds={bossSeconds}
-          onExit={() => dispatch({ type: 'goHome' })}
-          onComplete={(r) => dispatch({ type: 'completePractice', unitKey: r.unitKey, xp: r.xp })}
-          onLang={(lang: Lang) => dispatch({ type: 'setLang', lang })}
-          unitTitle={(key) => content.unitByKey(key)?.title}
-        />
+      {unit.status !== 'ready' && <Loading failed={unit.status === 'failed'} onRetry={unit.retry} onHome={() => dispatch({ type: 'goHome' })} />}
+      {unit.status === 'ready' && (
+        <>
+          {state.screen.name === 'practice' && content.unitByKey(state.screen.unitKey)?.mode === 'boss' && (
+            <Boss
+              key={state.screen.unitKey}
+              unitKey={state.screen.unitKey}
+              title={content.unitByKey(state.screen.unitKey)!.title}
+              items={content.bodyOf(state.screen.unitKey)?.items ?? []}
+              seconds={bossSeconds}
+              onExit={() => dispatch({ type: 'goHome' })}
+              onComplete={(r) => dispatch({ type: 'completePractice', unitKey: r.unitKey, xp: r.xp })}
+              onLang={(lang: Lang) => dispatch({ type: 'setLang', lang })}
+              unitTitle={(key) => content.unitByKey(key)?.title}
+            />
+          )}
+          {state.screen.name === 'practice' && content.unitByKey(state.screen.unitKey)?.mode !== 'boss' && (
+            <Quiz
+              key={state.screen.unitKey}
+              unitKey={state.screen.unitKey}
+              items={content.bodyOf(state.screen.unitKey)?.items ?? []}
+              content={content}
+              onExit={() => dispatch({ type: 'goHome' })}
+              onComplete={(r) => dispatch({ type: 'completePractice', unitKey: r.unitKey, xp: r.xp })}
+              onLang={(lang: Lang) => dispatch({ type: 'setLang', lang })}
+            />
+          )}
+          {state.screen.name === 'learn' && <LearnScreen content={content} screen={state.screen} dispatch={dispatch} />}
+        </>
       )}
-      {state.screen.name === 'practice' && content.unitByKey(state.screen.unitKey)?.mode !== 'boss' && (
-        <Quiz
-          key={state.screen.unitKey}
-          unitKey={state.screen.unitKey}
-          items={content.bodyOf(state.screen.unitKey)?.items ?? []}
-          content={content}
-          onExit={() => dispatch({ type: 'goHome' })}
-          onComplete={(r) => dispatch({ type: 'completePractice', unitKey: r.unitKey, xp: r.xp })}
-          onLang={(lang: Lang) => dispatch({ type: 'setLang', lang })}
-        />
-      )}
-      {state.screen.name === 'learn' && <LearnScreen content={content} screen={state.screen} dispatch={dispatch} />}
     </LangProvider>
   );
+}
+
+/** Loads the open unit's body (and a boss's picked units). `ready` once `content.bodyOf(key)` is complete. */
+function useUnitBody(content: Content, key: string | null): { status: 'ready' | 'loading' | 'failed'; retry(): void } {
+  const [attempt, setAttempt] = useState(0);
+  const [result, setResult] = useState<{ key: string; attempt: number; ok: boolean } | null>(null);
+  // Leaving the unit (even for home) forgets an old failure, so reopening it shows loading again.
+  const [openKey, setOpenKey] = useState(key);
+  if (key !== openKey) {
+    setOpenKey(key);
+    setResult(null);
+  }
+  const loaded = key === null || content.isLoaded(key);
+  useEffect(() => {
+    if (key === null || content.isLoaded(key)) return;
+    let live = true;
+    content.load(key).then(
+      () => live && setResult({ key, attempt, ok: true }),
+      () => live && setResult({ key, attempt, ok: false }),
+    );
+    return () => {
+      live = false;
+    };
+  }, [content, key, attempt]);
+  const failed = !loaded && result?.key === key && result.attempt === attempt && !result.ok;
+  return { status: loaded ? 'ready' : failed ? 'failed' : 'loading', retry: () => setAttempt((n) => n + 1) };
 }
 
 function LearnScreen({ content, screen, dispatch }: { content: Content; screen: { unitKey: string; card: number }; dispatch: Dispatch<Action> }) {

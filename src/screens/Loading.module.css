@@ -1,0 +1,6 @@
+.screen { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; height: 100%; padding: 24px var(--screen-pad); text-align: center; }
+.message { margin: 0; max-width: 32rem; font-size: 17px; line-height: 1.6; color: var(--ink-muted); overflow-wrap: anywhere; }
+.spinner { width: 32px; height: 32px; border: 4px solid var(--line); border-top-color: var(--ink-muted); border-radius: 50%; animation: spin 0.9s linear infinite; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
